@@ -22,6 +22,7 @@ sys.path.insert(0, HERE)
 
 from ptread import parse, text, config_text  # noqa: E402
 import ptbuild  # noqa: E402
+import model_library  # noqa: E402
 from live_bridge import LiveBridge, LiveBridgeError  # noqa: E402
 
 try:
@@ -465,6 +466,24 @@ def b_status(args):
     return {"source_pkt": b["src"], "working_xml": b["xml"], **_build_diff(b)}
 
 
+def b_add_device(args):
+    b = _build_require()
+    device = model_library.add_device(b["topo"], args["type"], args["model"],
+                                      args["name"], x=args.get("x"), y=args.get("y"))
+    b["log"].append(f"add native model {args['model']} as {args['name']}")
+    return {"name": args["name"], "ref": device.findtext("ENGINE/SAVE_REF_ID"),
+            **_build_diff(b)}
+
+
+def t_model_import(args):
+    return {"imported": model_library.import_file(_decode_to_xml(args["path"]),
+                                                  deviceName=args.get("device"))}
+
+
+def t_model_list(args):
+    return {"models": model_library.list_models()}
+
+
 def b_save(args):
     """Write XML, repacket to .pkt. Refuses to clobber the source file."""
     b = _build_require()
@@ -572,6 +591,17 @@ TOOLS = [
         "required": ["path"]}),
 ]
 
+TOOLS += [
+    ("pt_model_import", "Import native device model templates from a saved project into the reusable local library. Prefer a clean seed project.", {
+        "type": "object", "properties": {"path": {"type": "string"}, "device": {"type": "string"}}, "required": ["path"]}),
+    ("pt_model_list", "List reusable native model templates available for offline device creation.", {
+        "type": "object", "properties": {}}),
+    ("pt_build_add_device", "Add a native model from the local library to the offline build copy, even when the model is absent from that project.", {
+        "type": "object", "properties": {"type": {"type": "string"}, "model": {"type": "string"},
+        "name": {"type": "string"}, "x": {"type": "number"}, "y": {"type": "number"}},
+        "required": ["type", "model", "name"]}),
+]
+
 HANDLERS = {
     "pt_list_files": t_pt_list_files,
     "pt_open": t_pt_open,
@@ -594,6 +624,9 @@ HANDLERS = {
     "pt_build_delete_cable": b_delete_cable,
     "pt_build_set_config": b_set_config,
     "pt_build_save": b_save,
+    "pt_build_add_device": b_add_device,
+    "pt_model_import": t_model_import,
+    "pt_model_list": t_model_list,
 }
 
 def _live_tools():
@@ -648,7 +681,7 @@ def handle(req):
         _result(rid, {
             "protocolVersion": ver,
             "capabilities": {"tools": {"listChanged": False}},
-            "serverInfo": {"name": "pt-mcp", "version": "0.3.0",
+            "serverInfo": {"name": "pt-mcp", "version": "0.4.0",
                            "description": "Packet Tracer saved-file toolkit and live IPC bridge"},
         })
     elif method in ("notifications/initialized", "initialized"):

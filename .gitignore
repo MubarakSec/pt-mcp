@@ -7,3 +7,4 @@ local.properties
 .env
 verification/*.pkt
 verification/*.xml
+model-templates/

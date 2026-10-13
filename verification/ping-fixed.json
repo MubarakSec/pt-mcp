@@ -1,0 +1,96 @@
+[
+  {
+    "device": "Router0",
+    "target": "192.0.2.50",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{device=Router0, command=ICMPProcess.startPing(192.0.2.50), completed=true, timedOut=false, durationMs=162, status=DONE_PING, requestedCount=2, countApplied=true, plannedCount=2, sent=null, received=2, lossPercent=null, lossRelativeToRequestedProbes=0.0, lossBasis=requestedCount, resultNote=Packet Tracer destroys the completed ping process, so its sent counter is unavailable. Received replies come from the matching DonePing event., outcome=success, success=true}"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "Router0",
+        "command": "ICMPProcess.startPing(192.0.2.50)",
+        "completed": true,
+        "timedOut": false,
+        "durationMs": 162,
+        "status": "DONE_PING",
+        "requestedCount": 2,
+        "countApplied": true,
+        "plannedCount": 2,
+        "sent": null,
+        "received": 2,
+        "lossPercent": null,
+        "lossRelativeToRequestedProbes": 0.0,
+        "lossBasis": "requestedCount",
+        "resultNote": "Packet Tracer destroys the completed ping process, so its sent counter is unavailable. Received replies come from the matching DonePing event.",
+        "outcome": "success",
+        "success": true
+      }
+    }
+  },
+  {
+    "device": "Router0",
+    "target": "192.0.2.250",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{device=Router0, command=ICMPProcess.startPing(192.0.2.250), completed=false, timedOut=true, durationMs=7059, status=null, requestedCount=2, countApplied=true, plannedCount=2, sent=2, received=0, lossPercent=null, lossRelativeToRequestedProbes=100.0, lossBasis=requestedCount, resultNote=Packet Tracer destroys the completed ping process, so its sent counter is unavailable. Received replies come from the matching DonePing event., outcome=unknown, success=null}"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "Router0",
+        "command": "ICMPProcess.startPing(192.0.2.250)",
+        "completed": false,
+        "timedOut": true,
+        "durationMs": 7059,
+        "status": null,
+        "requestedCount": 2,
+        "countApplied": true,
+        "plannedCount": 2,
+        "sent": 2,
+        "received": 0,
+        "lossPercent": null,
+        "lossRelativeToRequestedProbes": 100.0,
+        "lossBasis": "requestedCount",
+        "resultNote": "Packet Tracer destroys the completed ping process, so its sent counter is unavailable. Received replies come from the matching DonePing event.",
+        "outcome": "unknown",
+        "success": null
+      }
+    }
+  },
+  {
+    "device": "PC0",
+    "target": "192.0.2.1",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{device=PC0, command=ping -n 2 192.0.2.1, completed=true, timedOut=false, durationMs=1122, status=STATUS_OK, output=ping -n 2 192.0.2.1\n\nPinging 192.0.2.1 with 32 bytes of data:\n\nReply from 192.0.2.1: bytes=32 time<1ms TTL=255\nReply from 192.0.2.1: bytes=32 time<1ms TTL=255\n\nPing statistics for 192.0.2.1:\n    Packets: Sent = 2, Received = 2, Lost = 0 (0% loss),\nApproximate round trip times in milli-seconds:\n    Minimum = 0ms, Maximum = 0ms, Average = 0ms\n\nC:\\>, outputTruncated=false, sent=2, received=2, requestedCount=2, countApplied=true, lossPercent=0.0, outcome=success, success=true}"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "command": "ping -n 2 192.0.2.1",
+        "completed": true,
+        "timedOut": false,
+        "durationMs": 1122,
+        "status": "STATUS_OK",
+        "output": "ping -n 2 192.0.2.1\n\nPinging 192.0.2.1 with 32 bytes of data:\n\nReply from 192.0.2.1: bytes=32 time<1ms TTL=255\nReply from 192.0.2.1: bytes=32 time<1ms TTL=255\n\nPing statistics for 192.0.2.1:\n    Packets: Sent = 2, Received = 2, Lost = 0 (0% loss),\nApproximate round trip times in milli-seconds:\n    Minimum = 0ms, Maximum = 0ms, Average = 0ms\n\nC:\\>",
+        "outputTruncated": false,
+        "sent": 2,
+        "received": 2,
+        "requestedCount": 2,
+        "countApplied": true,
+        "lossPercent": 0.0,
+        "outcome": "success",
+        "success": true
+      }
+    }
+  }
+]

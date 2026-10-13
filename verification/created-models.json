@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Router1",
+    "type": "router",
+    "model": "2911"
+  },
+  {
+    "name": "Router2",
+    "type": "router",
+    "model": "1941"
+  },
+  {
+    "name": "Switch0",
+    "type": "switch",
+    "model": "2960-24TT"
+  },
+  {
+    "name": "Multilayer Switch0",
+    "type": "multi_layer_switch",
+    "model": "3560-24PS"
+  },
+  {
+    "name": "PC1",
+    "type": "pc",
+    "model": "PC-PT"
+  },
+  {
+    "name": "Laptop0",
+    "type": "laptop",
+    "model": "Laptop-PT"
+  },
+  {
+    "name": "Server1",
+    "type": "server",
+    "model": "Server-PT"
+  },
+  {
+    "name": "Access Point0",
+    "type": "access_point",
+    "model": "AccessPoint-PT"
+  }
+]

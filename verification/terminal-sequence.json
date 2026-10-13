@@ -1,0 +1,96 @@
+[
+  {
+    "tool": "ping",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{device=PC0, command=ping -n 2 192.0.2.1, completed=true, timedOut=false, durationMs=1131, status=STATUS_OK, output=ping -n 2 192.0.2.1\n\nPinging 192.0.2.1 with 32 bytes of data:\n\nReply from 192.0.2.1: bytes=32 time<1ms TTL=255\nReply from 192.0.2.1: bytes=32 time<1ms TTL=255\n\nPing statistics for 192.0.2.1:\n    Packets: Sent = 2, Received = 2, Lost = 0 (0% loss),\nApproximate round trip times in milli-seconds:\n    Minimum = 0ms, Maximum = 0ms, Average = 0ms\n\nC:\\>, outputTruncated=false, sent=2, received=2, requestedCount=2, countApplied=true, lossPercent=0.0, outcome=success, success=true}"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "command": "ping -n 2 192.0.2.1",
+        "completed": true,
+        "timedOut": false,
+        "durationMs": 1131,
+        "status": "STATUS_OK",
+        "output": "ping -n 2 192.0.2.1\n\nPinging 192.0.2.1 with 32 bytes of data:\n\nReply from 192.0.2.1: bytes=32 time<1ms TTL=255\nReply from 192.0.2.1: bytes=32 time<1ms TTL=255\n\nPing statistics for 192.0.2.1:\n    Packets: Sent = 2, Received = 2, Lost = 0 (0% loss),\nApproximate round trip times in milli-seconds:\n    Minimum = 0ms, Maximum = 0ms, Average = 0ms\n\nC:\\>",
+        "outputTruncated": false,
+        "sent": 2,
+        "received": 2,
+        "requestedCount": 2,
+        "countApplied": true,
+        "lossPercent": 0.0,
+        "outcome": "success",
+        "success": true
+      }
+    }
+  },
+  {
+    "tool": "run_terminal",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{device=PC0, command=ipconfig, completed=true, timedOut=false, durationMs=141, status=STATUS_OK, output=ipconfig\n\nFastEthernet0 Connection:(default port)\n\n   Connection-specific DNS Suffix..: \n   Link-local IPv6 Address.........: FE80::202:17FF:FECC:C026\n   IPv6 Address....................: ::\n   IPv4 Address....................: 192.0.2.50\n   Subnet Mask.....................: 255.255.255.0\n   Default Gateway.................: ::\n                                     192.0.2.1\n\nBluetooth Connection:\n\n   Connection-specific DNS Suffix..: \n   Link-local IPv6 Address.........: ::\n   IPv6 Address....................: ::\n   IPv4 Address....................: 0.0.0.0\n   Subnet Mask.....................: 0.0.0.0\n   Default Gateway.................: ::\n                                     0.0.0.0\n\nC:\\>, outputTruncated=false}"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "command": "ipconfig",
+        "completed": true,
+        "timedOut": false,
+        "durationMs": 141,
+        "status": "STATUS_OK",
+        "output": "ipconfig\n\nFastEthernet0 Connection:(default port)\n\n   Connection-specific DNS Suffix..: \n   Link-local IPv6 Address.........: FE80::202:17FF:FECC:C026\n   IPv6 Address....................: ::\n   IPv4 Address....................: 192.0.2.50\n   Subnet Mask.....................: 255.255.255.0\n   Default Gateway.................: ::\n                                     192.0.2.1\n\nBluetooth Connection:\n\n   Connection-specific DNS Suffix..: \n   Link-local IPv6 Address.........: ::\n   IPv6 Address....................: ::\n   IPv4 Address....................: 0.0.0.0\n   Subnet Mask.....................: 0.0.0.0\n   Default Gateway.................: ::\n                                     0.0.0.0\n\nC:\\>",
+        "outputTruncated": false
+      }
+    }
+  },
+  {
+    "tool": "run_terminal",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{device=PC0, command=arp -a, completed=true, timedOut=false, durationMs=79, status=STATUS_OK, output=arp -a\n  Internet Address      Physical Address      Type\n  192.0.2.1             000a.416d.2c01        dynamic\n\nC:\\>, outputTruncated=false}"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "command": "arp -a",
+        "completed": true,
+        "timedOut": false,
+        "durationMs": 79,
+        "status": "STATUS_OK",
+        "output": "arp -a\n  Internet Address      Physical Address      Type\n  192.0.2.1             000a.416d.2c01        dynamic\n\nC:\\>",
+        "outputTruncated": false
+      }
+    }
+  },
+  {
+    "tool": "run_terminal",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{device=Router0, command=show ip interface brief, completed=true, timedOut=false, status=STATUS_OK, output=Interface              IP-Address      OK? Method Status                Protocol \nGigabitEthernet0/0     192.0.2.1       YES manual up                    up \nGigabitEthernet0/1     198.51.100.1    YES manual up                    up \nGigabitEthernet0/2     unassigned      YES unset  administratively down down \nVlan1                  unassigned      YES unset  administratively down down\n\n, source=CiscoDevice.enterCommand}"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "Router0",
+        "command": "show ip interface brief",
+        "completed": true,
+        "timedOut": false,
+        "status": "STATUS_OK",
+        "output": "Interface              IP-Address      OK? Method Status                Protocol \nGigabitEthernet0/0     192.0.2.1       YES manual up                    up \nGigabitEthernet0/1     198.51.100.1    YES manual up                    up \nGigabitEthernet0/2     unassigned      YES unset  administratively down down \nVlan1                  unassigned      YES unset  administratively down down\n\n",
+        "source": "CiscoDevice.enterCommand"
+      }
+    }
+  }
+]

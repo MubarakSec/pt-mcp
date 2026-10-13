@@ -1,5 +1,4 @@
 {
-  "source": "https://github.com/jenaro1804/PacketTracer_mcp",
   "tools": [
     {
       "name": "pt_get_topology",
@@ -10,8 +9,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false
+        "readOnlyHint": true
       }
     },
     {
@@ -23,8 +21,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false
+        "readOnlyHint": true
       }
     },
     {
@@ -59,8 +56,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -79,8 +75,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": true
+        "readOnlyHint": false
       }
     },
     {
@@ -99,8 +94,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false
+        "readOnlyHint": true
       }
     },
     {
@@ -137,8 +131,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -161,8 +154,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -186,8 +178,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": true
+        "readOnlyHint": false
       }
     },
     {
@@ -206,8 +197,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -232,8 +222,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -261,8 +250,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -301,8 +289,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -331,8 +318,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -362,8 +348,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -388,8 +373,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false
+        "readOnlyHint": true
       }
     },
     {
@@ -409,8 +393,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false
+        "readOnlyHint": true
       }
     },
     {
@@ -430,8 +413,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false
+        "readOnlyHint": true
       }
     },
     {
@@ -465,8 +447,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false
+        "readOnlyHint": false
       }
     },
     {
@@ -491,8 +472,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": true
+        "readOnlyHint": false
       }
     },
     {
@@ -512,8 +492,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": true
+        "readOnlyHint": false
       }
     },
     {
@@ -533,8 +512,7 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": true
+        "readOnlyHint": false
       }
     },
     {
@@ -551,8 +529,135 @@
         "additionalProperties": false
       },
       "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "pt_ping",
+      "description": "Run a real simulated ping and capture asynchronous terminal output and packet counts. An unknown result is not connectivity success.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "default": 4
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "default": 30000
+          }
+        },
+        "required": [
+          "device",
+          "target"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_run_terminal",
+      "description": "Run one supported read-only command on a PC/server command prompt or Cisco terminal, and capture actual output events.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          },
+          "command": {
+            "type": "string"
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "default": 15000
+          }
+        },
+        "required": [
+          "device",
+          "command"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_get_device_xml",
+      "description": "Read native live device XML. Useful for endpoint state and importing native model templates; does not save or replace the active project.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "device"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "pt_http_get",
+      "description": "Fetch an HTTP/HTTPS page through the simulated PC/server browser; return the actual response event and page content.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "default": 15
+          }
+        },
+        "required": [
+          "device",
+          "url"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_http_service",
+      "description": "Inspect or configure a simulated server HTTP service and page. Supplying enabled or content changes the server.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "path": {
+            "type": "string",
+            "default": "index.html"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "device"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false
       }
     }
   ]

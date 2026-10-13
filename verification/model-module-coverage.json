@@ -1,0 +1,876 @@
+[
+  {
+    "tool": "add_device",
+    "args": {
+      "type": "router",
+      "model": "2911",
+      "x": 100,
+      "y": 480
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: Router1 (router 2911) en (100.0, 480.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "Router1"
+      }
+    }
+  },
+  {
+    "tool": "get_ports",
+    "args": {
+      "name": "Router1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de Router1 (4):\n  - Vlan1\n  - GigabitEthernet0/0\n  - GigabitEthernet0/1\n  - GigabitEthernet0/2"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "Vlan1",
+          "GigabitEthernet0/0",
+          "GigabitEthernet0/1",
+          "GigabitEthernet0/2"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "skip_boot",
+    "args": {
+      "name": "Router1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "skipBoot(Router1) -> true (booteo finalizado o no aplica)"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "applied": true
+      }
+    }
+  },
+  {
+    "tool": "run_cli",
+    "args": {
+      "device": "Router1",
+      "command": "show version",
+      "mode": "enable"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] enable $ show version\nCisco IOS Software, C2900 Software (C2900-UNIVERSALK9-M), Version 15.1(4)M4, RELEASE SOFTWARE (fc2)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Thurs 5-Jan-12 15:41 by pt_team\n\nROM: System Bootstrap, Version 15.1(4)M4, RELEASE SOFTWARE (fc1)\ncisco2911 uptime is \nSystem returned to ROM by power-on\nSystem image file is \"flash0:c2900-universalk9-mz.SPA.151-1.M4.bin\"\nLast reload type: Normal Reload\n\nThis product contains cryptographic features and is subject to United\nStates and local country laws governing import, export, transfer and\nuse. Delivery of Cisco cryptographic products does not imply\nthird-party authority to import, export, distribute or use encryption.\nImporters, exporters, distributors and users are responsible for\ncompliance with U.S. and local country laws. By using this product you\nagree to comply with applicable laws and regulations. If you are unable\nto comply with U.S. and local laws, return this product immediately.\n\nA summary of U.S. laws governing Cisco cryptographic products may be found at:\nhttp://www.cisco.com/wwl/export/crypto/tool/stqrg.html\n\nIf you require further assistance please contact us by sending email to\nexport@cisco.com.\nCisco CISCO2911/K9 (revision 1.0) with 491520K/32768K bytes of memory.\nProcessor board ID FTX152400KS\n3 Gigabit Ethernet interfaces\nDRAM configuration is 64 bits wide with parity disabled.\n255K bytes of non-volatile configuration memory.\n249856K bytes of ATA System CompactFlash 0 (Read/Write)\n\nLicense Info:\n\nLicense UDI:\n\n-------------------------------------------------\nDevice#   PID                   SN\n-------------------------------------------------\n*0        CISCO2911/K9          FTX152457B5-\n\n\nTechnology Package License Information for Module:'c2900'\n\n----------------------------------------------------------------\nTechnology    Technology-package          Technology-package\n              Current       Type          Next reboot\n-----------------------------------------------------------------\nipbase        ipbasek9      Permanent     ipbasek9\nsecurity      None          None          None\nuc            None          None          None\ndata          None          None          None\n\nConfiguration register is 0x2102\n\n\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "Cisco IOS Software, C2900 Software (C2900-UNIVERSALK9-M), Version 15.1(4)M4, RELEASE SOFTWARE (fc2)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Thurs 5-Jan-12 15:41 by pt_team\n\nROM: System Bootstrap, Version 15.1(4)M4, RELEASE SOFTWARE (fc1)\ncisco2911 uptime is \nSystem returned to ROM by power-on\nSystem image file is \"flash0:c2900-universalk9-mz.SPA.151-1.M4.bin\"\nLast reload type: Normal Reload\n\nThis product contains cryptographic features and is subject to United\nStates and local country laws governing import, export, transfer and\nuse. Delivery of Cisco cryptographic products does not imply\nthird-party authority to import, export, distribute or use encryption.\nImporters, exporters, distributors and users are responsible for\ncompliance with U.S. and local country laws. By using this product you\nagree to comply with applicable laws and regulations. If you are unable\nto comply with U.S. and local laws, return this product immediately.\n\nA summary of U.S. laws governing Cisco cryptographic products may be found at:\nhttp://www.cisco.com/wwl/export/crypto/tool/stqrg.html\n\nIf you require further assistance please contact us by sending email to\nexport@cisco.com.\nCisco CISCO2911/K9 (revision 1.0) with 491520K/32768K bytes of memory.\nProcessor board ID FTX152400KS\n3 Gigabit Ethernet interfaces\nDRAM configuration is 64 bits wide with parity disabled.\n255K bytes of non-volatile configuration memory.\n249856K bytes of ATA System CompactFlash 0 (Read/Write)\n\nLicense Info:\n\nLicense UDI:\n\n-------------------------------------------------\nDevice#   PID                   SN\n-------------------------------------------------\n*0        CISCO2911/K9          FTX152457B5-\n\n\nTechnology Package License Information for Module:'c2900'\n\n----------------------------------------------------------------\nTechnology    Technology-package          Technology-package\n              Current       Type          Next reboot\n-----------------------------------------------------------------\nipbase        ipbasek9      Permanent     ipbasek9\nsecurity      None          None          None\nuc            None          None          None\ndata          None          None          None\n\nConfiguration register is 0x2102\n\n\n\n"
+      }
+    }
+  },
+  {
+    "tool": "add_device",
+    "args": {
+      "type": "router",
+      "model": "1941",
+      "x": 220,
+      "y": 480
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: Router2 (router 1941) en (220.0, 480.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "Router2"
+      }
+    }
+  },
+  {
+    "tool": "get_ports",
+    "args": {
+      "name": "Router2"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de Router2 (3):\n  - Vlan1\n  - GigabitEthernet0/0\n  - GigabitEthernet0/1"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "Vlan1",
+          "GigabitEthernet0/0",
+          "GigabitEthernet0/1"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "skip_boot",
+    "args": {
+      "name": "Router2"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "skipBoot(Router2) -> true (booteo finalizado o no aplica)"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "applied": true
+      }
+    }
+  },
+  {
+    "tool": "run_cli",
+    "args": {
+      "device": "Router2",
+      "command": "show version",
+      "mode": "enable"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] enable $ show version\nCisco IOS Software, C1900 Software (C1900-UNIVERSALK9-M), Version 15.1(4)M4, RELEASE SOFTWARE (fc2)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2007 by Cisco Systems, Inc.\nCompiled Wed 23-Feb-11 14:19 by pt_team\n\nROM: System Bootstrap, Version 15.1(4)M4, RELEASE SOFTWARE (fc1)\ncisco1941 uptime is \nSystem returned to ROM by power-on\nSystem image file is \"flash0:c1900-universalk9-mz.SPA.151-1.M4.bin\"\nLast reload type: Normal Reload\n\nThis product contains cryptographic features and is subject to United\nStates and local country laws governing import, export, transfer and\nuse. Delivery of Cisco cryptographic products does not imply\nthird-party authority to import, export, distribute or use encryption.\nImporters, exporters, distributors and users are responsible for\ncompliance with U.S. and local country laws. By using this product you\nagree to comply with applicable laws and regulations. If you are unable\nto comply with U.S. and local laws, return this product immediately.\n\nA summary of U.S. laws governing Cisco cryptographic products may be found at:\nhttp://www.cisco.com/wwl/export/crypto/tool/stqrg.html\n\nIf you require further assistance please contact us by sending email to\nexport@cisco.com.\nCisco CISCO1941/K9 (revision 1.0) with 491520K/32768K bytes of memory.\nProcessor board ID FTX152400KS\n2 Gigabit Ethernet interfaces\nDRAM configuration is 64 bits wide with parity disabled.\n255K bytes of non-volatile configuration memory.\n249856K bytes of ATA System CompactFlash 0 (Read/Write)\n\nLicense Info:\n\nLicense UDI:\n\n-------------------------------------------------\nDevice#   PID                   SN\n-------------------------------------------------\n*0        CISCO1941/K9          FTX1524KA0V-\n\n\nTechnology Package License Information for Module:'c1900'\n\n----------------------------------------------------------------\nTechnology    Technology-package          Technology-package\n              Current       Type          Next reboot\n-----------------------------------------------------------------\nipbase        ipbasek9      Permanent     ipbasek9\nsecurity      None          None          None\ndata          None          None          None\n\nConfiguration register is 0x2102\n\n\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "Cisco IOS Software, C1900 Software (C1900-UNIVERSALK9-M), Version 15.1(4)M4, RELEASE SOFTWARE (fc2)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2007 by Cisco Systems, Inc.\nCompiled Wed 23-Feb-11 14:19 by pt_team\n\nROM: System Bootstrap, Version 15.1(4)M4, RELEASE SOFTWARE (fc1)\ncisco1941 uptime is \nSystem returned to ROM by power-on\nSystem image file is \"flash0:c1900-universalk9-mz.SPA.151-1.M4.bin\"\nLast reload type: Normal Reload\n\nThis product contains cryptographic features and is subject to United\nStates and local country laws governing import, export, transfer and\nuse. Delivery of Cisco cryptographic products does not imply\nthird-party authority to import, export, distribute or use encryption.\nImporters, exporters, distributors and users are responsible for\ncompliance with U.S. and local country laws. By using this product you\nagree to comply with applicable laws and regulations. If you are unable\nto comply with U.S. and local laws, return this product immediately.\n\nA summary of U.S. laws governing Cisco cryptographic products may be found at:\nhttp://www.cisco.com/wwl/export/crypto/tool/stqrg.html\n\nIf you require further assistance please contact us by sending email to\nexport@cisco.com.\nCisco CISCO1941/K9 (revision 1.0) with 491520K/32768K bytes of memory.\nProcessor board ID FTX152400KS\n2 Gigabit Ethernet interfaces\nDRAM configuration is 64 bits wide with parity disabled.\n255K bytes of non-volatile configuration memory.\n249856K bytes of ATA System CompactFlash 0 (Read/Write)\n\nLicense Info:\n\nLicense UDI:\n\n-------------------------------------------------\nDevice#   PID                   SN\n-------------------------------------------------\n*0        CISCO1941/K9          FTX1524KA0V-\n\n\nTechnology Package License Information for Module:'c1900'\n\n----------------------------------------------------------------\nTechnology    Technology-package          Technology-package\n              Current       Type          Next reboot\n-----------------------------------------------------------------\nipbase        ipbasek9      Permanent     ipbasek9\nsecurity      None          None          None\ndata          None          None          None\n\nConfiguration register is 0x2102\n\n\n\n"
+      }
+    }
+  },
+  {
+    "tool": "add_device",
+    "args": {
+      "type": "switch",
+      "model": "2960-24TT",
+      "x": 340,
+      "y": 480
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: Switch0 (switch 2960-24TT) en (340.0, 480.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "Switch0"
+      }
+    }
+  },
+  {
+    "tool": "get_ports",
+    "args": {
+      "name": "Switch0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de Switch0 (27):\n  - Vlan1\n  - FastEthernet0/1\n  - FastEthernet0/2\n  - FastEthernet0/3\n  - FastEthernet0/4\n  - FastEthernet0/5\n  - FastEthernet0/6\n  - FastEthernet0/7\n  - FastEthernet0/8\n  - FastEthernet0/9\n  - FastEthernet0/10\n  - FastEthernet0/11\n  - FastEthernet0/12\n  - FastEthernet0/13\n  - FastEthernet0/14\n  - FastEthernet0/15\n  - FastEthernet0/16\n  - FastEthernet0/17\n  - FastEthernet0/18\n  - FastEthernet0/19\n  - FastEthernet0/20\n  - FastEthernet0/21\n  - FastEthernet0/22\n  - FastEthernet0/23\n  - FastEthernet0/24\n  - GigabitEthernet0/1\n  - GigabitEthernet0/2"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "Vlan1",
+          "FastEthernet0/1",
+          "FastEthernet0/2",
+          "FastEthernet0/3",
+          "FastEthernet0/4",
+          "FastEthernet0/5",
+          "FastEthernet0/6",
+          "FastEthernet0/7",
+          "FastEthernet0/8",
+          "FastEthernet0/9",
+          "FastEthernet0/10",
+          "FastEthernet0/11",
+          "FastEthernet0/12",
+          "FastEthernet0/13",
+          "FastEthernet0/14",
+          "FastEthernet0/15",
+          "FastEthernet0/16",
+          "FastEthernet0/17",
+          "FastEthernet0/18",
+          "FastEthernet0/19",
+          "FastEthernet0/20",
+          "FastEthernet0/21",
+          "FastEthernet0/22",
+          "FastEthernet0/23",
+          "FastEthernet0/24",
+          "GigabitEthernet0/1",
+          "GigabitEthernet0/2"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "skip_boot",
+    "args": {
+      "name": "Switch0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "skipBoot(Switch0) -> true (booteo finalizado o no aplica)"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "applied": true
+      }
+    }
+  },
+  {
+    "tool": "run_cli",
+    "args": {
+      "device": "Switch0",
+      "command": "show version",
+      "mode": "enable"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] enable $ show version\nCisco IOS Software, C2960 Software (C2960-LANBASE-M), Version 12.2(25)FX, RELEASE SOFTWARE (fc1)\nCopyright (c) 1986-2005 by Cisco Systems, Inc.\nCompiled Wed 12-Oct-05 22:05 by pt_team\n\nROM: C2960 Boot Loader (C2960-HBOOT-M) Version 12.2(25r)FX, RELEASE SOFTWARE (fc4)\n\nSystem returned to ROM by power-on\n\nCisco WS-C2960-24TT (RC32300) processor (revision C0) with 21039K bytes of memory.\n\n\n24 FastEthernet/IEEE 802.3 interface(s)\n2 Gigabit Ethernet/IEEE 802.3 interface(s)\n\n63488K bytes of flash-simulated non-volatile configuration memory.\nBase ethernet MAC Address       : 00D0.D3B4.D5B4\nMotherboard assembly number     : 73-9832-06\nPower supply part number        : 341-0097-02\nMotherboard serial number       : FOC103248MJ\nPower supply serial number      : DCA102133JA\nModel revision number           : B0\nMotherboard revision number     : C0\nModel number                    : WS-C2960-24TT\nSystem serial number            : FOC1033Z1EY\nTop Assembly Part Number        : 800-26671-02\nTop Assembly Revision Number    : B0\nVersion ID                      : V02\nCLEI Code Number                : COM3K00BRA\nHardware Board Revision Number  : 0x01\n\n\nSwitch   Ports  Model              SW Version              SW Image\n------   -----  -----              ----------              ----------\n*    1   26     WS-C2960-24TT      12.2                    C2960-LANBASE-M\n\nConfiguration register is 0xF\n\n\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "Cisco IOS Software, C2960 Software (C2960-LANBASE-M), Version 12.2(25)FX, RELEASE SOFTWARE (fc1)\nCopyright (c) 1986-2005 by Cisco Systems, Inc.\nCompiled Wed 12-Oct-05 22:05 by pt_team\n\nROM: C2960 Boot Loader (C2960-HBOOT-M) Version 12.2(25r)FX, RELEASE SOFTWARE (fc4)\n\nSystem returned to ROM by power-on\n\nCisco WS-C2960-24TT (RC32300) processor (revision C0) with 21039K bytes of memory.\n\n\n24 FastEthernet/IEEE 802.3 interface(s)\n2 Gigabit Ethernet/IEEE 802.3 interface(s)\n\n63488K bytes of flash-simulated non-volatile configuration memory.\nBase ethernet MAC Address       : 00D0.D3B4.D5B4\nMotherboard assembly number     : 73-9832-06\nPower supply part number        : 341-0097-02\nMotherboard serial number       : FOC103248MJ\nPower supply serial number      : DCA102133JA\nModel revision number           : B0\nMotherboard revision number     : C0\nModel number                    : WS-C2960-24TT\nSystem serial number            : FOC1033Z1EY\nTop Assembly Part Number        : 800-26671-02\nTop Assembly Revision Number    : B0\nVersion ID                      : V02\nCLEI Code Number                : COM3K00BRA\nHardware Board Revision Number  : 0x01\n\n\nSwitch   Ports  Model              SW Version              SW Image\n------   -----  -----              ----------              ----------\n*    1   26     WS-C2960-24TT      12.2                    C2960-LANBASE-M\n\nConfiguration register is 0xF\n\n\n\n"
+      }
+    }
+  },
+  {
+    "tool": "add_device",
+    "args": {
+      "type": "multi_layer_switch",
+      "model": "3560-24PS",
+      "x": 460,
+      "y": 480
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: Multilayer Switch0 (multi_layer_switch 3560-24PS) en (460.0, 480.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "Multilayer Switch0"
+      }
+    }
+  },
+  {
+    "tool": "get_ports",
+    "args": {
+      "name": "Multilayer Switch0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de Multilayer Switch0 (27):\n  - Vlan1\n  - FastEthernet0/1\n  - FastEthernet0/2\n  - FastEthernet0/3\n  - FastEthernet0/4\n  - FastEthernet0/5\n  - FastEthernet0/6\n  - FastEthernet0/7\n  - FastEthernet0/8\n  - FastEthernet0/9\n  - FastEthernet0/10\n  - FastEthernet0/11\n  - FastEthernet0/12\n  - FastEthernet0/13\n  - FastEthernet0/14\n  - FastEthernet0/15\n  - FastEthernet0/16\n  - FastEthernet0/17\n  - FastEthernet0/18\n  - FastEthernet0/19\n  - FastEthernet0/20\n  - FastEthernet0/21\n  - FastEthernet0/22\n  - FastEthernet0/23\n  - FastEthernet0/24\n  - GigabitEthernet0/1\n  - GigabitEthernet0/2"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "Vlan1",
+          "FastEthernet0/1",
+          "FastEthernet0/2",
+          "FastEthernet0/3",
+          "FastEthernet0/4",
+          "FastEthernet0/5",
+          "FastEthernet0/6",
+          "FastEthernet0/7",
+          "FastEthernet0/8",
+          "FastEthernet0/9",
+          "FastEthernet0/10",
+          "FastEthernet0/11",
+          "FastEthernet0/12",
+          "FastEthernet0/13",
+          "FastEthernet0/14",
+          "FastEthernet0/15",
+          "FastEthernet0/16",
+          "FastEthernet0/17",
+          "FastEthernet0/18",
+          "FastEthernet0/19",
+          "FastEthernet0/20",
+          "FastEthernet0/21",
+          "FastEthernet0/22",
+          "FastEthernet0/23",
+          "FastEthernet0/24",
+          "GigabitEthernet0/1",
+          "GigabitEthernet0/2"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "skip_boot",
+    "args": {
+      "name": "Multilayer Switch0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "skipBoot(Multilayer Switch0) -> true (booteo finalizado o no aplica)"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "applied": true
+      }
+    }
+  },
+  {
+    "tool": "run_cli",
+    "args": {
+      "device": "Multilayer Switch0",
+      "command": "show version",
+      "mode": "enable"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] enable $ show version\nCisco IOS Software, C3560 Software (C3560-ADVIPSERVICESK9-M), Version 12.2(37)SE1, RELEASE SOFTWARE (fc1)\nCopyright (c) 1986-2007 by Cisco Systems, Inc.\nCompiled Thu 05-Jul-07 22:22 by pt_team\nImage text-base: 0x00003000, data-base: 0x01500000\n\nROM: C3560 Boot Loader (C3560-HBOOT-M) Version 12.2(25r)SEC, RELEASE SOFTWARE (fc4)\n\nSystem returned to ROM by power-on\n\nThis product contains cryptographic features and is subject to United\nStates and local country laws governing import, export, transfer and\nuse. Delivery of Cisco cryptographic products does not imply\nthird-party authority to import, export, distribute or use encryption.\nImporters, exporters, distributors and users are responsible for\ncompliance with U.S. and local country laws. By using this product you\nagree to comply with applicable laws and regulations. If you are unable\nto comply with U.S. and local laws, return this product immediately.\n\nA summary of U.S. laws governing Cisco cryptographic products may be found at:\nhttp://www.cisco.com/wwl/export/crypto/tool/stqrg.html\n\nIf you require further assistance please contact us by sending email to\nexport@cisco.com.\ncisco WS-C3560-24PS (PowerPC405) processor (revision P0) with 122880K/8184K bytes of memory.\nProcessor board ID CAT1037RJF7\n24 FastEthernet/IEEE 802.3 interface(s)\n2 Gigabit Ethernet/IEEE 802.3 interface(s)\n\n63488K bytes of flash-simulated non-volatile configuration memory.\nBase ethernet MAC Address       : 000D.BD24.6D27\nMotherboard assembly number     : 73-9673-09\nPower supply part number        : 341-0029-05\nMotherboard serial number       : CAT103758VY\nPower supply serial number      : DTH1036C7UB\nModel revision number           : P0\nMotherboard revision number     : A0\nModel number                    : WS-C3560-24PS-E\nSystem serial number            : CAT1037RJF7\nTop Assembly Part Number        : 800-26380-04\nTop Assembly Revision Number    : B0\nVersion ID                      : V06\nCLEI Code Number                : COM1100ARC\nHardware Board Revision Number  : 0x01\n\n\nSwitch   Ports  Model              SW Version              SW Image\n------   -----  -----              ----------              ----------\n*    1   26     WS-C3560-24PS      12.2(37)SE1             C3560-ADVIPSERVICESK\n\nConfiguration register is 0xF\n\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "Cisco IOS Software, C3560 Software (C3560-ADVIPSERVICESK9-M), Version 12.2(37)SE1, RELEASE SOFTWARE (fc1)\nCopyright (c) 1986-2007 by Cisco Systems, Inc.\nCompiled Thu 05-Jul-07 22:22 by pt_team\nImage text-base: 0x00003000, data-base: 0x01500000\n\nROM: C3560 Boot Loader (C3560-HBOOT-M) Version 12.2(25r)SEC, RELEASE SOFTWARE (fc4)\n\nSystem returned to ROM by power-on\n\nThis product contains cryptographic features and is subject to United\nStates and local country laws governing import, export, transfer and\nuse. Delivery of Cisco cryptographic products does not imply\nthird-party authority to import, export, distribute or use encryption.\nImporters, exporters, distributors and users are responsible for\ncompliance with U.S. and local country laws. By using this product you\nagree to comply with applicable laws and regulations. If you are unable\nto comply with U.S. and local laws, return this product immediately.\n\nA summary of U.S. laws governing Cisco cryptographic products may be found at:\nhttp://www.cisco.com/wwl/export/crypto/tool/stqrg.html\n\nIf you require further assistance please contact us by sending email to\nexport@cisco.com.\ncisco WS-C3560-24PS (PowerPC405) processor (revision P0) with 122880K/8184K bytes of memory.\nProcessor board ID CAT1037RJF7\n24 FastEthernet/IEEE 802.3 interface(s)\n2 Gigabit Ethernet/IEEE 802.3 interface(s)\n\n63488K bytes of flash-simulated non-volatile configuration memory.\nBase ethernet MAC Address       : 000D.BD24.6D27\nMotherboard assembly number     : 73-9673-09\nPower supply part number        : 341-0029-05\nMotherboard serial number       : CAT103758VY\nPower supply serial number      : DTH1036C7UB\nModel revision number           : P0\nMotherboard revision number     : A0\nModel number                    : WS-C3560-24PS-E\nSystem serial number            : CAT1037RJF7\nTop Assembly Part Number        : 800-26380-04\nTop Assembly Revision Number    : B0\nVersion ID                      : V06\nCLEI Code Number                : COM1100ARC\nHardware Board Revision Number  : 0x01\n\n\nSwitch   Ports  Model              SW Version              SW Image\n------   -----  -----              ----------              ----------\n*    1   26     WS-C3560-24PS      12.2(37)SE1             C3560-ADVIPSERVICESK\n\nConfiguration register is 0xF\n\n\n"
+      }
+    }
+  },
+  {
+    "tool": "add_device",
+    "args": {
+      "type": "pc",
+      "model": "PC-PT",
+      "x": 580,
+      "y": 480
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: PC1 (pc PC-PT) en (580.0, 480.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "PC1"
+      }
+    }
+  },
+  {
+    "tool": "get_ports",
+    "args": {
+      "name": "PC1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de PC1 (2):\n  - FastEthernet0\n  - Bluetooth"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "FastEthernet0",
+          "Bluetooth"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "add_device",
+    "args": {
+      "type": "laptop",
+      "model": "Laptop-PT",
+      "x": 700,
+      "y": 480
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: Laptop0 (laptop Laptop-PT) en (700.0, 480.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "Laptop0"
+      }
+    }
+  },
+  {
+    "tool": "get_ports",
+    "args": {
+      "name": "Laptop0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de Laptop0 (2):\n  - FastEthernet0\n  - Bluetooth"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "FastEthernet0",
+          "Bluetooth"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "add_device",
+    "args": {
+      "type": "server",
+      "model": "Server-PT",
+      "x": 820,
+      "y": 480
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: Server1 (server Server-PT) en (820.0, 480.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "Server1"
+      }
+    }
+  },
+  {
+    "tool": "get_ports",
+    "args": {
+      "name": "Server1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de Server1 (1):\n  - FastEthernet0"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "FastEthernet0"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "add_device",
+    "args": {
+      "type": "access_point",
+      "model": "AccessPoint-PT",
+      "x": 940,
+      "y": 480
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: Access Point0 (access_point AccessPoint-PT) en (940.0, 480.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "Access Point0"
+      }
+    }
+  },
+  {
+    "tool": "get_ports",
+    "args": {
+      "name": "Access Point0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de Access Point0 (2):\n  - Port 0\n  - Port 1"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "Port 0",
+          "Port 1"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "get_modules",
+    "args": {
+      "device": "Router1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Router1:\n  None [NON_REMOVABLE_MODULE]\n    slot[0] NON_REMOVABLE_MODULE\n    None [NON_REMOVABLE_MODULE]\n      slot[0] INTERFACE_CARD\n      slot[1] INTERFACE_CARD\n      slot[2] INTERFACE_CARD\n      slot[3] INTERFACE_CARD"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "Router1",
+        "root": {
+          "name": "None",
+          "slot_path": "",
+          "type": "NON_REMOVABLE_MODULE",
+          "slots": [
+            {
+              "index": 0,
+              "type": "NON_REMOVABLE_MODULE"
+            }
+          ],
+          "modules": [
+            {
+              "name": "None",
+              "slot_path": "",
+              "type": "NON_REMOVABLE_MODULE",
+              "slots": [
+                {
+                  "index": 0,
+                  "type": "INTERFACE_CARD"
+                },
+                {
+                  "index": 1,
+                  "type": "INTERFACE_CARD"
+                },
+                {
+                  "index": 2,
+                  "type": "INTERFACE_CARD"
+                },
+                {
+                  "index": 3,
+                  "type": "INTERFACE_CARD"
+                }
+              ],
+              "modules": []
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "tool": "get_supported_modules",
+    "args": {
+      "device": "Router1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Modulos soportados por Router1 (6):\n  - GLC-LH-SMD:../art/PhysicalView/glc-lh-smd.pngThe 1000BASE-LX/LH SFP operates in Gigabit Ethernet ports of Cisco Industrial Ethernet and SmartGrid switches and routers\n  - HWIC-1GE-SFP:../art/PhysicalView/gModuleHWIC-1GE-SFP.pngThe HWIC-1GE-SFP is a single-wide HWIC with one Small Form-Factor Pluggable (SFP) slot. The SFP slot can be populated with Cisco copper and optical Gigabit Ethernet SFPs to provide 1-port Gigabit Ethernet connectivity on all Cisco Integrated Services Routers\n  - HWIC-2T:../art/PhysicalView/gModuleHWIC-2T.pngThe HWIC-2T is a Cisco 2-Port Serial High-Speed WAN Interface Card, providing 2 serial ports.\n  - HWIC-4ESW:../art/PhysicalView/gModuleNM-HWIC-4ESW.pngThe HWIC-4ESW provides four switching ports.\n  - HWIC-8A:../art/PhysicalView/gModuleHWIC-8A.pngThe HWIC-8A provides up to eight asynchronous EIA-232 connections to console ports.\n  - WIC-Cover:../art/PhysicalView/gModuleWIC-Cover.pngThe WIC cover plate provides protection for the internal electronic components. It also helps maintain adequate cooling by normalizing airflow."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "modules": [
+          "GLC-LH-SMD:../art/PhysicalView/glc-lh-smd.pngThe 1000BASE-LX/LH SFP operates in Gigabit Ethernet ports of Cisco Industrial Ethernet and SmartGrid switches and routers",
+          "HWIC-1GE-SFP:../art/PhysicalView/gModuleHWIC-1GE-SFP.pngThe HWIC-1GE-SFP is a single-wide HWIC with one Small Form-Factor Pluggable (SFP) slot. The SFP slot can be populated with Cisco copper and optical Gigabit Ethernet SFPs to provide 1-port Gigabit Ethernet connectivity on all Cisco Integrated Services Routers",
+          "HWIC-2T:../art/PhysicalView/gModuleHWIC-2T.pngThe HWIC-2T is a Cisco 2-Port Serial High-Speed WAN Interface Card, providing 2 serial ports.",
+          "HWIC-4ESW:../art/PhysicalView/gModuleNM-HWIC-4ESW.pngThe HWIC-4ESW provides four switching ports.",
+          "HWIC-8A:../art/PhysicalView/gModuleHWIC-8A.pngThe HWIC-8A provides up to eight asynchronous EIA-232 connections to console ports.",
+          "WIC-Cover:../art/PhysicalView/gModuleWIC-Cover.pngThe WIC cover plate provides protection for the internal electronic components. It also helps maintain adequate cooling by normalizing airflow."
+        ],
+        "device": "Router1"
+      }
+    }
+  },
+  {
+    "tool": "save_file",
+    "args": {
+      "path": "/home/mobta/tools/pt-mcp/verification/model-seed.pkt"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Topologia guardada en /home/mobta/tools/pt-mcp/verification/model-seed.pkt."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "path": "/home/mobta/tools/pt-mcp/verification/model-seed.pkt",
+        "saved": true
+      }
+    }
+  },
+  {
+    "tool": "power",
+    "args": {
+      "device": "Router1",
+      "on": false
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Router1 ahora esta apagado."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "Router1",
+        "powered": false
+      }
+    }
+  },
+  {
+    "tool": "add_module",
+    "args": {
+      "device": "Router1",
+      "slot": "0/0",
+      "model": "HWIC-2T"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "addModule(Router1, slot=0/0, HWIC-2T, type=INTERFACE_CARD) -> true"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "Router1",
+        "slot": "0/0",
+        "model": "HWIC-2T",
+        "type": "INTERFACE_CARD",
+        "added": true
+      }
+    }
+  },
+  {
+    "tool": "get_ports",
+    "args": {
+      "name": "Router1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de Router1 (6):\n  - Vlan1\n  - GigabitEthernet0/0\n  - GigabitEthernet0/1\n  - GigabitEthernet0/2\n  - Serial0/0/0\n  - Serial0/0/1"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "Vlan1",
+          "GigabitEthernet0/0",
+          "GigabitEthernet0/1",
+          "GigabitEthernet0/2",
+          "Serial0/0/0",
+          "Serial0/0/1"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "remove_module",
+    "args": {
+      "device": "Router1",
+      "slot": "0/0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "removeModule(Router1, slot=0/0) -> true"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "Router1",
+        "slot": "0/0",
+        "removed": true
+      }
+    }
+  },
+  {
+    "tool": "power",
+    "args": {
+      "device": "Router1",
+      "on": true
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Router1 ahora esta encendido."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "Router1",
+        "powered": true
+      }
+    }
+  },
+  {
+    "tool": "skip_boot",
+    "args": {
+      "name": "Router1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "skipBoot(Router1) -> true (booteo finalizado o no aplica)"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "applied": true
+      }
+    }
+  },
+  {
+    "tool": "auto_connect",
+    "args": {
+      "device_a": "Router1",
+      "device_b": "PC1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "autoConnect(Router1 <-> PC1) -> ok"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ok": true
+      }
+    }
+  },
+  {
+    "tool": "get_links",
+    "args": {},
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Enlaces: 4\n  - Router0:GigabitEthernet0/0  <-->  PC0:FastEthernet0  [ETHERNET_STRAIGHT]\n  - Router0:GigabitEthernet0/1  <-->  Server0:FastEthernet0  [ETHERNET_STRAIGHT]\n  - Router1:GigabitEthernet0/0  <-->  PC1:FastEthernet0  [ETHERNET_CROSS]\n  - Access Point0:Port 1  <-->  (?)  [WIRELESS]"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "link_count": 4,
+        "links": [
+          {
+            "dev_a": "Router0",
+            "if_a": "GigabitEthernet0/0",
+            "dev_b": "PC0",
+            "if_b": "FastEthernet0",
+            "cable_type": "ETHERNET_STRAIGHT"
+          },
+          {
+            "dev_a": "Router0",
+            "if_a": "GigabitEthernet0/1",
+            "dev_b": "Server0",
+            "if_b": "FastEthernet0",
+            "cable_type": "ETHERNET_STRAIGHT"
+          },
+          {
+            "dev_a": "Router1",
+            "if_a": "GigabitEthernet0/0",
+            "dev_b": "PC1",
+            "if_b": "FastEthernet0",
+            "cable_type": "ETHERNET_CROSS"
+          },
+          {
+            "dev_a": "Access Point0",
+            "if_a": "Port 1",
+            "dev_b": null,
+            "if_b": null,
+            "cable_type": "WIRELESS"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "tool": "delete_link",
+    "args": {
+      "device": "Router1",
+      "iface": "GigabitEthernet0/0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Cable borrado en Router1:GigabitEthernet0/0."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "deleted": true
+      }
+    }
+  },
+  {
+    "tool": "delete_device",
+    "args": {
+      "name": "Access Point0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "deleteDevice(Access Point0) -> true"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "removed": true
+      }
+    }
+  }
+]

@@ -1,0 +1,36 @@
+[
+  {
+    "content": [
+      {
+        "type": "text",
+        "text": "{url=http://198.51.100.2, accepted=true, response_type=HTTP_OK, server_ip=198.51.100.2, content=<html>HTTP-REPEAT-ONE</html>, timed_out=false}"
+      }
+    ],
+    "isError": false,
+    "structuredContent": {
+      "url": "http://198.51.100.2",
+      "accepted": true,
+      "response_type": "HTTP_OK",
+      "server_ip": "198.51.100.2",
+      "content": "<html>HTTP-REPEAT-ONE</html>",
+      "timed_out": false
+    }
+  },
+  {
+    "content": [
+      {
+        "type": "text",
+        "text": "{url=http://198.51.100.2, accepted=true, response_type=HTTP_OK, server_ip=198.51.100.2, content=<html>HTTP-REPEAT-TWO</html>, timed_out=false}"
+      }
+    ],
+    "isError": false,
+    "structuredContent": {
+      "url": "http://198.51.100.2",
+      "accepted": true,
+      "response_type": "HTTP_OK",
+      "server_ip": "198.51.100.2",
+      "content": "<html>HTTP-REPEAT-TWO</html>",
+      "timed_out": false
+    }
+  }
+]

@@ -1,7 +1,7 @@
 # pt-mcp — saved-file toolkit and live Packet Tracer IPC
 
-**Version 0.3.0: 44 tools.** Your 21 original saved-file tools are preserved.
-An optional Java backend in `../pt-mcp-live` adds 22 live tools, plus
+**Version 0.4.0: 52 tools.** Your 21 original saved-file tools are preserved.
+An optional Java backend in `../pt-mcp-live` adds 27 live tools; three native model-library tools are also available, plus
 `pt_live_status`. See [LIVE-SETUP.md](LIVE-SETUP.md) for usage, verification,
 configuration, and rollback.
 
@@ -11,10 +11,11 @@ the built Java backend and a running Packet Tracer IPC listener.
 
 ```
 pt-mcp/
-├── server.py       combined MCP server (stdio JSON-RPC 2.0) — 44 tools
+├── server.py       combined MCP server (stdio JSON-RPC 2.0) — 52 tools
 ├── live_bridge.py lazy stdio bridge to the Java IPC backend
 ├── live_tools.json upstream tool catalog for offline discovery
 ├── LIVE-SETUP.md   setup, verified behavior, and rollback
+├── model_library.py reusable native model import and creation
 ├── ptbuild.py      topology builder: clone / cable / note / delete / config
 ├── ptread.py       topology reader: devices / links / configs / notes
 ├── unpacket.py     .pkt  → XML   (CLI)
@@ -94,15 +95,15 @@ ptread lab.xml                    # CLI: report a topology
 ## Known limits
 
 - **`pt_build_clone` only duplicates models already present in the file.** A
-  brand-new device *model* needs a hand-written `MODULE`/`PORT` tree. Not
-  implemented. Workaround: seed the file once from PT with one of each model,
-  then clone freely.
+  new model can now be imported from the native template library using
+  `pt_model_import` and added with `pt_build_add_device`. This copies a real
+  Packet Tracer hardware tree; unsupported trees are never synthesized.
 - `pt_build_set_config` writes the same text to `STARTUPCONFIG` and
   `RUNNINGCONFIG`. A device that was running shows a mismatched config until
   PT reboots it.
 - Offline file tools cannot establish live connectivity. The added
   `pt_live_*` tools inspect and configure the running simulator; see the
-  verified capabilities and remaining ping limitation in [LIVE-SETUP.md](LIVE-SETUP.md).
+  verified capabilities and diagnostic scope in [LIVE-SETUP.md](LIVE-SETUP.md).
 
 ## Registered in
 - OpenCode: `~/.config/opencode/opencode.json` → `mcp["pt-mcp"]`.
