@@ -1,0 +1,2012 @@
+{
+  "invalid_config": [
+    {
+      "jsonrpc": "2.0",
+      "id": null,
+      "error": {
+        "code": -32600,
+        "message": "Invalid request: expected a JSON object"
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": null,
+      "error": {
+        "code": -32600,
+        "message": "Invalid request: expected a JSON object"
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {
+          "tools": {
+            "listChanged": false
+          }
+        },
+        "serverInfo": {
+          "name": "pt-mcp",
+          "version": "0.3.0",
+          "description": "Packet Tracer saved-file toolkit and live IPC bridge"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "tools": [
+          {
+            "name": "pt_list_files",
+            "description": "List .pkt/.xml files in a directory.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Directory to list."
+                }
+              },
+              "required": [
+                "path"
+              ]
+            }
+          },
+          {
+            "name": "pt_open",
+            "description": "Decrypt and open a .pkt (or a .xml) as the active topology. Read-only.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Absolute path to .pkt or .xml"
+                }
+              },
+              "required": [
+                "path"
+              ]
+            }
+          },
+          {
+            "name": "pt_overview",
+            "description": "Summary of the open file: version, counts, devices by type.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "pt_devices",
+            "description": "List devices. Filter by type or name substring.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "filter": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "name": "pt_device_detail",
+            "description": "One device: position, VLANs, description, cabled ports.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "pt_config",
+            "description": "Get a device's CLI config (running or startup).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "which": {
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "running",
+                    "startup"
+                  ]
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "pt_links",
+            "description": "Cabling table between devices.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "filter": {
+                  "type": "string",
+                  "description": "substring of either endpoint"
+                }
+              }
+            }
+          },
+          {
+            "name": "pt_notes",
+            "description": "Canvas notes with coordinates.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "filter": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "name": "pt_pdus",
+            "description": "Saved ping/trace tests.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "pt_search",
+            "description": "Grep a string across all device configs and notes.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "pattern": {
+                  "type": "string"
+                },
+                "ignore_case": {
+                  "type": "boolean"
+                },
+                "max": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "pattern"
+              ]
+            }
+          },
+          {
+            "name": "pt_command_logs",
+            "description": "Raw CLI command history stored in the file.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          {
+            "name": "pt_build_open",
+            "description": "Start an editable copy of a .pkt. Source file is never modified.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_status",
+            "description": "What has changed in the current build session.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "pt_build_clone",
+            "description": "Duplicate an existing device under a new name at a position.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string",
+                  "description": "device to copy"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "mac": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_cable",
+            "description": "Connect two devices by interface name.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device_a": {
+                  "type": "string"
+                },
+                "port_a": {
+                  "type": "string"
+                },
+                "device_b": {
+                  "type": "string"
+                },
+                "port_b": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "eCopper",
+                    "eSerial"
+                  ]
+                }
+              },
+              "required": [
+                "device_a",
+                "port_a",
+                "device_b",
+                "port_b"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_note",
+            "description": "Add a canvas note.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                },
+                "z": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_rename",
+            "description": "Rename a device.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device",
+                "to"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_delete_device",
+            "description": "Remove a device and all cables touching it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_delete_cable",
+            "description": "Remove cables between two devices.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device_a": {
+                  "type": "string"
+                },
+                "device_b": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device_a",
+                "device_b"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_set_config",
+            "description": "Replace a device's saved CLI config.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "config": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device",
+                "config"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_save",
+            "description": "Write the build out as a .pkt (XML + repacket).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "allow_overwrite": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "path"
+              ]
+            }
+          },
+          {
+            "name": "pt_live_status",
+            "description": "Read live backend availability without changing Packet Tracer. Child availability is not proof of IPC authentication.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          },
+          {
+            "name": "pt_live_get_topology",
+            "description": "LIVE: affects running Packet Tracer. Lista los dispositivos y el numero de enlaces actualmente en el lienzo de Packet Tracer.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_get_links",
+            "description": "LIVE: affects running Packet Tracer. Lista los enlaces (cables) actuales con sus dos extremos: dispositivo e interfaz de cada lado y el tipo de cable. Complementa a pt_get_topology, que solo da el numero de enlaces. dev_b/if_b pueden venir null si solo se detecto un extremo (p.ej. enlaces inalambricos).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_add_device",
+            "description": "LIVE: affects running Packet Tracer. Crea un dispositivo en el lienzo logico. PT asigna el nombre y lo devuelve. El argumento 'model' debe existir en el catalogo de PT para ese tipo (ej. router 2911, switch 2960, pc PC-PT).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Tipo: router, switch, pc, server, laptop, hub, access_point, wireless_router, multi_layer_switch, asa, ..."
+                },
+                "model": {
+                  "type": "string",
+                  "description": "Modelo concreto (ej. 2911, 2960, PC-PT)."
+                },
+                "x": {
+                  "type": "number",
+                  "description": "Coordenada X en el lienzo."
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Coordenada Y en el lienzo."
+                }
+              },
+              "required": [
+                "type",
+                "model",
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_delete_device",
+            "description": "LIVE: affects running Packet Tracer. Elimina un dispositivo por nombre. Tambien borra sus enlaces.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_get_ports",
+            "description": "LIVE: affects running Packet Tracer. Lista las interfaces/puertos disponibles en un dispositivo (ej. GigabitEthernet0/0).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_connect_devices",
+            "description": "LIVE: affects running Packet Tracer. Tiende un cable entre dos interfaces de dos dispositivos.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device_a": {
+                  "type": "string"
+                },
+                "iface_a": {
+                  "type": "string",
+                  "description": "Ej. GigabitEthernet0/0"
+                },
+                "device_b": {
+                  "type": "string"
+                },
+                "iface_b": {
+                  "type": "string"
+                },
+                "cable_type": {
+                  "type": "string",
+                  "description": "ethernet_straight, ethernet_cross, fiber_singlemode, fiber_multimode, serial, console, coaxial, wireless, auto, ..."
+                }
+              },
+              "required": [
+                "device_a",
+                "iface_a",
+                "device_b",
+                "iface_b",
+                "cable_type"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_auto_connect",
+            "description": "LIVE: affects running Packet Tracer. Conecta dos dispositivos dejando que Packet Tracer elija las interfaces y el tipo de cable automaticamente (como el cable 'Automatico' de la GUI). Mas comodo que pt_connect_devices cuando no importan las interfaces concretas.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device_a": {
+                  "type": "string"
+                },
+                "device_b": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device_a",
+                "device_b"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_delete_link",
+            "description": "LIVE: affects running Packet Tracer. Borra el cable conectado a una interfaz de un dispositivo, sin borrar los dispositivos. Util para recablear una topologia. Devuelve deleted=false (sin error) si esa interfaz no tenia cable.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz cuyo cable se quita (ej. GigabitEthernet0/0)."
+                }
+              },
+              "required": [
+                "device",
+                "iface"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_skip_boot",
+            "description": "LIVE: affects running Packet Tracer. Salta el arranque simulado de un router/switch Cisco. Sin esto, los routers tardan ~30-60s en estar listos y los comandos IOS devuelven ERROR_INVALID. Llamar inmediatamente despues de pt_add_device para routers/switches.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_power",
+            "description": "LIVE: affects running Packet Tracer. Enciende o apaga un dispositivo (router, switch, PC, ...). Equivale al boton de power: lo reinicia sin borrarlo ni perder su configuracion. Apagar y reencender un router relanza el arranque (~30-60s); llamar pt_skip_boot despues de encenderlo.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del dispositivo (ej. Router0)."
+                },
+                "on": {
+                  "type": "boolean",
+                  "description": "true para encender, false para apagar."
+                }
+              },
+              "required": [
+                "device",
+                "on"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_run_cli",
+            "description": "LIVE: affects running Packet Tracer. Ejecuta un comando IOS en un dispositivo Cisco (router, switch, ASA). Modos: 'user', 'enable', 'global', o '' (modo actual). Llamadas consecutivas heredan el modo: tras 'interface gig0/0' en modo 'global', el siguiente comando con mode='' corre en interface-config.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "command": {
+                  "type": "string"
+                },
+                "mode": {
+                  "type": "string",
+                  "description": "user, enable, global, o vacio para modo actual",
+                  "default": ""
+                }
+              },
+              "required": [
+                "device",
+                "command"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_set_endpoint_ip",
+            "description": "LIVE: affects running Packet Tracer. Configura una IP estatica en una interfaz de un end-device (PC, Laptop, Server). Apaga DHCP automaticamente para que la IP estatica quede efectivamente aplicada. NO aplica a routers/switches: para esos usa pt_run_cli.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del end-device (ej. PC0)."
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz a configurar (ej. FastEthernet0)."
+                },
+                "ip": {
+                  "type": "string",
+                  "description": "IP estatica (ej. 192.168.1.10)."
+                },
+                "mask": {
+                  "type": "string",
+                  "description": "Mascara de subred (ej. 255.255.255.0)."
+                },
+                "gateway": {
+                  "type": "string",
+                  "description": "Gateway por defecto (ej. 192.168.1.1). Opcional."
+                }
+              },
+              "required": [
+                "device",
+                "iface",
+                "ip",
+                "mask"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_set_endpoint_dhcp",
+            "description": "LIVE: affects running Packet Tracer. Activa o desactiva DHCP en una interfaz de un end-device (PC, Laptop, Server). Operacion inversa de pt_set_endpoint_ip: con enabled=true el dispositivo vuelve a pedir IP por DHCP.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz (ej. FastEthernet0)."
+                },
+                "enabled": {
+                  "type": "boolean",
+                  "description": "true para activar DHCP, false para estatico."
+                }
+              },
+              "required": [
+                "device",
+                "iface",
+                "enabled"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_set_endpoint_dns",
+            "description": "LIVE: affects running Packet Tracer. Configura el servidor DNS de una interfaz de un end-device (PC, Laptop, Server). Equivale al campo 'DNS Server' de IP Configuration. No toca IP/mask/gateway ni el flag de DHCP. NO aplica a routers/switches: para esos usa pt_run_cli.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del end-device (ej. PC0)."
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz a configurar (ej. FastEthernet0)."
+                },
+                "dns": {
+                  "type": "string",
+                  "description": "IP del servidor DNS (ej. 8.8.8.8)."
+                }
+              },
+              "required": [
+                "device",
+                "iface",
+                "dns"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_get_endpoint_config",
+            "description": "LIVE: affects running Packet Tracer. Lee la configuracion IP de una interfaz de un end-device (PC, Laptop, Server): ip, mascara y si esta en DHCP. LIMITACION del SDK: gateway y dns siempre vienen null (Cisco no expone getters para esos campos, solo setters). OJO: con dhcp=true PT conserva el ultimo ip/mask estatico en el campo (no se limpia) y puede no ser la ip real del DHCP; fiarse del campo dhcp para el modo. Solo lectura; aplica a PC/Laptop/Server.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del end-device (ej. PC0)."
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz a consultar (ej. FastEthernet0)."
+                }
+              },
+              "required": [
+                "device",
+                "iface"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_get_modules",
+            "description": "LIVE: affects running Packet Tracer. Devuelve el arbol de modulos de un dispositivo (router, switch, ...). Util para ver que bahias hay libres antes de instalar un modulo (ej. un HWIC-2T serial en un 2911) con pt_add_module. El campo 'root' es un arbol: cada nodo tiene name, slot_path, type, sus 'slots' (index + tipo) y sus 'modules' (submodulos). Las bahias HWIC/NM suelen colgar de un submodulo no-removible, no de la raiz. Solo lectura.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del dispositivo (ej. Router0)."
+                }
+              },
+              "required": [
+                "device"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_get_supported_modules",
+            "description": "LIVE: affects running Packet Tracer. Lista los modelos de modulo que un dispositivo admite (los mismos del navegador de modulos de la GUI). Usar ANTES de pt_add_module para saber el string EXACTO de modelo a instalar. Aplica a routers/switches (HWIC, NM, ...) y a end-devices (la NIC swappable de una PC: Ethernet vs WiFi). Solo lectura.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del dispositivo (ej. Router0, PC0)."
+                }
+              },
+              "required": [
+                "device"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_add_module",
+            "description": "LIVE: affects running Packet Tracer. Instala un modulo en una bahia de un dispositivo (ej. un HWIC-2T serial en un 2911, o una NIC WiFi en una PC). IMPORTANTE: PT exige el dispositivo APAGADO para tocar modulos fisicos: llamar pt_power(device,false) ANTES, y pt_power(device,true) + pt_skip_boot DESPUES. Si la bahia ya esta ocupada devuelve added=false: para cambiar un modulo (ej. Ethernet->WiFi en una PC) usar pt_remove_module primero. Descubrir el 'model' con pt_get_supported_modules y las bahias con pt_get_modules. El 'type' es OPCIONAL: si se omite, se autodetecta del tipo de la bahia (recomendado). La respuesta incluye el 'type' que se uso.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Dispositivo (ej. Router0, PC0)."
+                },
+                "slot": {
+                  "type": "string",
+                  "description": "Bahia destino (string del SDK, ej. '0/0' en un 2911, '0' en la NIC de una PC)."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "OPCIONAL. Tipo de bahia del SDK; si se omite se autodetecta. Valores: INTERFACE_CARD (HWIC de router), PT_HOST_MODULE (NIC de PC/end-device), NETWORK_MODULE (NM), LINE_CARD, SFP_MODULE, ..."
+                },
+                "model": {
+                  "type": "string",
+                  "description": "Nombre del modelo (ej. HWIC-2T). Debe salir de pt_get_supported_modules."
+                }
+              },
+              "required": [
+                "device",
+                "slot",
+                "model"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_remove_module",
+            "description": "LIVE: affects running Packet Tracer. Quita el modulo de una bahia, dejandola libre. Mismo requisito de apagado que pt_add_module (pt_power off antes). Necesario para cambiar un modulo por otro (ej. quitar el Ethernet de una PC antes de instalarle una NIC WiFi). Devuelve removed=false (sin error) si la bahia ya estaba vacia.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Dispositivo (ej. Router0, PC0)."
+                },
+                "slot": {
+                  "type": "string",
+                  "description": "Bahia a vaciar (mismo string que pt_add_module)."
+                }
+              },
+              "required": [
+                "device",
+                "slot"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_save_file",
+            "description": "LIVE: affects running Packet Tracer. Guarda la topologia actual en un archivo .pkt. La ruta es del lado de la maquina donde corre Packet Tracer; usar ruta absoluta (ej. C:\\\\redes\\\\lab1.pkt).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Ruta absoluta destino .pkt."
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_open_file",
+            "description": "LIVE: affects running Packet Tracer. Abre un archivo .pkt en Packet Tracer, reemplazando la topologia actual. La ruta es del lado de la maquina donde corre PT; usar ruta absoluta.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Ruta absoluta del .pkt a abrir."
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_get_device_models",
+            "description": "LIVE: affects running Packet Tracer. Lista el catalogo de PT para no adivinar el 'model' de pt_add_device. Sin 'type' devuelve los tipos de dispositivo disponibles; con 'type' (uno de esos valores EXACTOS, ej. 'Routers') devuelve los modelos de ese tipo (ej. 2911).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Tipo de dispositivo (uno de los que devuelve esta misma tool sin argumentos). Opcional."
+                }
+              },
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"launcher_available\": false,\n  \"child_alive\": false,\n  \"configuration_error\": \"PT_MCP_LIVE_COMMAND must be a JSON array\"\n}"
+          }
+        ]
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"directory\": \"/home/mobta/tools/pt-mcp/verification\",\n  \"count\": 1,\n  \"files\": [\n    {\n      \"name\": \"demo-live.pkt\",\n      \"bytes\": 46989,\n      \"path\": \"/home/mobta/tools/pt-mcp/verification/demo-live.pkt\",\n      \"modified\": 1791855423.8996942\n    }\n  ]\n}"
+          }
+        ]
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Live backend configuration error: PT_MCP_LIVE_COMMAND must be a JSON array"
+          }
+        ],
+        "isError": true
+      }
+    }
+  ],
+  "missing_backend": [
+    {
+      "jsonrpc": "2.0",
+      "id": null,
+      "error": {
+        "code": -32600,
+        "message": "Invalid request: expected a JSON object"
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": null,
+      "error": {
+        "code": -32600,
+        "message": "Invalid request: expected a JSON object"
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {
+          "tools": {
+            "listChanged": false
+          }
+        },
+        "serverInfo": {
+          "name": "pt-mcp",
+          "version": "0.3.0",
+          "description": "Packet Tracer saved-file toolkit and live IPC bridge"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "tools": [
+          {
+            "name": "pt_list_files",
+            "description": "List .pkt/.xml files in a directory.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Directory to list."
+                }
+              },
+              "required": [
+                "path"
+              ]
+            }
+          },
+          {
+            "name": "pt_open",
+            "description": "Decrypt and open a .pkt (or a .xml) as the active topology. Read-only.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Absolute path to .pkt or .xml"
+                }
+              },
+              "required": [
+                "path"
+              ]
+            }
+          },
+          {
+            "name": "pt_overview",
+            "description": "Summary of the open file: version, counts, devices by type.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "pt_devices",
+            "description": "List devices. Filter by type or name substring.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "filter": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "name": "pt_device_detail",
+            "description": "One device: position, VLANs, description, cabled ports.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "pt_config",
+            "description": "Get a device's CLI config (running or startup).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "which": {
+                  "type": "string",
+                  "enum": [
+                    "auto",
+                    "running",
+                    "startup"
+                  ]
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "pt_links",
+            "description": "Cabling table between devices.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "filter": {
+                  "type": "string",
+                  "description": "substring of either endpoint"
+                }
+              }
+            }
+          },
+          {
+            "name": "pt_notes",
+            "description": "Canvas notes with coordinates.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "filter": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "name": "pt_pdus",
+            "description": "Saved ping/trace tests.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "pt_search",
+            "description": "Grep a string across all device configs and notes.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "pattern": {
+                  "type": "string"
+                },
+                "ignore_case": {
+                  "type": "boolean"
+                },
+                "max": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "pattern"
+              ]
+            }
+          },
+          {
+            "name": "pt_command_logs",
+            "description": "Raw CLI command history stored in the file.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          {
+            "name": "pt_build_open",
+            "description": "Start an editable copy of a .pkt. Source file is never modified.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_status",
+            "description": "What has changed in the current build session.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          {
+            "name": "pt_build_clone",
+            "description": "Duplicate an existing device under a new name at a position.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "source": {
+                  "type": "string",
+                  "description": "device to copy"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "mac": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_cable",
+            "description": "Connect two devices by interface name.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device_a": {
+                  "type": "string"
+                },
+                "port_a": {
+                  "type": "string"
+                },
+                "device_b": {
+                  "type": "string"
+                },
+                "port_b": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "eCopper",
+                    "eSerial"
+                  ]
+                }
+              },
+              "required": [
+                "device_a",
+                "port_a",
+                "device_b",
+                "port_b"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_note",
+            "description": "Add a canvas note.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                },
+                "z": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_rename",
+            "description": "Rename a device.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device",
+                "to"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_delete_device",
+            "description": "Remove a device and all cables touching it.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_delete_cable",
+            "description": "Remove cables between two devices.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device_a": {
+                  "type": "string"
+                },
+                "device_b": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device_a",
+                "device_b"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_set_config",
+            "description": "Replace a device's saved CLI config.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "config": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device",
+                "config"
+              ]
+            }
+          },
+          {
+            "name": "pt_build_save",
+            "description": "Write the build out as a .pkt (XML + repacket).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "allow_overwrite": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "path"
+              ]
+            }
+          },
+          {
+            "name": "pt_live_status",
+            "description": "Read live backend availability without changing Packet Tracer. Child availability is not proof of IPC authentication.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          },
+          {
+            "name": "pt_live_get_topology",
+            "description": "LIVE: affects running Packet Tracer. Lista los dispositivos y el numero de enlaces actualmente en el lienzo de Packet Tracer.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_get_links",
+            "description": "LIVE: affects running Packet Tracer. Lista los enlaces (cables) actuales con sus dos extremos: dispositivo e interfaz de cada lado y el tipo de cable. Complementa a pt_get_topology, que solo da el numero de enlaces. dev_b/if_b pueden venir null si solo se detecto un extremo (p.ej. enlaces inalambricos).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_add_device",
+            "description": "LIVE: affects running Packet Tracer. Crea un dispositivo en el lienzo logico. PT asigna el nombre y lo devuelve. El argumento 'model' debe existir en el catalogo de PT para ese tipo (ej. router 2911, switch 2960, pc PC-PT).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Tipo: router, switch, pc, server, laptop, hub, access_point, wireless_router, multi_layer_switch, asa, ..."
+                },
+                "model": {
+                  "type": "string",
+                  "description": "Modelo concreto (ej. 2911, 2960, PC-PT)."
+                },
+                "x": {
+                  "type": "number",
+                  "description": "Coordenada X en el lienzo."
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Coordenada Y en el lienzo."
+                }
+              },
+              "required": [
+                "type",
+                "model",
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_delete_device",
+            "description": "LIVE: affects running Packet Tracer. Elimina un dispositivo por nombre. Tambien borra sus enlaces.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_get_ports",
+            "description": "LIVE: affects running Packet Tracer. Lista las interfaces/puertos disponibles en un dispositivo (ej. GigabitEthernet0/0).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_connect_devices",
+            "description": "LIVE: affects running Packet Tracer. Tiende un cable entre dos interfaces de dos dispositivos.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device_a": {
+                  "type": "string"
+                },
+                "iface_a": {
+                  "type": "string",
+                  "description": "Ej. GigabitEthernet0/0"
+                },
+                "device_b": {
+                  "type": "string"
+                },
+                "iface_b": {
+                  "type": "string"
+                },
+                "cable_type": {
+                  "type": "string",
+                  "description": "ethernet_straight, ethernet_cross, fiber_singlemode, fiber_multimode, serial, console, coaxial, wireless, auto, ..."
+                }
+              },
+              "required": [
+                "device_a",
+                "iface_a",
+                "device_b",
+                "iface_b",
+                "cable_type"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_auto_connect",
+            "description": "LIVE: affects running Packet Tracer. Conecta dos dispositivos dejando que Packet Tracer elija las interfaces y el tipo de cable automaticamente (como el cable 'Automatico' de la GUI). Mas comodo que pt_connect_devices cuando no importan las interfaces concretas.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device_a": {
+                  "type": "string"
+                },
+                "device_b": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "device_a",
+                "device_b"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_delete_link",
+            "description": "LIVE: affects running Packet Tracer. Borra el cable conectado a una interfaz de un dispositivo, sin borrar los dispositivos. Util para recablear una topologia. Devuelve deleted=false (sin error) si esa interfaz no tenia cable.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz cuyo cable se quita (ej. GigabitEthernet0/0)."
+                }
+              },
+              "required": [
+                "device",
+                "iface"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_skip_boot",
+            "description": "LIVE: affects running Packet Tracer. Salta el arranque simulado de un router/switch Cisco. Sin esto, los routers tardan ~30-60s en estar listos y los comandos IOS devuelven ERROR_INVALID. Llamar inmediatamente despues de pt_add_device para routers/switches.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_power",
+            "description": "LIVE: affects running Packet Tracer. Enciende o apaga un dispositivo (router, switch, PC, ...). Equivale al boton de power: lo reinicia sin borrarlo ni perder su configuracion. Apagar y reencender un router relanza el arranque (~30-60s); llamar pt_skip_boot despues de encenderlo.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del dispositivo (ej. Router0)."
+                },
+                "on": {
+                  "type": "boolean",
+                  "description": "true para encender, false para apagar."
+                }
+              },
+              "required": [
+                "device",
+                "on"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_run_cli",
+            "description": "LIVE: affects running Packet Tracer. Ejecuta un comando IOS en un dispositivo Cisco (router, switch, ASA). Modos: 'user', 'enable', 'global', o '' (modo actual). Llamadas consecutivas heredan el modo: tras 'interface gig0/0' en modo 'global', el siguiente comando con mode='' corre en interface-config.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "command": {
+                  "type": "string"
+                },
+                "mode": {
+                  "type": "string",
+                  "description": "user, enable, global, o vacio para modo actual",
+                  "default": ""
+                }
+              },
+              "required": [
+                "device",
+                "command"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_set_endpoint_ip",
+            "description": "LIVE: affects running Packet Tracer. Configura una IP estatica en una interfaz de un end-device (PC, Laptop, Server). Apaga DHCP automaticamente para que la IP estatica quede efectivamente aplicada. NO aplica a routers/switches: para esos usa pt_run_cli.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del end-device (ej. PC0)."
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz a configurar (ej. FastEthernet0)."
+                },
+                "ip": {
+                  "type": "string",
+                  "description": "IP estatica (ej. 192.168.1.10)."
+                },
+                "mask": {
+                  "type": "string",
+                  "description": "Mascara de subred (ej. 255.255.255.0)."
+                },
+                "gateway": {
+                  "type": "string",
+                  "description": "Gateway por defecto (ej. 192.168.1.1). Opcional."
+                }
+              },
+              "required": [
+                "device",
+                "iface",
+                "ip",
+                "mask"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_set_endpoint_dhcp",
+            "description": "LIVE: affects running Packet Tracer. Activa o desactiva DHCP en una interfaz de un end-device (PC, Laptop, Server). Operacion inversa de pt_set_endpoint_ip: con enabled=true el dispositivo vuelve a pedir IP por DHCP.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz (ej. FastEthernet0)."
+                },
+                "enabled": {
+                  "type": "boolean",
+                  "description": "true para activar DHCP, false para estatico."
+                }
+              },
+              "required": [
+                "device",
+                "iface",
+                "enabled"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_set_endpoint_dns",
+            "description": "LIVE: affects running Packet Tracer. Configura el servidor DNS de una interfaz de un end-device (PC, Laptop, Server). Equivale al campo 'DNS Server' de IP Configuration. No toca IP/mask/gateway ni el flag de DHCP. NO aplica a routers/switches: para esos usa pt_run_cli.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del end-device (ej. PC0)."
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz a configurar (ej. FastEthernet0)."
+                },
+                "dns": {
+                  "type": "string",
+                  "description": "IP del servidor DNS (ej. 8.8.8.8)."
+                }
+              },
+              "required": [
+                "device",
+                "iface",
+                "dns"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_get_endpoint_config",
+            "description": "LIVE: affects running Packet Tracer. Lee la configuracion IP de una interfaz de un end-device (PC, Laptop, Server): ip, mascara y si esta en DHCP. LIMITACION del SDK: gateway y dns siempre vienen null (Cisco no expone getters para esos campos, solo setters). OJO: con dhcp=true PT conserva el ultimo ip/mask estatico en el campo (no se limpia) y puede no ser la ip real del DHCP; fiarse del campo dhcp para el modo. Solo lectura; aplica a PC/Laptop/Server.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del end-device (ej. PC0)."
+                },
+                "iface": {
+                  "type": "string",
+                  "description": "Interfaz a consultar (ej. FastEthernet0)."
+                }
+              },
+              "required": [
+                "device",
+                "iface"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_get_modules",
+            "description": "LIVE: affects running Packet Tracer. Devuelve el arbol de modulos de un dispositivo (router, switch, ...). Util para ver que bahias hay libres antes de instalar un modulo (ej. un HWIC-2T serial en un 2911) con pt_add_module. El campo 'root' es un arbol: cada nodo tiene name, slot_path, type, sus 'slots' (index + tipo) y sus 'modules' (submodulos). Las bahias HWIC/NM suelen colgar de un submodulo no-removible, no de la raiz. Solo lectura.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del dispositivo (ej. Router0)."
+                }
+              },
+              "required": [
+                "device"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_get_supported_modules",
+            "description": "LIVE: affects running Packet Tracer. Lista los modelos de modulo que un dispositivo admite (los mismos del navegador de modulos de la GUI). Usar ANTES de pt_add_module para saber el string EXACTO de modelo a instalar. Aplica a routers/switches (HWIC, NM, ...) y a end-devices (la NIC swappable de una PC: Ethernet vs WiFi). Solo lectura.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Nombre del dispositivo (ej. Router0, PC0)."
+                }
+              },
+              "required": [
+                "device"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_add_module",
+            "description": "LIVE: affects running Packet Tracer. Instala un modulo en una bahia de un dispositivo (ej. un HWIC-2T serial en un 2911, o una NIC WiFi en una PC). IMPORTANTE: PT exige el dispositivo APAGADO para tocar modulos fisicos: llamar pt_power(device,false) ANTES, y pt_power(device,true) + pt_skip_boot DESPUES. Si la bahia ya esta ocupada devuelve added=false: para cambiar un modulo (ej. Ethernet->WiFi en una PC) usar pt_remove_module primero. Descubrir el 'model' con pt_get_supported_modules y las bahias con pt_get_modules. El 'type' es OPCIONAL: si se omite, se autodetecta del tipo de la bahia (recomendado). La respuesta incluye el 'type' que se uso.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Dispositivo (ej. Router0, PC0)."
+                },
+                "slot": {
+                  "type": "string",
+                  "description": "Bahia destino (string del SDK, ej. '0/0' en un 2911, '0' en la NIC de una PC)."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "OPCIONAL. Tipo de bahia del SDK; si se omite se autodetecta. Valores: INTERFACE_CARD (HWIC de router), PT_HOST_MODULE (NIC de PC/end-device), NETWORK_MODULE (NM), LINE_CARD, SFP_MODULE, ..."
+                },
+                "model": {
+                  "type": "string",
+                  "description": "Nombre del modelo (ej. HWIC-2T). Debe salir de pt_get_supported_modules."
+                }
+              },
+              "required": [
+                "device",
+                "slot",
+                "model"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": false
+            }
+          },
+          {
+            "name": "pt_live_remove_module",
+            "description": "LIVE: affects running Packet Tracer. Quita el modulo de una bahia, dejandola libre. Mismo requisito de apagado que pt_add_module (pt_power off antes). Necesario para cambiar un modulo por otro (ej. quitar el Ethernet de una PC antes de instalarle una NIC WiFi). Devuelve removed=false (sin error) si la bahia ya estaba vacia.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "device": {
+                  "type": "string",
+                  "description": "Dispositivo (ej. Router0, PC0)."
+                },
+                "slot": {
+                  "type": "string",
+                  "description": "Bahia a vaciar (mismo string que pt_add_module)."
+                }
+              },
+              "required": [
+                "device",
+                "slot"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_save_file",
+            "description": "LIVE: affects running Packet Tracer. Guarda la topologia actual en un archivo .pkt. La ruta es del lado de la maquina donde corre Packet Tracer; usar ruta absoluta (ej. C:\\\\redes\\\\lab1.pkt).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Ruta absoluta destino .pkt."
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_open_file",
+            "description": "LIVE: affects running Packet Tracer. Abre un archivo .pkt en Packet Tracer, reemplazando la topologia actual. La ruta es del lado de la maquina donde corre PT; usar ruta absoluta.",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "description": "Ruta absoluta del .pkt a abrir."
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": false,
+              "destructiveHint": true
+            }
+          },
+          {
+            "name": "pt_live_get_device_models",
+            "description": "LIVE: affects running Packet Tracer. Lista el catalogo de PT para no adivinar el 'model' de pt_add_device. Sin 'type' devuelve los tipos de dispositivo disponibles; con 'type' (uno de esos valores EXACTOS, ej. 'Routers') devuelve los modelos de ese tipo (ej. 2911).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Tipo de dispositivo (uno de los que devuelve esta misma tool sin argumentos). Opcional."
+                }
+              },
+              "additionalProperties": false
+            },
+            "annotations": {
+              "readOnlyHint": true,
+              "destructiveHint": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"launcher_available\": false,\n  \"child_alive\": false,\n  \"cached_catalog_count\": 22,\n  \"backend_protocol\": \"stdio JSON-RPC\"\n}"
+          }
+        ]
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"directory\": \"/home/mobta/tools/pt-mcp/verification\",\n  \"count\": 1,\n  \"files\": [\n    {\n      \"name\": \"demo-live.pkt\",\n      \"bytes\": 46989,\n      \"path\": \"/home/mobta/tools/pt-mcp/verification/demo-live.pkt\",\n      \"modified\": 1791855423.8996942\n    }\n  ]\n}"
+          }
+        ]
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "live backend launcher unavailable: /nonexistent/pt-live"
+          }
+        ],
+        "isError": true
+      }
+    }
+  ]
+}

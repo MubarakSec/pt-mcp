@@ -1,0 +1,37 @@
+[
+  {
+    "tool": "pt_live_get_topology",
+    "arguments": {},
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Topologia: 0 dispositivos, 0 enlaces.\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "link_count": 0,
+        "devices": []
+      }
+    }
+  },
+  {
+    "tool": "pt_live_add_device",
+    "arguments": {
+      "type": "router",
+      "model": "2911",
+      "x": 300,
+      "y": 200
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "backend JSON-RPC error: {'code': -32603, 'message': 'IPC Interface Error:  [7] <ExApp or Script Module does not have the necessary privilege for IPC call \"getLogicalWorkspace\">', 'data': 'IPCError: IPC Interface Error:  [7] <ExApp or Script Module does not have the necessary privilege for IPC call \"getLogicalWorkspace\">'}. Outcome may be unknown; inspect Packet Tracer before retrying."
+        }
+      ],
+      "isError": true
+    }
+  }
+]

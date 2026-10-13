@@ -1,0 +1,707 @@
+[
+  {
+    "tool": "pt_live_get_topology",
+    "arguments": {},
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Topologia: 0 dispositivos, 0 enlaces.\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "link_count": 0,
+        "devices": []
+      }
+    }
+  },
+  {
+    "tool": "pt_live_add_device",
+    "arguments": {
+      "type": "router",
+      "model": "2911",
+      "x": 300,
+      "y": 200
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: Router0 (router 2911) en (300.0, 200.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "Router0"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_add_device",
+    "arguments": {
+      "type": "pc",
+      "model": "PC-PT",
+      "x": 520,
+      "y": 200
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Creado: PC0 (pc PC-PT) en (520.0, 200.0)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "name": "PC0"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_skip_boot",
+    "arguments": {
+      "name": "Router0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "skipBoot(Router0) -> true (booteo finalizado o no aplica)"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "applied": true
+      }
+    }
+  },
+  {
+    "tool": "pt_live_get_ports",
+    "arguments": {
+      "name": "Router0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Puertos de Router0 (4):\n  - Vlan1\n  - GigabitEthernet0/0\n  - GigabitEthernet0/1\n  - GigabitEthernet0/2"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "ports": [
+          "Vlan1",
+          "GigabitEthernet0/0",
+          "GigabitEthernet0/1",
+          "GigabitEthernet0/2"
+        ]
+      }
+    }
+  },
+  {
+    "tool": "pt_live_connect_devices",
+    "arguments": {
+      "device_a": "Router0",
+      "iface_a": "GigabitEthernet0/0",
+      "device_b": "PC0",
+      "iface_b": "FastEthernet0",
+      "cable_type": "ethernet_straight"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "connectDevices(Router0:GigabitEthernet0/0 <-> PC0:FastEthernet0, ethernet_straight) -> true"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "linked": true
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "hostname IPC-DEMO",
+      "mode": "global"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] global $ hostname IPC-DEMO\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "interface GigabitEthernet0/0",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ interface GigabitEthernet0/0\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "ip address 192.0.2.1 255.255.255.0",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ ip address 192.0.2.1 255.255.255.0\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "no shutdown",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ no shutdown\n\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "exit",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ exit\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "ip dhcp excluded-address 192.0.2.1 192.0.2.49",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ ip dhcp excluded-address 192.0.2.1 192.0.2.49\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "ip dhcp pool IPC-DEMO",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ ip dhcp pool IPC-DEMO\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "network 192.0.2.0 255.255.255.0",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ network 192.0.2.0 255.255.255.0\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "default-router 192.0.2.1",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ default-router 192.0.2.1\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "exit",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ exit\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "end",
+      "mode": ""
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] (current) $ end\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "write memory",
+      "mode": "enable"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] enable $ write memory\nBuilding configuration...\n[OK]\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "Building configuration...\n[OK]\n\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_set_endpoint_ip",
+    "arguments": {
+      "device": "PC0",
+      "iface": "FastEthernet0",
+      "ip": "192.0.2.60",
+      "mask": "255.255.255.0",
+      "gateway": "192.0.2.1"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "IP estatica aplicada en PC0:FastEthernet0 -> 192.0.2.60 / 255.255.255.0 gw 192.0.2.1 (DHCP desactivado)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "iface": "FastEthernet0",
+        "ip": "192.0.2.60",
+        "mask": "255.255.255.0",
+        "gateway": "192.0.2.1",
+        "dhcp_disabled": true
+      }
+    }
+  },
+  {
+    "tool": "pt_live_get_endpoint_config",
+    "arguments": {
+      "device": "PC0",
+      "iface": "FastEthernet0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "PC0:FastEthernet0 -> estatico, ip=192.0.2.60, mask=255.255.255.0 (gateway/dns no legibles via SDK)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "iface": "FastEthernet0",
+        "ip": "192.0.2.60",
+        "mask": "255.255.255.0",
+        "dhcp": false,
+        "gateway": null,
+        "dns": null,
+        "note": "gateway y dns son null: el SDK de Cisco no expone getters para esos campos (solo se pueden escribir con pt_set_endpoint_ip / pt_set_endpoint_dns). OJO con ip/mask cuando dhcp=true: PT conserva el ultimo valor estatico en el campo aunque DHCP este activo (el getter no se limpia solo), y esa ip puede NO ser la que el DHCP asigne. Para saber el modo, fiarse del campo dhcp, no de ip."
+      }
+    }
+  },
+  {
+    "tool": "pt_live_set_endpoint_dhcp",
+    "arguments": {
+      "device": "PC0",
+      "iface": "FastEthernet0",
+      "enabled": true
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "DHCP activado en PC0:FastEthernet0."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "iface": "FastEthernet0",
+        "dhcp_enabled": true
+      }
+    }
+  },
+  {
+    "tool": "pt_live_get_endpoint_config",
+    "arguments": {
+      "device": "PC0",
+      "iface": "FastEthernet0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "PC0:FastEthernet0 -> DHCP, ip=0.0.0.0, mask=0.0.0.0 (gateway/dns no legibles via SDK)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "iface": "FastEthernet0",
+        "ip": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "dhcp": true,
+        "gateway": null,
+        "dns": null,
+        "note": "gateway y dns son null: el SDK de Cisco no expone getters para esos campos (solo se pueden escribir con pt_set_endpoint_ip / pt_set_endpoint_dns). OJO con ip/mask cuando dhcp=true: PT conserva el ultimo valor estatico en el campo aunque DHCP este activo (el getter no se limpia solo), y esa ip puede NO ser la que el DHCP asigne. Para saber el modo, fiarse del campo dhcp, no de ip."
+      }
+    }
+  },
+  {
+    "tool": "pt_live_get_endpoint_config",
+    "arguments": {
+      "device": "PC0",
+      "iface": "FastEthernet0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "PC0:FastEthernet0 -> DHCP, ip=0.0.0.0, mask=0.0.0.0 (gateway/dns no legibles via SDK)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "iface": "FastEthernet0",
+        "ip": "0.0.0.0",
+        "mask": "0.0.0.0",
+        "dhcp": true,
+        "gateway": null,
+        "dns": null,
+        "note": "gateway y dns son null: el SDK de Cisco no expone getters para esos campos (solo se pueden escribir con pt_set_endpoint_ip / pt_set_endpoint_dns). OJO con ip/mask cuando dhcp=true: PT conserva el ultimo valor estatico en el campo aunque DHCP este activo (el getter no se limpia solo), y esa ip puede NO ser la que el DHCP asigne. Para saber el modo, fiarse del campo dhcp, no de ip."
+      }
+    }
+  },
+  {
+    "tool": "pt_live_get_endpoint_config",
+    "arguments": {
+      "device": "PC0",
+      "iface": "FastEthernet0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "PC0:FastEthernet0 -> DHCP, ip=192.0.2.50, mask=255.255.255.0 (gateway/dns no legibles via SDK)."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "device": "PC0",
+        "iface": "FastEthernet0",
+        "ip": "192.0.2.50",
+        "mask": "255.255.255.0",
+        "dhcp": true,
+        "gateway": null,
+        "dns": null,
+        "note": "gateway y dns son null: el SDK de Cisco no expone getters para esos campos (solo se pueden escribir con pt_set_endpoint_ip / pt_set_endpoint_dns). OJO con ip/mask cuando dhcp=true: PT conserva el ultimo valor estatico en el campo aunque DHCP este activo (el getter no se limpia solo), y esa ip puede NO ser la que el DHCP asigne. Para saber el modo, fiarse del campo dhcp, no de ip."
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "show ip dhcp binding",
+      "mode": "enable"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] enable $ show ip dhcp binding\nIP address       Client-ID/              Lease expiration        Type\n                 Hardware address\n192.0.2.50       0002.17CC.C026           --                     Automatic\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "IP address       Client-ID/              Lease expiration        Type\n                 Hardware address\n192.0.2.50       0002.17CC.C026           --                     Automatic\n\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_run_cli",
+    "arguments": {
+      "device": "Router0",
+      "command": "show ip interface brief",
+      "mode": "enable"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[STATUS_OK] enable $ show ip interface brief\nInterface              IP-Address      OK? Method Status                Protocol \nGigabitEthernet0/0     192.0.2.1       YES manual up                    up \nGigabitEthernet0/1     unassigned      YES unset  administratively down down \nGigabitEthernet0/2     unassigned      YES unset  administratively down down \nVlan1                  unassigned      YES unset  administratively down down\n\n"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "status": "STATUS_OK",
+        "output": "Interface              IP-Address      OK? Method Status                Protocol \nGigabitEthernet0/0     192.0.2.1       YES manual up                    up \nGigabitEthernet0/1     unassigned      YES unset  administratively down down \nGigabitEthernet0/2     unassigned      YES unset  administratively down down \nVlan1                  unassigned      YES unset  administratively down down\n\n"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_save_file",
+    "arguments": {
+      "path": "/home/mobta/tools/pt-mcp/verification/demo-live.pkt"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Topologia guardada en /home/mobta/tools/pt-mcp/verification/demo-live.pkt."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "path": "/home/mobta/tools/pt-mcp/verification/demo-live.pkt",
+        "saved": true
+      }
+    }
+  },
+  {
+    "tool": "pt_open",
+    "arguments": {
+      "path": "/home/mobta/tools/pt-mcp/verification/demo-live.pkt"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"opened\": \"/home/mobta/tools/pt-mcp/verification/demo-live.pkt\",\n  \"pt_version\": \"9.0.1.0858\",\n  \"xml_cache\": \"/tmp/pt-mcp-cache/demo-live.pkt.xml\",\n  \"xml_bytes\": 891752,\n  \"devices\": 3,\n  \"links\": 1,\n  \"notes\": 0,\n  \"saved_pdus\": 0,\n  \"description\": \"\",\n  \"device_names\": [\n    \"Router0\",\n    \"Power Distribution Device0\",\n    \"PC0\"\n  ]\n}"
+        }
+      ]
+    }
+  },
+  {
+    "tool": "pt_devices",
+    "arguments": {},
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"count\": 3,\n  \"devices\": [\n    {\n      \"name\": \"Router0\",\n      \"type\": \"Router\",\n      \"x\": \"299.5\",\n      \"y\": \"200\",\n      \"has_running\": true,\n      \"has_startup\": true,\n      \"config_lines\": 87\n    },\n    {\n      \"name\": \"Power Distribution Device0\",\n      \"type\": \"Power Distribution Device\",\n      \"x\": \"3899\",\n      \"y\": \"3900\",\n      \"has_running\": false,\n      \"has_startup\": false,\n      \"config_lines\": 0\n    },\n    {\n      \"name\": \"PC0\",\n      \"type\": \"Pc\",\n      \"x\": \"519.5\",\n      \"y\": \"200\",\n      \"has_running\": false,\n      \"has_startup\": false,\n      \"config_lines\": 0\n    }\n  ]\n}"
+        }
+      ]
+    }
+  },
+  {
+    "tool": "pt_config",
+    "arguments": {
+      "name": "Router0"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"name\": \"Router0\",\n  \"source\": \"running\",\n  \"lines\": 87,\n  \"config\": \"!\\nversion 15.1\\nno service timestamps log datetime msec\\nno service timestamps debug datetime msec\\nno service password-encryption\\n!\\nhostname IPC-DEMO\\n!\\n!\\n!\\n!\\nip dhcp excluded-address 192.0.2.1 192.0.2.49\\n!\\nip dhcp pool IPC-DEMO\\n network 192.0.2.0 255.255.255.0\\n default-router 192.0.2.1\\n!\\n!\\n!\\nip cef\\nno ipv6 cef\\n!\\n!\\n!\\n!\\nlicense udi pid CISCO2911/K9 sn FTX15240484-\\n!\\n!\\n!\\n!\\n!\\n!\\n!\\n!\\n!\\n!\\n!\\n!\\n!\\nspanning-tree mode pvst\\n!\\n!\\n!\\n!\\n!\\n!\\ninterface GigabitEthernet0/0\\n ip address 192.0.2.1 255.255.255.0\\n duplex auto\\n speed auto\\n!\\ninterface GigabitEthernet0/1\\n no ip address\\n duplex auto\\n speed auto\\n shutdown\\n!\\ninterface GigabitEthernet0/2\\n no ip address\\n duplex auto\\n speed auto\\n shutdown\\n!\\ninterface Vlan1\\n no ip address\\n shutdown\\n!\\nip classless\\n!\\nip flow-export version 9\\n!\\n!\\n!\\n!\\n!\\n!\\n!\\nline con 0\\n!\\nline aux 0\\n!\\nline vty 0 4\\n login\\n!\\n!\\n!\\nend\"\n}"
+        }
+      ]
+    }
+  },
+  {
+    "tool": "pt_live_open_file",
+    "arguments": {
+      "path": "/home/mobta/tools/pt-mcp/verification/demo-live.pkt"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Archivo abierto: /home/mobta/tools/pt-mcp/verification/demo-live.pkt."
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "path": "/home/mobta/tools/pt-mcp/verification/demo-live.pkt",
+        "result": "FILE_RETURN_OK"
+      }
+    }
+  },
+  {
+    "tool": "pt_live_get_topology",
+    "arguments": {},
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Topologia: 3 dispositivos, 1 enlaces.\n  - Router0 [ROUTER 2911]\n  - Power Distribution Device0 [POWER_DISTRIBUTION_DEVICE Power Distribution Device]\n  - PC0 [PC PC-PT]"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "link_count": 1,
+        "devices": [
+          {
+            "name": "Router0",
+            "type": "ROUTER",
+            "model": "2911"
+          },
+          {
+            "name": "Power Distribution Device0",
+            "type": "POWER_DISTRIBUTION_DEVICE",
+            "model": "Power Distribution Device"
+          },
+          {
+            "name": "PC0",
+            "type": "PC",
+            "model": "PC-PT"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "tool": "pt_live_get_links",
+    "arguments": {},
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Enlaces: 1\n  - Router0:GigabitEthernet0/0  <-->  PC0:FastEthernet0  [ETHERNET_STRAIGHT]"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "link_count": 1,
+        "links": [
+          {
+            "dev_a": "Router0",
+            "if_a": "GigabitEthernet0/0",
+            "dev_b": "PC0",
+            "if_b": "FastEthernet0",
+            "cable_type": "ETHERNET_STRAIGHT"
+          }
+        ]
+      }
+    }
+  }
+]

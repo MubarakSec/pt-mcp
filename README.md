@@ -1,11 +1,20 @@
-# pt-mcp — self-contained read + build MCP server for Packet Tracer
+# pt-mcp — saved-file toolkit and live Packet Tracer IPC
 
-**This folder is the whole toolkit.** No external projects, no third-party
-packages, no Node/Bun. Copy it anywhere and it still works. 192 KB total.
+**Version 0.3.0: 44 tools.** Your 21 original saved-file tools are preserved.
+An optional Java backend in `../pt-mcp-live` adds 22 live tools, plus
+`pt_live_status`. See [LIVE-SETUP.md](LIVE-SETUP.md) for usage, verification,
+configuration, and rollback.
+
+The offline reader/builder remains self-contained and uses Python standard
+library code plus the vendored crypto implementation. Live operations require
+the built Java backend and a running Packet Tracer IPC listener.
 
 ```
 pt-mcp/
-├── server.py       MCP server (stdio JSON-RPC 2.0) — 21 tools
+├── server.py       combined MCP server (stdio JSON-RPC 2.0) — 44 tools
+├── live_bridge.py lazy stdio bridge to the Java IPC backend
+├── live_tools.json upstream tool catalog for offline discovery
+├── LIVE-SETUP.md   setup, verified behavior, and rollback
 ├── ptbuild.py      topology builder: clone / cable / note / delete / config
 ├── ptread.py       topology reader: devices / links / configs / notes
 ├── unpacket.py     .pkt  → XML   (CLI)
@@ -62,7 +71,7 @@ ptread lab.xml                    # CLI: report a topology
 - `pt_build_save` **refuses to overwrite the source lab** unless you pass
   `allow_overwrite: true` explicitly.
 
-## Tools (21)
+## Original saved-file tools (21)
 
 ### Read (11)
 `pt_list_files` `pt_open` `pt_overview` `pt_devices` `pt_device_detail`
@@ -91,11 +100,16 @@ ptread lab.xml                    # CLI: report a topology
 - `pt_build_set_config` writes the same text to `STARTUPCONFIG` and
   `RUNNINGCONFIG`. A device that was running shows a mismatched config until
   PT reboots it.
-- No live validation. The server cannot ping or check convergence — Packet
-  Tracer itself is the only simulator.
+- Offline file tools cannot establish live connectivity. The added
+  `pt_live_*` tools inspect and configure the running simulator; see the
+  verified capabilities and remaining ping limitation in [LIVE-SETUP.md](LIVE-SETUP.md).
 
 ## Registered in
-`~/.config/opencode/opencode.json` → `mcp.servers["pt-mcp"]`
+- OpenCode: `~/.config/opencode/opencode.json` → `mcp["pt-mcp"]`.
+- Codex: `~/.codex/config.toml` → `mcp_servers.pt-mcp`.
+
+Both entries launch this folder's `server.py`. Start a new session or reload
+the MCP connection to discover the merged tools.
 
 ## Verified
 Against PT **9.0.1.0858**: decode → clone → cable → note → set config →

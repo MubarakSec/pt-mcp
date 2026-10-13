@@ -1,0 +1,559 @@
+{
+  "source": "https://github.com/jenaro1804/PacketTracer_mcp",
+  "tools": [
+    {
+      "name": "pt_get_topology",
+      "description": "Lista los dispositivos y el numero de enlaces actualmente en el lienzo de Packet Tracer.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_get_links",
+      "description": "Lista los enlaces (cables) actuales con sus dos extremos: dispositivo e interfaz de cada lado y el tipo de cable. Complementa a pt_get_topology, que solo da el numero de enlaces. dev_b/if_b pueden venir null si solo se detecto un extremo (p.ej. enlaces inalambricos).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_add_device",
+      "description": "Crea un dispositivo en el lienzo logico. PT asigna el nombre y lo devuelve. El argumento 'model' debe existir en el catalogo de PT para ese tipo (ej. router 2911, switch 2960, pc PC-PT).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Tipo: router, switch, pc, server, laptop, hub, access_point, wireless_router, multi_layer_switch, asa, ..."
+          },
+          "model": {
+            "type": "string",
+            "description": "Modelo concreto (ej. 2911, 2960, PC-PT)."
+          },
+          "x": {
+            "type": "number",
+            "description": "Coordenada X en el lienzo."
+          },
+          "y": {
+            "type": "number",
+            "description": "Coordenada Y en el lienzo."
+          }
+        },
+        "required": [
+          "type",
+          "model",
+          "x",
+          "y"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_delete_device",
+      "description": "Elimina un dispositivo por nombre. Tambien borra sus enlaces.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      }
+    },
+    {
+      "name": "pt_get_ports",
+      "description": "Lista las interfaces/puertos disponibles en un dispositivo (ej. GigabitEthernet0/0).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_connect_devices",
+      "description": "Tiende un cable entre dos interfaces de dos dispositivos.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device_a": {
+            "type": "string"
+          },
+          "iface_a": {
+            "type": "string",
+            "description": "Ej. GigabitEthernet0/0"
+          },
+          "device_b": {
+            "type": "string"
+          },
+          "iface_b": {
+            "type": "string"
+          },
+          "cable_type": {
+            "type": "string",
+            "description": "ethernet_straight, ethernet_cross, fiber_singlemode, fiber_multimode, serial, console, coaxial, wireless, auto, ..."
+          }
+        },
+        "required": [
+          "device_a",
+          "iface_a",
+          "device_b",
+          "iface_b",
+          "cable_type"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_auto_connect",
+      "description": "Conecta dos dispositivos dejando que Packet Tracer elija las interfaces y el tipo de cable automaticamente (como el cable 'Automatico' de la GUI). Mas comodo que pt_connect_devices cuando no importan las interfaces concretas.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device_a": {
+            "type": "string"
+          },
+          "device_b": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "device_a",
+          "device_b"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_delete_link",
+      "description": "Borra el cable conectado a una interfaz de un dispositivo, sin borrar los dispositivos. Util para recablear una topologia. Devuelve deleted=false (sin error) si esa interfaz no tenia cable.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          },
+          "iface": {
+            "type": "string",
+            "description": "Interfaz cuyo cable se quita (ej. GigabitEthernet0/0)."
+          }
+        },
+        "required": [
+          "device",
+          "iface"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      }
+    },
+    {
+      "name": "pt_skip_boot",
+      "description": "Salta el arranque simulado de un router/switch Cisco. Sin esto, los routers tardan ~30-60s en estar listos y los comandos IOS devuelven ERROR_INVALID. Llamar inmediatamente despues de pt_add_device para routers/switches.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_power",
+      "description": "Enciende o apaga un dispositivo (router, switch, PC, ...). Equivale al boton de power: lo reinicia sin borrarlo ni perder su configuracion. Apagar y reencender un router relanza el arranque (~30-60s); llamar pt_skip_boot despues de encenderlo.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "Nombre del dispositivo (ej. Router0)."
+          },
+          "on": {
+            "type": "boolean",
+            "description": "true para encender, false para apagar."
+          }
+        },
+        "required": [
+          "device",
+          "on"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_run_cli",
+      "description": "Ejecuta un comando IOS en un dispositivo Cisco (router, switch, ASA). Modos: 'user', 'enable', 'global', o '' (modo actual). Llamadas consecutivas heredan el modo: tras 'interface gig0/0' en modo 'global', el siguiente comando con mode='' corre en interface-config.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          },
+          "command": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "description": "user, enable, global, o vacio para modo actual",
+            "default": ""
+          }
+        },
+        "required": [
+          "device",
+          "command"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_set_endpoint_ip",
+      "description": "Configura una IP estatica en una interfaz de un end-device (PC, Laptop, Server). Apaga DHCP automaticamente para que la IP estatica quede efectivamente aplicada. NO aplica a routers/switches: para esos usa pt_run_cli.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "Nombre del end-device (ej. PC0)."
+          },
+          "iface": {
+            "type": "string",
+            "description": "Interfaz a configurar (ej. FastEthernet0)."
+          },
+          "ip": {
+            "type": "string",
+            "description": "IP estatica (ej. 192.168.1.10)."
+          },
+          "mask": {
+            "type": "string",
+            "description": "Mascara de subred (ej. 255.255.255.0)."
+          },
+          "gateway": {
+            "type": "string",
+            "description": "Gateway por defecto (ej. 192.168.1.1). Opcional."
+          }
+        },
+        "required": [
+          "device",
+          "iface",
+          "ip",
+          "mask"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_set_endpoint_dhcp",
+      "description": "Activa o desactiva DHCP en una interfaz de un end-device (PC, Laptop, Server). Operacion inversa de pt_set_endpoint_ip: con enabled=true el dispositivo vuelve a pedir IP por DHCP.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          },
+          "iface": {
+            "type": "string",
+            "description": "Interfaz (ej. FastEthernet0)."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "true para activar DHCP, false para estatico."
+          }
+        },
+        "required": [
+          "device",
+          "iface",
+          "enabled"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_set_endpoint_dns",
+      "description": "Configura el servidor DNS de una interfaz de un end-device (PC, Laptop, Server). Equivale al campo 'DNS Server' de IP Configuration. No toca IP/mask/gateway ni el flag de DHCP. NO aplica a routers/switches: para esos usa pt_run_cli.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "Nombre del end-device (ej. PC0)."
+          },
+          "iface": {
+            "type": "string",
+            "description": "Interfaz a configurar (ej. FastEthernet0)."
+          },
+          "dns": {
+            "type": "string",
+            "description": "IP del servidor DNS (ej. 8.8.8.8)."
+          }
+        },
+        "required": [
+          "device",
+          "iface",
+          "dns"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_get_endpoint_config",
+      "description": "Lee la configuracion IP de una interfaz de un end-device (PC, Laptop, Server): ip, mascara y si esta en DHCP. LIMITACION del SDK: gateway y dns siempre vienen null (Cisco no expone getters para esos campos, solo setters). OJO: con dhcp=true PT conserva el ultimo ip/mask estatico en el campo (no se limpia) y puede no ser la ip real del DHCP; fiarse del campo dhcp para el modo. Solo lectura; aplica a PC/Laptop/Server.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "Nombre del end-device (ej. PC0)."
+          },
+          "iface": {
+            "type": "string",
+            "description": "Interfaz a consultar (ej. FastEthernet0)."
+          }
+        },
+        "required": [
+          "device",
+          "iface"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_get_modules",
+      "description": "Devuelve el arbol de modulos de un dispositivo (router, switch, ...). Util para ver que bahias hay libres antes de instalar un modulo (ej. un HWIC-2T serial en un 2911) con pt_add_module. El campo 'root' es un arbol: cada nodo tiene name, slot_path, type, sus 'slots' (index + tipo) y sus 'modules' (submodulos). Las bahias HWIC/NM suelen colgar de un submodulo no-removible, no de la raiz. Solo lectura.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "Nombre del dispositivo (ej. Router0)."
+          }
+        },
+        "required": [
+          "device"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_get_supported_modules",
+      "description": "Lista los modelos de modulo que un dispositivo admite (los mismos del navegador de modulos de la GUI). Usar ANTES de pt_add_module para saber el string EXACTO de modelo a instalar. Aplica a routers/switches (HWIC, NM, ...) y a end-devices (la NIC swappable de una PC: Ethernet vs WiFi). Solo lectura.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "Nombre del dispositivo (ej. Router0, PC0)."
+          }
+        },
+        "required": [
+          "device"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_add_module",
+      "description": "Instala un modulo en una bahia de un dispositivo (ej. un HWIC-2T serial en un 2911, o una NIC WiFi en una PC). IMPORTANTE: PT exige el dispositivo APAGADO para tocar modulos fisicos: llamar pt_power(device,false) ANTES, y pt_power(device,true) + pt_skip_boot DESPUES. Si la bahia ya esta ocupada devuelve added=false: para cambiar un modulo (ej. Ethernet->WiFi en una PC) usar pt_remove_module primero. Descubrir el 'model' con pt_get_supported_modules y las bahias con pt_get_modules. El 'type' es OPCIONAL: si se omite, se autodetecta del tipo de la bahia (recomendado). La respuesta incluye el 'type' que se uso.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "Dispositivo (ej. Router0, PC0)."
+          },
+          "slot": {
+            "type": "string",
+            "description": "Bahia destino (string del SDK, ej. '0/0' en un 2911, '0' en la NIC de una PC)."
+          },
+          "type": {
+            "type": "string",
+            "description": "OPCIONAL. Tipo de bahia del SDK; si se omite se autodetecta. Valores: INTERFACE_CARD (HWIC de router), PT_HOST_MODULE (NIC de PC/end-device), NETWORK_MODULE (NM), LINE_CARD, SFP_MODULE, ..."
+          },
+          "model": {
+            "type": "string",
+            "description": "Nombre del modelo (ej. HWIC-2T). Debe salir de pt_get_supported_modules."
+          }
+        },
+        "required": [
+          "device",
+          "slot",
+          "model"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      }
+    },
+    {
+      "name": "pt_remove_module",
+      "description": "Quita el modulo de una bahia, dejandola libre. Mismo requisito de apagado que pt_add_module (pt_power off antes). Necesario para cambiar un modulo por otro (ej. quitar el Ethernet de una PC antes de instalarle una NIC WiFi). Devuelve removed=false (sin error) si la bahia ya estaba vacia.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "description": "Dispositivo (ej. Router0, PC0)."
+          },
+          "slot": {
+            "type": "string",
+            "description": "Bahia a vaciar (mismo string que pt_add_module)."
+          }
+        },
+        "required": [
+          "device",
+          "slot"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      }
+    },
+    {
+      "name": "pt_save_file",
+      "description": "Guarda la topologia actual en un archivo .pkt. La ruta es del lado de la maquina donde corre Packet Tracer; usar ruta absoluta (ej. C:\\\\redes\\\\lab1.pkt).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Ruta absoluta destino .pkt."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      }
+    },
+    {
+      "name": "pt_open_file",
+      "description": "Abre un archivo .pkt en Packet Tracer, reemplazando la topologia actual. La ruta es del lado de la maquina donde corre PT; usar ruta absoluta.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Ruta absoluta del .pkt a abrir."
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      }
+    },
+    {
+      "name": "pt_get_device_models",
+      "description": "Lista el catalogo de PT para no adivinar el 'model' de pt_add_device. Sin 'type' devuelve los tipos de dispositivo disponibles; con 'type' (uno de esos valores EXACTOS, ej. 'Routers') devuelve los modelos de ese tipo (ej. 2911).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Tipo de dispositivo (uno de los que devuelve esta misma tool sin argumentos). Opcional."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      }
+    }
+  ]
+}

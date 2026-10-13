@@ -1,0 +1,13 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "[STATUS_OK] enable $ ping 192.0.2.50\n\n"
+    }
+  ],
+  "isError": false,
+  "structuredContent": {
+    "status": "STATUS_OK",
+    "output": "\n"
+  }
+}

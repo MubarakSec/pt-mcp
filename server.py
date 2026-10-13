@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import atexit
 import xml.etree.ElementTree as ET
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +22,15 @@ sys.path.insert(0, HERE)
 
 from ptread import parse, text, config_text  # noqa: E402
 import ptbuild  # noqa: E402
+from live_bridge import LiveBridge, LiveBridgeError  # noqa: E402
+
+try:
+    _live = LiveBridge()
+    _live_configuration_error = None
+    atexit.register(_live.close)
+except ValueError as exc:
+    _live = None
+    _live_configuration_error = str(exc)
 
 PROTOCOL_VERSION = "2024-11-05"
 CACHE_DIR = os.path.join(tempfile.gettempdir(), "pt-mcp-cache")
@@ -586,6 +596,23 @@ HANDLERS = {
     "pt_build_save": b_save,
 }
 
+def _live_tools():
+    if _live is None:
+        return LiveBridge.cached_tools()
+    try:
+        return _live.tools()
+    except LiveBridgeError:
+        # Saved-file tools remain available if the optional backend is absent.
+        return []
+
+
+LIVE_STATUS_TOOL = {
+    "name": "pt_live_status",
+    "description": "Read live backend availability without changing Packet Tracer. Child availability is not proof of IPC authentication.",
+    "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False},
+    "annotations": {"readOnlyHint": True},
+}
+
 # ---------------------------------------------------------------- protocol
 
 def _send(obj):
@@ -602,9 +629,15 @@ def _error(rid, msg, code=-32603):
 
 
 def handle(req):
+    if not isinstance(req, dict):
+        _error(None, "Invalid request: expected a JSON object", -32600)
+        return
     method = req.get("method")
     rid = req.get("id")
     params = req.get("params") or {}
+    if not isinstance(params, dict):
+        _error(rid, "Invalid params: expected a JSON object", -32602)
+        return
 
     if os.environ.get("PT_MCP_DEBUG"):
         with open(os.path.join(CACHE_DIR, "last-request.json"), "w") as fh:
@@ -615,8 +648,8 @@ def handle(req):
         _result(rid, {
             "protocolVersion": ver,
             "capabilities": {"tools": {"listChanged": False}},
-            "serverInfo": {"name": "pt-mcp", "version": "0.2.0",
-                           "description": "Packet Tracer topology reader and builder"},
+            "serverInfo": {"name": "pt-mcp", "version": "0.3.0",
+                           "description": "Packet Tracer saved-file toolkit and live IPC bridge"},
         })
     elif method in ("notifications/initialized", "initialized"):
         return
@@ -626,9 +659,25 @@ def handle(req):
         _result(rid, {"tools": [
             {"name": n, "description": d, "inputSchema": s}
             for n, d, s in TOOLS
-        ]})
+        ] + [LIVE_STATUS_TOOL] + _live_tools()})
     elif method == "tools/call":
         name = params.get("name")
+        if name == "pt_live_status":
+            status = _live.status() if _live is not None else {
+                "launcher_available": False, "child_alive": False,
+                "configuration_error": _live_configuration_error,
+            }
+            _result(rid, _ok(status))
+            return
+        if name in {tool["name"] for tool in _live_tools()}:
+            if _live is None:
+                _result(rid, _err("Live backend configuration error: " + _live_configuration_error))
+                return
+            try:
+                _result(rid, _live.call_tool(name, params.get("arguments") or {}))
+            except (LiveBridgeError, ValueError) as exc:
+                _result(rid, _err(str(exc)))
+            return
         fn = HANDLERS.get(name)
         if fn is None:
             _result(rid, _err(f"unknown tool: {name}"))
@@ -653,7 +702,7 @@ def main():
         try:
             handle(req)
         except Exception as exc:  # never die on one bad request
-            if req.get("id") is not None:
+            if isinstance(req, dict) and req.get("id") is not None:
                 _error(req["id"], f"{type(exc).__name__}: {exc}")
 
 
