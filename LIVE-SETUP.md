@@ -1,152 +1,131 @@
-# Packet Tracer MCP: saved files and live IPC
+# Live Packet Tracer setup
 
-The merged server is `server.py`, version **0.4.0**, in this folder. It exposes **52 tools**: the original 21 saved-file tools, three model-library tools, 27 live tools, and `pt_live_status`.
+This repository combines the saved-file Python tools with a Java backend under `backend/java/`. The Python MCP server starts the Java process on demand; the live tools talk to the running simulator through Cisco IPC. No sibling Java checkout is needed.
 
-The Java backend is the sibling folder `../pt-mcp-live`, cloned from [jenaro1804/PacketTracer_mcp](https://github.com/jenaro1804/PacketTracer_mcp). Its source and Git history remain there; the Python server forwards live calls over MCP stdio. Both backends therefore retain their own behavior and code.
+## One-command setup
 
-```text
-Codex / OpenCode
-       |
-       v
-Python server.py
-       |-- pt_* and pt_build_* --> .pkt/XML inspection and copy-based edits
-       |
-       `-- pt_live_* --> Java MCP --> Cisco SDK --> running Packet Tracer
+For saved `.pkt` and XML tools alone, run `python3 server.py`; no Java or Packet Tracer installation is needed. To enable live tools, install JDK 21 and Cisco Packet Tracer, then run once from the repository root:
+
+```sh
+python3 setup.py
 ```
 
-## Use it now
+The script checks JDK 21, searches the local Packet Tracer installation for the Cisco SDK and `meta`, copies the SDK into the ignored `backend/java/libs/` directory, reuses or generates local IPC credentials, builds the Java distribution, and generates `backend/java/pta/ptmcp/ptmcp.pta` with the required seven privileges.
 
-1. Start Cisco Packet Tracer. Save any project before asking to open another.
-2. Confirm **Extensions → IPC → Options** is listening on port **39000**. Leave **Allow Remote Applications** off.
-3. The local **PT MCP Connector** is already registered under **Extensions → IPC → Configure Apps**, set to **On Demand**. The MCP client starts the Java backend; you do not need to press Launch in Packet Tracer.
-4. Start a new Codex session or reload the OpenCode MCP connection to discover the new tools. Both configurations point to `python3 /home/mobta/tools/pt-mcp/server.py`.
-5. Ask for `pt_live_status`, then `pt_live_get_topology`. Status reports backend process availability; a successful topology call also demonstrates IPC authentication.
+If auto-detection does not find the local Packet Tracer files, pass the locations explicitly:
 
-Example prompts:
+```sh
+python3 setup.py --packet-tracer-root /path/to/extracted/packet-tracer
+python3 setup.py --appimage /path/to/packettracer.AppImage
+python3 setup.py --sdk-jar /path/to/pt-cep-java-framework-9.0.0.0.jar --meta /path/to/meta
+```
 
-- “Use pt_live_get_topology to inspect the open simulator.”
-- “Use pt_live_run_cli to run show ip interface brief on Router0 in enable mode.”
-- “Set PC0 FastEthernet0 to DHCP, read its endpoint configuration, then inspect the router's DHCP bindings.”
-- “Save the live lab as a new absolute .pkt path, then use pt_open to inspect that saved file.”
-- “Use pt_live_ping from PC0 to 192.0.2.1 and report the actual received count.”
-- “Use pt_live_run_terminal on PC0 with ipconfig.”
-- “Use pt_live_http_get on PC0 to fetch http://198.51.100.2.”
-- “Import a clean model seed with pt_model_import, list it with pt_model_list, then use pt_build_add_device to add an absent model to an offline build copy.”
+Linux AppImage extraction needs `unsquashfs`. Use `python3 setup.py --help` for the complete option list; `--pt-version` defaults to `9.0.1`. You may also set explicit IPC credentials in `backend/java/local.properties` before setup. Setup creates this gitignored file with mode `0600` if it does not exist.
 
-## Tool behavior
+### Register the connector in Packet Tracer
 
-| Tools | Target | Effect |
+Packet Tracer GUI registration remains a one-time manual step on a fresh install or after regenerating the registration metadata:
+
+1. Start Packet Tracer and open **Extensions → IPC → Configure Apps**.
+2. Add `backend/java/pta/ptmcp/ptmcp.pta` and set **PT MCP Connector** to **On Demand**. If replacing an old registration, remove only this connector; preserve **PT Exam Player**.
+3. Open **Extensions → IPC → Options**, enable Listening on port `39000`, and enable **Always Listen On Start** if you want IPC available after each PT launch. Keep **Allow Remote Applications** off for local use.
+4. Start or reload the MCP client connection. The Python server starts the Java backend; do not launch the Java app manually from PT.
+
+After setup, point the MCP client at this repository's `server.py`, for example:
+
+```text
+python3 /absolute/path/to/pt-mcp/server.py
+```
+
+The command is unchanged from the saved-file server. Start a new session or reload the MCP server to discover all 52 tools. Begin with `pt_live_status`, then `pt_live_get_topology`.
+
+## Requirements and setup options
+
+| Component | Requirement | Notes |
 |---|---|---|
-| `pt_open`, `pt_devices`, `pt_config`, `pt_links`, etc. | A saved `.pkt` or XML file | Inspect saved state; opening does not replace the simulator workspace. |
-| `pt_build_*` | A separate build copy | Preserve the original copy/edit/save workflow. |
-| `pt_live_get_*` | The running simulator | Read live inventory, interfaces, endpoint settings, links, models, and modules. |
-| `pt_live_add_device`, connection/module/endpoint tools | The running simulator | Change live topology or settings. |
-| `pt_live_run_cli` | A Cisco router, switch, or ASA | Run IOS commands and return their status and output. PC/Server command prompts are outside this tool's scope. |
-| `pt_live_open_file` | The running simulator | Replace the active workspace with the supplied file. |
-| `pt_live_save_file` | The running simulator | Save to the supplied path; an existing destination can be overwritten. Use a new output path when preserving an original. |
+| Python tools | Python 3 | Saved-file tools use the standard library plus vendored `Decipher/`. |
+| Live backend build | JDK 21 | Setup rejects other Java compiler versions. |
+| Live simulator | Cisco Packet Tracer, locally installed or mounted | The registration PT version defaults to `9.0.1`; use `--pt-version` when appropriate. |
+| Cisco SDK | `pt-cep-java-framework-9.0.0.0.jar` from the local PT installation | Proprietary; copied to ignored `backend/java/libs/`, not redistributed. |
+| Registration tool | Cisco `meta` from the local PT installation | Used to produce the `.pta` app registration. |
+| AppImage extraction | `unsquashfs` on Linux | Needed only when using `--appimage` instead of installed/extracted files. |
 
-Live and saved-file sessions are independent. After changing a live device, save with `pt_live_save_file`, then open that file with `pt_open` to inspect updated saved state. `pt_build_set_config` still writes saved configuration; it does not execute a live CLI command.
+If the local install is at a custom extracted path, use `--packet-tracer-root`. Use `--sdk-jar` and `--meta` to provide individual files. Setup does not download Cisco binaries or register the generated app in Packet Tracer's GUI.
 
-`pt_live_get_endpoint_config` now reads gateway and DNS from the live device's native XML, matching the requested interface by MAC address. Its `gateway_dns_source` identifies that fallback. No project is saved or reopened for this read. For DHCP, also inspect the serving router's `show ip dhcp binding` or the PC's `ipconfig`; the SDK's stored IP/mask can lag the active lease.
+## What runs where
 
-## Diagnostics added in 0.4.0
+```text
+MCP client
+   |
+   v
+server.py (stdio MCP)
+   |-- saved-file tools --> .pkt/XML reader and copy-based builder
+   `-- pt_live_* tools --> backend/java/build/install/pt-mcp/bin/pt-mcp
+                                      |
+                                      v
+                             Packet Tracer IPC :39000
+```
 
-| Tool | What it does |
+Saved-file and live sessions are independent. `pt_open` reads a saved file without replacing the simulator workspace. `pt_build_*` edits a copy. Live operations change the currently open simulator; use `pt_live_save_file` to save a new project, then `pt_open` to inspect that saved result.
+
+## Tool scope and behavior
+
+- `pt_*` and `pt_build_*` retain the original 21 saved-file tools.
+- `pt_model_import`, `pt_model_list`, and `pt_build_add_device` use native Packet Tracer model templates for offline projects.
+- 27 `pt_live_*` tools plus `pt_live_status` inspect, configure, or change the running simulator.
+- `pt_live_run_cli` is for Cisco CLI devices. PCs and servers use endpoint and terminal tools.
+- `pt_live_open_file` replaces the active simulator workspace. Save changes first.
+- `pt_live_save_file` writes to the PT machine's filesystem; use an absolute new path when preserving an original.
+- Live operations are sent once. If a reply times out, inspect Packet Tracer before repeating a mutation because the action may already have completed.
+
+### Diagnostics
+
+| Tool | Use |
 |---|---|
-| `pt_live_ping` | Captures actual ping outcomes on Cisco devices and PCs/servers. Distinguishes success, failure, and unknown/timeouts. |
-| `pt_live_run_terminal` | Captures supported read-only commands on PC/server prompts and Cisco terminals, including `ipconfig`, `arp -a`, `tracert`, and `show` commands. |
-| `pt_live_http_get` | Requests a page using the simulated device's browser and returns its actual Cisco response type and content. |
+| `pt_live_ping` | Reports observed ICMP outcome. Unknown/timeouts are not counted as success. |
+| `pt_live_run_terminal` | Captures supported PC/server commands such as `ipconfig`, plus Cisco terminal commands. |
+| `pt_live_http_get` | Checks simulated HTTP/HTTPS response, not full browser rendering or JavaScript interaction. |
 | `pt_live_http_service` | Reads or configures a simulated server's HTTP service and page. |
-| `pt_live_get_device_xml` | Reads native device XML without saving the project. It can include configuration data. |
-| `pt_model_import`, `pt_model_list`, `pt_build_add_device` | Cache native templates and add models that are absent from an offline project's current device list. |
+| `pt_live_get_device_xml` | Reads native live device XML; it may include configuration data. |
+| `pt_live_get_endpoint_config` | Reads endpoint gateway and DNS from live device XML. Check router DHCP bindings or `ipconfig` as well because stored address fields may lag an active lease. |
 
-For ping results use `pt_live_ping`; the original raw `pt_live_run_cli` call can still return empty text for an asynchronous IOS ping. Cisco ping results use a correlated `DonePing` event. Packet Tracer destroys the finished ping process, so `sent` and standard `lossPercent` can remain null; `received`, `outcome`, and loss relative to requested probes are reported with their source. PC/server ping reports its printed sent/received summary.
+For Cisco pings, Packet Tracer destroys the completed ping process. The tool uses correlated events; `received`, `outcome`, and loss relative to requested probes are the useful result fields. `sent` and standard `lossPercent` may remain null. A custom terminal timeout shorter than a native command can produce an unknown result while that command continues; let it finish before issuing another terminal command.
 
-`pt_live_http_get` checks simulated HTTP/HTTPS responses, not full visual rendering or clicking JavaScript forms. Interactive UI work still uses computer control. Cisco ping currently supports IPv4; unknown outcomes are not treated as successful connectivity. A custom terminal timeout shorter than a native command can return unknown while that command continues; allow it to finish before another terminal command.
+## Verification and evidence
 
-The reusable library contains nine native templates from the integration seed, including eight common models plus Packet Tracer's power-distribution artifact. Templates live in ignored `model-templates/`. Import a clean native source: IOS/addressing/key/VLAN sanitization is scoped and is not a full factory reset of server services and files. Hardware trees are copied from Packet Tracer, not synthesized.
+Version 0.5.0 setup built the bundled backend successfully. After migrating the local connector registration and reopening the saved integration lab, a live topology read returned 11 devices and two links from the nested backend. See [packaging-0.5.0.json](verification/packaging-0.5.0.json) for the migration record. This packaging change used a build and manual inventory inspection; no automated test suite was run.
 
-## What was verified
+The checked-in verification records include earlier runs made while Java lived in a separate checkout. They are retained historical evidence and are not regenerated by setup. Paths such as `verification/runtime-results.json`, `verification/fixed-features.json`, and `verification/model-module-coverage.json` describe those recorded runs. They do not prove that every live operation, model, or hospital network policy has been tested.
 
-On installed **Packet Tracer 9.0.1.0858** and **OpenJDK 21**, using the Cisco **9.0.0.0 SDK JAR shipped inside that installation**:
+Recorded coverage on Packet Tracer **9.0.1.0858**, OpenJDK 21, and Cisco's **9.0.0.0 SDK JAR** includes MCP discovery, IPC authentication, topology inspection, router/PC creation, cabling, IOS configuration/readback, endpoint static IP and DHCP, save/reopen, and offline inspection. Later records include ping results, terminal output, HTTP responses, common native models, module insertion/removal, power cycling, and cable/device deletion. See the individual JSON records in `verification/` for the scope and limitations of each run.
 
-| Check | Result |
-|---|---|
-| Java build | `installDist` completed successfully. |
-| Combined MCP discovery | 44 unique tool names, including all 21 original names. |
-| IPC authentication and topology read | Passed. |
-| Create 2911 router and PC; connect Ethernet interfaces | Passed. |
-| Configure router through IOS CLI; read interface state | Passed; Gi0/0 became `192.0.2.1`, up/up. |
-| Apply static endpoint address | Passed; `192.0.2.60` was read back. |
-| Switch endpoint to DHCP | Passed; PC obtained `192.0.2.50`, also visible in router DHCP bindings. |
-| Save and reopen through live IPC | Passed; reopening returned `FILE_RETURN_OK`. |
-| Original file tools inspect that live-created file | Passed for opening, devices, and running configuration. |
-| Existing saved-file smoke workflow | Passed on the existing CCNA project, without modifying it. |
-| Missing backend and invalid live settings | Original tools remained available; live calls returned errors. |
-| Malformed request envelopes | Returned errors without terminating the server. |
-| IOS `ping` through this SDK command call | Command accepted, but output was empty. Connectivity success is **not verified** by that result. |
-
-Evidence is in [verification/runtime-results.json](verification/runtime-results.json), [verification/failure-isolation.json](verification/failure-isolation.json), and [verification/live-ping.json](verification/live-ping.json). The saved integration lab is `verification/demo-live.pkt`. Creating the first PC also caused Packet Tracer to add its standard power-distribution device.
-
-These checks cover the merged transport and representative operations. They do not establish that all 22 upstream live operations, all device models, or the hospital access policies have been tested.
-
-### Additional verification after the fixes
-
-- Cisco ping: a reachable PC produced two matching replies and success; an unreachable IP produced zero replies and failure.
-- PC ping: successful and unreachable targets produced complete sent/received summaries.
-- PC and server command prompts: `ipconfig` output was captured through terminal events.
-- Endpoint readback: gateway `192.0.2.1` and DNS `198.51.100.2` were read from live device XML.
-- HTTP: the simulated browser returned `HTTP_OK` and the expected page; an unreachable server returned a timeout.
-- Offline model creation: a 2960 absent from the original saved project was added from the library, cloned with unique MACs/physical identity, loaded, saved by Packet Tracer, and reopened successfully.
-- Models checked: 2911, 1941, 2960-24TT, 3560-24PS, PC-PT, Laptop-PT, Server-PT, and AccessPoint-PT. Cisco fixtures also accepted `show version`.
-- HWIC-2T insertion/removal, router power cycling, automatic cable creation, cable deletion, and device deletion passed.
-
-Repeated HTTP requests captured two separately changed pages; see [http-repeat.json](verification/http-repeat.json). Back-to-back PC ping, `ipconfig`, and `arp -a` also passed after fixing SDK per-object event subscription reuse; see [terminal-sequence.json](verification/terminal-sequence.json).
-
-Evidence: [fixed-features.json](verification/fixed-features.json), [ping-fixed.json](verification/ping-fixed.json), and [model-module-coverage.json](verification/model-module-coverage.json). This is verified coverage of common models and operations; it is not a guarantee for every catalog model or feature.
+These runs used a local integration checkout and local Packet Tracer installation. They are historical compatibility evidence, not a guarantee of support for every Packet Tracer release or device catalog entry.
 
 ## Runtime settings
 
-| Setting | Default / purpose |
+| Variable | Default / purpose |
 |---|---|
-| `PT_MCP_LIVE_COMMAND` | Optional JSON array overriding the Java command. Defaults to `../pt-mcp-live/build/install/pt-mcp/bin/pt-mcp`. |
-| `PT_MCP_LIVE_TIMEOUT` | Positive finite number of seconds; default 45. |
-| `PT_MCP_HOST` | Java IPC host; default localhost. |
-| `PT_MCP_PORT` | Java IPC port; default 39000. |
-| `PT_MCP_CONFIG` | Optional explicit path to Java credential properties. |
-| `PT_MCP_AUTH_APPLICATION`, `PT_MCP_AUTH_SECRET` | Optional environment overrides for the IPC app ID and shared secret. |
+| `PT_MCP_LIVE_COMMAND` | Optional JSON argv override for the Java command. Defaults to `backend/java/build/install/pt-mcp/bin/pt-mcp`. |
+| `PT_MCP_LIVE_TIMEOUT` | Positive timeout in seconds; default 45. |
+| `PT_MCP_HOST` | IPC host; default localhost. |
+| `PT_MCP_PORT` | IPC port; default 39000. |
+| `PT_MCP_CONFIG` | Optional explicit Java credential-properties path. |
+| `PT_MCP_AUTH_APPLICATION`, `PT_MCP_AUTH_SECRET` | Optional environment overrides for IPC app ID and shared secret. |
 
-The bridge sets the child's working directory to the Java repository, so its ignored `local.properties` file is found regardless of the MCP client's working directory. Credentials and plaintext app metadata are mode 0600; the proprietary JAR, generated `.pta`, credentials, and build output are excluded from Git.
+The bridge launches the child with `backend/java/` as its working directory, so the ignored `backend/java/local.properties` is found regardless of the MCP client's working directory. Generated credentials and app metadata use restrictive permissions. SDK JARs, credentials, registration output, and build artifacts are not versioned.
 
-The generated manifest requests seven privileges: `GET_NETWORK_INFO`, `CHANGE_NETWORK_INFO`, `SIMULATION_MODE`, `MISC_GUI`, `FILE`, `CHANGE_GUI`, and `APPLICATION`. Device creation failed at `getLogicalWorkspace` until `APPLICATION` was included; the successful integration check followed that change. Multiuser, Activity Wizard, preference changes, and IPC administration are not requested.
+Setup honors `PT_MCP_CONFIG` and the same per-key credential environment overrides as Java. When an existing properties file is present, its values are preserved; keep any overrides consistent when running the MCP. Both Java and its compiler must be version 21, selected through `JAVA_HOME` or `PATH`. Gradle downloads its wrapper distribution and declared Maven dependencies on the first uncached build, so that build needs internet access.
 
-## Rebuild the Java backend
+## Rebuild after Java source changes
+
+Run the root setup command again:
 
 ```sh
-cd /home/mobta/tools/pt-mcp-live
-./gradlew installDist --console=plain
+python3 setup.py
 ```
 
-It requires JDK 21 and `libs/pt-cep-java-framework-9.0.0.0.jar`. That JAR was copied from your installed Packet Tracer AppImage. It is proprietary and is not included in Git.
+It rebuilds the nested Java distribution and refreshes the registration metadata using the existing local credentials. If the app registration was already added in Packet Tracer and its privileges or key changed, remove and re-add **PT MCP Connector** in Configure Apps.
 
-The local Linux `meta` utility created `pta/ptmcp/ptmcp.pta` from the ignored `ptmcp.xml` containing the local shared key. If you regenerate or change the app metadata, remove and re-add **PT MCP Connector** in Configure Apps so Packet Tracer uses the new privilege/key settings. Preserve the built-in **PT Exam Player** entry.
+## Rollback and provenance
 
-If upstream tools change, regenerate `live_tools.json` from the Java server's `tools/list` result before reloading clients. The checked-in catalog enables offline startup without launching Java. It contains schemas, descriptions, and annotations; it contains no credentials.
-
-## Failure handling
-
-Live operations are sent once. The Java connection manager and Python bridge do not automatically replay a failed operation. If the reply is lost after Packet Tracer applied a change, inspect the simulator before repeating the action. Timeouts and protocol failures discard the child; a subsequent call can establish a fresh connection.
-
-The Python process closes its Java process group on shutdown. An absent Java installation, invalid live configuration, or failed live call does not disable the existing saved-file toolkit.
-
-## Backups and rollback
-
-Your original toolkit is preserved at `/home/mobta/tools/pt-mcp-backup-20261013-041405`. The Python repository's initial commit also preserves that baseline. The merge work is on `feature/live-ipc`; the Java clone's changes are on `integration/python-toolkit`.
-
-To use the original toolkit independently, point an MCP entry at the backup's `server.py`. Keep the current backup until you are satisfied with the merged version. The Codex configuration was backed up alongside `~/.codex/config.toml` before adding the new server entry.
-
-## Sources
-
-- [Cisco IPC and ExApp registration](https://tutorials.ptnetacad.net/help/default/ipc.htm).
-- [Upstream Java MCP](https://github.com/jenaro1804/PacketTracer_mcp); cloned commit `9cc8112dd8e67ce406f3786373725965fae56c14`.
-- [OpenAI documentation: MCP configuration](https://learn.chatgpt.com/docs/extend/mcp?surface=cli).
+The former sibling path `../pt-mcp-live` is retained locally for rollback/history only; the combined project has no active dependency on it. For this checkout, the active Java source and build are under `backend/java/`. Older standalone backend setup notes are historical; use the root `setup.py` instructions here. Java provenance, upstream revision, and third-party licensing notes are in [THIRD-PARTY.md](THIRD-PARTY.md).

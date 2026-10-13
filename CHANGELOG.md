@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.0 — 2026-10-13
+
+### Added
+
+- Root `setup.py` prepares the combined project in one command: locates or accepts the local Cisco SDK and `meta`, checks JDK 21, builds the nested Java backend, preserves or creates IPC credentials, and generates the local `.pta` registration.
+- Java backend source and build now live under `backend/java`; the combined MCP client command still targets the root `server.py`.
+- `THIRD-PARTY.md` records Python, Java-backend, Cisco SDK, and Packet Tracer provenance and licensing notes.
+
+### Changed
+
+- Replaced sibling-checkout live setup instructions with the nested-backend layout and fresh-install GUI registration steps.
+- Clarified that earlier verification files came from recorded integration runs and do not establish compatibility for every model, operation, or Packet Tracer version.
+
 ## 0.4.0 — 2026-10-13
 
 ### Added

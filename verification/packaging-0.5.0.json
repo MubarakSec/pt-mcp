@@ -1,0 +1,28 @@
+{
+  "version": "0.5.0",
+  "date": "2026-10-13",
+  "layout": {
+    "python_server": "server.py",
+    "java_backend": "backend/java",
+    "setup_command": "python3 setup.py",
+    "nested_git_repository": false
+  },
+  "observed": {
+    "setup": "installDist BUILD SUCCESSFUL; repeated invocation preserved credentials",
+    "registration": "PT MCP Connector persisted nested launcher path after PT restart; PT Exam Player retained",
+    "live_topology": {
+      "isError": false,
+      "devices": 11,
+      "links": 2
+    },
+    "live_child_working_directory": "/home/mobta/tools/pt-mcp/backend/java",
+    "review": "Luna review fixes applied: env credential precedence and Java runtime validation"
+  },
+  "migration_notes": [
+    "Packet Tracer exited during registration migration; reopened saved integration lab.",
+    "Reopened listener was on39001; restored39000 before successful topology read."
+  ],
+  "tool_count": 52,
+  "scope": "Build and manual live inventory inspection; no automated test suite run for this packaging change.",
+  "old_java_checkout": "Retained for rollback; no default runtime dependency."
+}

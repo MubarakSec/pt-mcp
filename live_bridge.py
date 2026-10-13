@@ -11,6 +11,7 @@ import json
 import math
 import os
 import queue
+import re
 import shutil
 import signal
 import subprocess
@@ -22,7 +23,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parent
-JAVA_ROOT = ROOT.parent / "pt-mcp-live"
+JAVA_ROOT = ROOT / "backend" / "java"
 DEFAULT_COMMAND = [str(JAVA_ROOT / "build/install/pt-mcp/bin/pt-mcp")]
 CATALOG_PATH = ROOT / "live_tools.json"
 
@@ -151,7 +152,17 @@ class LiveBridge:
                     for setting in properties.read_text(encoding="utf-8").splitlines():
                         if "=" in setting and any(word in setting.partition("=")[0].lower()
                                                    for word in ("secret", "password", "token", "key")):
-                            sensitive.append(setting.partition("=")[2].strip())
+                            value = setting.partition("=")[2].strip()
+                            sensitive.append(value)
+                            # setup.py can store environment credentials using Java
+                            # Unicode escapes. Redact their decoded form as well.
+                            decoded = re.sub(r"\\u([0-9a-fA-F]{4})",
+                                             lambda match: chr(int(match.group(1), 16)), value)
+                            try:
+                                sensitive.append(decoded.encode("utf-16-be", errors="surrogatepass")
+                                                 .decode("utf-16-be"))
+                            except UnicodeError:
+                                pass
                 except OSError:
                     pass
                 for value in sensitive:
