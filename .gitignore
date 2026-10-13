@@ -8,3 +8,6 @@ local.properties
 verification/*.pkt
 verification/*.xml
 model-templates/
+# Gradle's wrapper is source tooling, not the proprietary Cisco SDK.
+!backend/java/gradle/wrapper/gradle-wrapper.jar
+backend/java/pta/ptmcp/ptmcp.xml
