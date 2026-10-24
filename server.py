@@ -24,7 +24,7 @@ from ptread import parse, text, config_text  # noqa: E402
 import ptbuild  # noqa: E402
 import model_library  # noqa: E402
 import diagram_tools  # noqa: E402
-from live_bridge import LiveBridge, LiveBridgeError  # noqa: E402
+from live_bridge import LiveBridge, LiveBridgeError, DIAGNOSTIC_TOOLS, diagnostic_failure  # noqa: E402
 
 try:
     _live = LiveBridge()
@@ -685,7 +685,7 @@ def handle(req):
         _result(rid, {
             "protocolVersion": ver,
             "capabilities": {"tools": {"listChanged": False}},
-            "serverInfo": {"name": "pt-mcp", "version": "0.6.0",
+            "serverInfo": {"name": "pt-mcp", "version": "0.7.0",
                            "description": "Packet Tracer saved-file toolkit and live IPC bridge"},
         })
     elif method in ("notifications/initialized", "initialized"):
@@ -704,17 +704,21 @@ def handle(req):
             status = _live.status() if _live is not None else {
                 "launcher_available": False, "child_alive": False,
                 "configuration_error": _live_configuration_error,
+                "ipc_authentication": "unknown", "last_connection_probe": None,
             }
             _result(rid, _ok(status))
             return
         if name in {tool["name"] for tool in _live_tools()}:
             if _live is None:
-                _result(rid, _err("Live backend configuration error: " + _live_configuration_error))
+                _result(rid, diagnostic_failure("backend_configuration_unavailable") if name in DIAGNOSTIC_TOOLS
+                        else _err("Live backend configuration error: " + _live_configuration_error))
                 return
             try:
                 _result(rid, _live.call_tool(name, params.get("arguments") or {}))
-            except (LiveBridgeError, ValueError) as exc:
-                _result(rid, _err(str(exc)))
+            except ValueError as exc:
+                _result(rid, diagnostic_failure("invalid_arguments", "fail") if name in DIAGNOSTIC_TOOLS else _err(str(exc)))
+            except LiveBridgeError as exc:
+                _result(rid, diagnostic_failure("backend_unavailable_or_reply_lost") if name in DIAGNOSTIC_TOOLS else _err(str(exc)))
             return
         fn = HANDLERS.get(name)
         if fn is None:

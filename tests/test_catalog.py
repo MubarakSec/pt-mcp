@@ -10,7 +10,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 class CatalogTests(unittest.TestCase):
     def test_registered_names_and_schemas_match_catalog(self):
         descriptors = {}
-        for filename in ('PtMcpServer.java', 'PresentationTools.java'):
+        for filename in ('PtMcpServer.java', 'PresentationTools.java', 'DiagnosticsTools.java'):
             source = (ROOT / 'backend/java/src/main/java/com/ptmcp' / filename).read_text()
             # Registrations have literal descriptions/schemas followed by a handler lambda.
             for match in re.finditer(r'tool\(jm,\s*"(pt_[^"]+)"\s*,(.*?)\(ex,\s*req\)\s*->', source, re.S):

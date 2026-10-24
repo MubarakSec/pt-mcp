@@ -60,6 +60,13 @@ public class PtIpcClient implements AutoCloseable {
 
     private PacketTracerSession session;
     private IPC ipc;
+    private final TerminalActivity terminalActivity=new TerminalActivity();
+    private TerminalMonitor terminalMonitor;
+    TerminalActivity terminalActivity() {return terminalActivity;}
+    TerminalMonitor terminalMonitor() {
+        if(terminalMonitor==null) terminalMonitor=new TerminalMonitor(session(),terminalActivity);
+        return terminalMonitor;
+    }
 
     /**
      * Constructor por defecto: carga las credenciales desde el entorno o el
@@ -113,7 +120,7 @@ public class PtIpcClient implements AutoCloseable {
         }
         if (!connected) {
             try { opened.close(); } catch (Exception ignored) { }
-            throw new IllegalStateException(
+            throw new AuthenticationRejectedException(
                     "Autenticacion rechazada por Packet Tracer. "
                             + "Revisa que '" + authApplication + "' este registrada en "
                             + "Extensions > IPC > Configure Apps con la KEY correcta.");
@@ -135,6 +142,11 @@ public class PtIpcClient implements AutoCloseable {
 
     /** Cierra la sesion. Idempotente. */
     public void disconnect() {
+        if(terminalMonitor!=null) {
+            try {terminalMonitor.close();} catch(com.cisco.pt.ipc.IPCError | RuntimeException ignored) { }
+            terminalMonitor=null;
+        }
+        terminalActivity.disconnect();
         if (session != null) {
             try {
                 session.close();
@@ -367,8 +379,17 @@ public class PtIpcClient implements AutoCloseable {
         Device d = network().getDevice(deviceName);
         CiscoDevice cisco = (CiscoDevice) d;
         String modeArg = mode == null ? "" : mode.trim().toLowerCase();
-        Pair<CommandStatus, String> result = cisco.enterCommand(command, modeArg);
-        return new CliResult(result.getFirst().name(), result.getSecond());
+        var line=cisco.getIpcTerminalLine();
+        String id=line.getObjectUUID().toString();
+        TerminalMonitor monitor=terminalMonitor();
+        long token=monitor.begin(id,deviceName,false,line.getPrompt());
+        try {
+            Pair<CommandStatus, String> result = cisco.enterCommand(command, modeArg);
+            monitor.completed(id,result.getFirst().name());
+            return new CliResult(result.getFirst().name(), result.getSecond());
+        } catch(com.cisco.pt.ipc.IPCError | RuntimeException failure) {
+            terminalActivity.uncertain(id,token);throw failure;
+        }
     }
 
     public void validateCliTarget(String deviceName) {

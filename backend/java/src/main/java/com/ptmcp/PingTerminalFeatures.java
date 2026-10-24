@@ -62,7 +62,7 @@ public final class PingTerminalFeatures {
         } else {
             throw new IllegalArgumentException("live ping supports routers, switches, PCs, and servers only.");
         }
-        return runOnTerminal(session, device, command, boundedTimeout(timeoutMs), true, count, true);
+        return runOnTerminal(client, session, device, command, boundedTimeout(timeoutMs), true, count, true);
     }
 
     private static Map<String, Object> liveCiscoPing(PacketTracerSession session, Device device,
@@ -184,10 +184,10 @@ public final class PingTerminalFeatures {
             result.put("source", "CiscoDevice.enterCommand");
             return result;
         }
-        return runOnTerminal(session, device, command, boundedTimeout(timeoutMs), false, 0, false);
+        return runOnTerminal(client, session, device, command, boundedTimeout(timeoutMs), false, 0, false);
     }
 
-    private static Map<String, Object> runOnTerminal(PacketTracerSession session, Device device,
+    private static Map<String, Object> runOnTerminal(PtIpcClient client, PacketTracerSession session, Device device,
                                                       String command, int timeoutMs, boolean ping,
                                                       int requestedCount, boolean countApplied) {
         TerminalLine line = terminalLine(device);
@@ -220,12 +220,15 @@ public final class PingTerminalFeatures {
         };
         TerminalLineEventRegistry registry = session.getEventManager().getTerminalLineEvents();
         boolean registered = false;
+        long token=0;
+        TerminalMonitor monitor=client.terminalMonitor();
         long started = System.currentTimeMillis();
         try {
             // A globally registered, UUID-filtered listener also avoids the
             // SDK's stale per-object subscription after remove/add cycles.
             registry.addListener(listener);
             registered = true;
+            token=monitor.begin(terminalUuid,device.getName(),device instanceof Pc,expectedPrompt);
             line.enterCommand(command);
             boolean completed = ended.await(timeoutMs, TimeUnit.MILLISECONDS);
             // CommandEnded can precede the host prompt becoming ready. Keep
@@ -242,7 +245,8 @@ public final class PingTerminalFeatures {
             result.put("status", status[0]);
             result.put("output", text);
             result.put("outputTruncated", text.length() >= MAX_OUTPUT_CHARS);
-            if (!completed) result.put("note", "Native terminal command may still be running; allow it to finish before issuing another command on this device.");
+            result.put("terminal_activity",client.terminalActivity().snapshot(terminalUuid));
+            if (!completed) result.put("note", "Native terminal command may still be running; its session listener remains attached. Do not replay it.");
             if (ping) {
                 Integer[] counts = parseCounts(text);
                 result.put("sent", counts[0]);
@@ -261,7 +265,11 @@ public final class PingTerminalFeatures {
             return result;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            if(token!=0) client.terminalActivity().uncertain(terminalUuid,token);
             throw new IllegalStateException("Interrupted while waiting for Packet Tracer terminal output.", e);
+        } catch(com.cisco.pt.ipc.IPCError | RuntimeException failure) {
+            if(token!=0) client.terminalActivity().uncertain(terminalUuid,token);
+            throw failure;
         } catch (java.io.IOException e) {
             throw new IllegalStateException("Could not subscribe to Packet Tracer terminal events: " + e.getMessage(), e);
         } finally {
@@ -271,7 +279,7 @@ public final class PingTerminalFeatures {
         }
     }
 
-    private static TerminalLine terminalLine(Device device) {
+    static TerminalLine terminalLine(Device device) {
         DeviceType type = device.getType();
         if (type == DeviceType.ROUTER || type == DeviceType.SWITCH
                 || type == DeviceType.MULTI_LAYER_SWITCH || type == DeviceType.SWITCH3650) {

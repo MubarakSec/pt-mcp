@@ -26,6 +26,16 @@ ROOT = Path(__file__).resolve().parent
 JAVA_ROOT = ROOT / "backend" / "java"
 DEFAULT_COMMAND = [str(JAVA_ROOT / "build/install/pt-mcp/bin/pt-mcp")]
 CATALOG_PATH = ROOT / "live_tools.json"
+DIAGNOSTIC_TOOLS = frozenset({"pt_live_probe_connection", "pt_live_get_readiness", "pt_live_validate_network"})
+
+
+def diagnostic_failure(reason: str, status: str = "unknown") -> dict[str, Any]:
+    """Missing/lost backend evidence is unknown, never a passing network check."""
+    observation = {"status": status, "reason": reason,
+                   "evidence": {"authenticated": None, "replayed": False}}
+    return {"content": [{"type": "text", "text": json.dumps(observation)}],
+            "structuredContent": observation, "isError": status == "fail"}
+
 
 
 class LiveBridgeError(RuntimeError):
@@ -64,7 +74,9 @@ class LiveBridge:
         self._stderr: deque[str] = deque(maxlen=80)
         self._lock = threading.RLock()
         self._next_id = 1
+        self._request_deadline: float | None = None
         self._protocol = "stdio JSON-RPC"
+        self._last_connection_probe: dict[str, Any] | None = None
         self._upstream_tools: list[dict[str, Any]] | None = None
         self._catalog = self._catalog_tools()
 
@@ -84,6 +96,7 @@ class LiveBridge:
         if self._proc is not None and self._proc.poll() is None:
             return
         self._proc = None
+        self._last_connection_probe = None
         if not self._launcher_available():
             raise LiveBridgeError(f"live backend launcher unavailable: {self.command[0]}")
         if not self.cwd.is_dir():
@@ -188,6 +201,8 @@ class LiveBridge:
 
     def _next_response(self, request_id: int) -> dict[str, Any]:
         deadline = time.monotonic() + self.timeout
+        if self._request_deadline is not None:
+            deadline = min(deadline, self._request_deadline)
         while True:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
@@ -227,6 +242,8 @@ class LiveBridge:
             return result
 
     def _request(self, method: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
+        if self._request_deadline is not None and time.monotonic() >= self._request_deadline:
+            raise LiveBridgeError("diagnostic deadline exceeded before dispatch")
         request_id = self._next_id
         self._next_id += 1
         msg: dict[str, Any] = {"jsonrpc": "2.0", "id": request_id, "method": method}
@@ -306,19 +323,37 @@ class LiveBridge:
             raise LiveBridgeError(f"not a live tool name: {prefixed_name}")
         upstream_name = "pt_" + prefixed_name[len("pt_live_"):]
         with self._lock:
-            self._start()
-            # Do not retry on timeout/disconnect: a mutation may have completed
-            # even when its response was lost.
+            diagnostic = prefixed_name in DIAGNOSTIC_TOOLS
+            if diagnostic:
+                if not isinstance(args, dict):
+                    raise ValueError("arguments must be an object")
+                requested = args.get("timeout_ms", 10000)
+                if isinstance(requested, bool) or not isinstance(requested, int) or not 1 <= requested <= 30000:
+                    raise ValueError("timeout_ms must be an integer 1..30000")
+                # Includes child initialization. Reserve at most one second for protocol overhead.
+                self._request_deadline = time.monotonic() + requested / 1000 + 1
             try:
-                return self._request("tools/call", {
+                self._start()
+                effective_args = dict(args) if isinstance(args, dict) else {}
+                if diagnostic:
+                    remaining = max(1, int((self._request_deadline - time.monotonic()) * 1000) - 500)
+                    effective_args["timeout_ms"] = min(requested, remaining)
+                result = self._request("tools/call", {
                     "name": upstream_name,
-                    "arguments": args if isinstance(args, dict) else {},
+                    "arguments": effective_args,
                 })
+                if upstream_name == "pt_probe_connection":
+                    observed = result.get("structuredContent")
+                    if isinstance(observed, dict):
+                        self._last_connection_probe = {key: observed.get(key) for key in ("status", "reason", "observed_at")}
+                return result
             except LiveBridgeError as exc:
                 self._stop_child()
                 raise LiveBridgeError(
                     f"{exc}. Outcome may be unknown; inspect Packet Tracer before retrying."
                 ) from exc
+            finally:
+                self._request_deadline = None
 
     def status(self) -> dict[str, Any]:
         """Report availability without starting a process or exposing secrets."""
@@ -331,33 +366,45 @@ class LiveBridge:
                 "child_alive": alive,
                 "cached_catalog_count": cached_count,
                 "backend_protocol": self._protocol,
+                "ipc_authentication": "unknown",
+                "last_connection_probe": self._last_connection_probe,
             }
 
     def _stop_child(self) -> None:
+        self._last_connection_probe = None
         proc, self._proc = self._proc, None
-        if proc is None or proc.poll() is not None:
+        if proc is None:
             return
         try:
-            if os.name == "nt":
-                proc.terminate()
-            else:
-                os.killpg(proc.pid, signal.SIGTERM)
-        except (OSError, ProcessLookupError):
-            pass
-        try:
-            proc.wait(timeout=2)
-        except subprocess.TimeoutExpired:
-            try:
-                if os.name == "nt":
-                    proc.kill()
-                else:
-                    os.killpg(proc.pid, signal.SIGKILL)
-            except (OSError, ProcessLookupError):
-                pass
-            try:
-                proc.wait(timeout=2)
-            except subprocess.TimeoutExpired:
-                pass
+            if proc.poll() is None:
+                try:
+                    if os.name == "nt":
+                        proc.terminate()
+                    else:
+                        os.killpg(proc.pid, signal.SIGTERM)
+                except (OSError, ProcessLookupError):
+                    pass
+                try:
+                    proc.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    try:
+                        if os.name == "nt":
+                            proc.kill()
+                        else:
+                            os.killpg(proc.pid, signal.SIGKILL)
+                    except (OSError, ProcessLookupError):
+                        pass
+                    try:
+                        proc.wait(timeout=2)
+                    except subprocess.TimeoutExpired:
+                        pass
+        finally:
+            for stream in (proc.stdin, proc.stdout, proc.stderr):
+                if stream is not None:
+                    try:
+                        stream.close()
+                    except (OSError, ValueError):
+                        pass
 
     def close(self) -> None:
         """Terminate the backend process group, including descendants."""

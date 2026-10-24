@@ -101,3 +101,26 @@ notes, and verify coordinates, Unicode text, unchanged cables/config/power and
 omitted-device positions. Save explicitly to a new `.pkt` path, reopen and inspect.
 Interrupt an IPC reply and verify unknown outcomes with no automatic replay.
 Rectangle groups are SVG-only; native group labels use explicit note calls.
+
+## Readiness stage — first increment
+
+Baseline update supplied by the owner: all 12 baseline tests and the full Cisco SDK
+build passed locally at `b5d74c0`; live PT verification remained pending. This is
+owner-reported local evidence, not a new build performed in this workspace.
+
+Implemented `pt_live_probe_connection`, `pt_live_get_readiness` and
+`pt_live_validate_network`, passive process/authentication distinction, per-check
+pass/fail/unknown evidence, shared deadlines and tracked terminal completion across
+timeouts. Active ipconfig/show probes require explicit opt-in. There is no mutation
+replay or implicit save. See [READINESS.md](READINESS.md) for limits and gaps.
+
+Offline tested: 20 Python test cases passed, including standalone JDK 21 policy
+harnesses, catalog/schema/read-only parity, actual-address/trunk output evaluation,
+no-probe and no-replay paths, pending terminal guards and bounded child startup.
+The timeout test exposed subprocess pipe cleanup, which was fixed and rerun with
+ResourceWarning promoted to errors. No mock/proxy result is live verification.
+
+New SDK adapters compiled: **pending** — no legitimate Cisco SDK is present here.
+New live PT verification: **pending**. In particular, per-interface DHCP flag
+semantics, supported trunk formatting, boot model coverage, terminal prompt/event
+ordering and save/reopen behavior need disposable local acceptance.

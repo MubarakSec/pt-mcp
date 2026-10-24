@@ -38,3 +38,23 @@ class JavaPolicyTests(unittest.TestCase):
                             str(ROOT / 'backend/java/src/main/java/com/ptmcp/PresentationPolicy.java'),
                             str(ROOT / 'tests/java/PresentationPolicyTest.java')], check=True)
             subprocess.run(['java', '-ea', '-cp', out, 'com.ptmcp.PresentationPolicyTest'], check=True)
+
+
+@unittest.skipUnless(shutil.which('javac') and shutil.which('java'), 'JDK unavailable')
+class JavaDiagnosticsTests(unittest.TestCase):
+    def run_harness(self, name):
+        with tempfile.TemporaryDirectory() as out:
+            folder = ROOT / 'backend/java/src/main/java/com/ptmcp'
+            files = [str(folder / (n + '.java')) for n in
+                     ('CliPolicy', 'PresentationPolicy', 'DiagnosticsPolicy', 'DiagnosticExecutor', 'TerminalActivity', 'ValidationEngine')]
+            subprocess.run(['javac', '-d', out, *files, str(ROOT / 'tests/java/DiagnosticsPolicyTest.java'), str(ROOT / 'tests/java' / (name + '.java'))], check=True)
+            subprocess.run(['java', '-ea', '-cp', out, 'com.ptmcp.' + name], check=True, timeout=15)
+
+    def test_diagnostics_policy(self):
+        self.run_harness('DiagnosticsPolicyTest')
+
+    def test_terminal_activity(self):
+        self.run_harness('TerminalActivityTest')
+
+    def test_validation_engine(self):
+        self.run_harness('ValidationEngineTest')

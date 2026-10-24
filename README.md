@@ -1,6 +1,6 @@
 # pt-mcp — Packet Tracer saved files and live simulator
 
-Version **0.6.0** exposes 63 MCP tools: 27 offline tools (22 saved-file/build, three native-model library, and two diagram tools), 35 live simulator tools, and `pt_live_status`. New live wrappers await SDK compilation and local Packet Tracer verification; see [implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md).
+Version **0.7.0** exposes 66 MCP tools: 27 offline tools (22 saved-file/build, three native-model library, and two diagram tools), 38 live simulator tools, and `pt_live_status`. New live wrappers await SDK compilation and local Packet Tracer verification; see [implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md).
 
 The Python server handles `.pkt`/XML inspection and copy-based editing. Its optional Java backend controls a running Packet Tracer simulator over IPC. The Java source now lives inside this repository at `backend/java`; no sibling checkout is required.
 
@@ -63,7 +63,7 @@ See [LIVE-SETUP.md](LIVE-SETUP.md) for IPC registration, live tool behavior, ver
 
 For the next implementation work, read [AGENTS.md](AGENTS.md), the [improvement backlog](IMPROVEMENTS.md), the [cloud development brief](docs/CLOUD-HANDOFF.md), and the [inspected SDK capabilities](docs/SDK-CAPABILITIES.md).
 
-Implemented additions include IOS failure classification and bounded CLI batches, live naming/positioning/notes, deterministic grouped layout planning, explicit layout application and portable SVG export. See the [workflow and input contracts](docs/DIAGRAMS.md) and [50-PC campus example](examples/campus-50.svg). Readiness, simulation/PDU and command-history expansion remain later roadmap work.
+Implemented additions include IOS failure classification and bounded CLI batches, live naming/positioning/notes, deterministic grouped layout planning, explicit layout application and portable SVG export. See the [workflow and input contracts](docs/DIAGRAMS.md) and [50-PC campus example](examples/campus-50.svg). Readiness diagnostics and evidence-based validation are described in [READINESS.md](docs/READINESS.md). Simulation/PDU and command-history expansion remain later roadmap work.
 
 A cloud coding agent can implement code and run offline tests without a simulator. Java compilation needs the legitimate Cisco SDK; live acceptance tests additionally need Packet Tracer with registered IPC access. Cloud development does not automatically make the local simulator remotely accessible. Record offline tests, SDK compilation and live verification separately.
 
