@@ -31,3 +31,10 @@ class JavaPolicyTests(unittest.TestCase):
                             str(ROOT / 'backend/java/src/main/java/com/ptmcp/CliPolicy.java'),
                             str(ROOT / 'tests/java/CliPolicyTest.java')], check=True)
             subprocess.run(['java', '-ea', '-cp', out, 'com.ptmcp.CliPolicyTest'], check=True)
+
+    def test_presentation_policy(self):
+        with tempfile.TemporaryDirectory() as out:
+            subprocess.run(['javac', '-d', out,
+                            str(ROOT / 'backend/java/src/main/java/com/ptmcp/PresentationPolicy.java'),
+                            str(ROOT / 'tests/java/PresentationPolicyTest.java')], check=True)
+            subprocess.run(['java', '-ea', '-cp', out, 'com.ptmcp.PresentationPolicyTest'], check=True)

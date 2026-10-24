@@ -65,7 +65,7 @@ public final class PtMcpServer {
     // ====== definicion de tools ======
 
     private static List<SyncToolSpecification> buildTools(io.modelcontextprotocol.json.McpJsonMapper jm, ConnectionManager conn) {
-        return List.of(
+        var tools = new java.util.ArrayList<>(List.of(
                 tool(jm, "pt_get_topology",
                         "Lista los dispositivos y el numero de enlaces actualmente en el lienzo de Packet Tracer.",
                         "{\"type\":\"object\",\"properties\":{},\"additionalProperties\":false}",
@@ -85,6 +85,7 @@ public final class PtMcpServer {
                                 + "(ej. router 2911, switch 2960, pc PC-PT).",
                         "{\"type\":\"object\","
                                 + "\"properties\":{"
+                                + "\"name\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":256},"
                                 + "\"type\":{\"type\":\"string\",\"description\":\"Tipo: router, switch, pc, server, laptop, hub, access_point, wireless_router, multi_layer_switch, asa, ...\"},"
                                 + "\"model\":{\"type\":\"string\",\"description\":\"Modelo concreto (ej. 2911, 2960, PC-PT).\"},"
                                 + "\"x\":{\"type\":\"number\",\"description\":\"Coordenada X en el lienzo.\"},"
@@ -400,7 +401,9 @@ public final class PtMcpServer {
                             result.put("path", path);
                             return result;
                         }))
-        );
+        ));
+        tools.addAll(PresentationTools.tools(jm, conn));
+        return tools;
     }
 
     private static List<String> commandList(Object value) {
@@ -416,18 +419,21 @@ public final class PtMcpServer {
         return ((Number) value).intValue();
     }
 
-    private static CallToolResult featureResult(ConnectionManager conn, java.util.function.Function<PtIpcClient, Map<String,Object>> operation) {
+    static CallToolResult featureResult(ConnectionManager conn, java.util.function.Function<PtIpcClient, Map<String,Object>> operation) {
         try {
             Map<String,Object> result = conn.withClient(operation);
             return CallToolResult.builder().addTextContent(result.toString()).structuredContent(result)
                     .isError(result.containsKey("outcome") && !"success".equals(result.get("outcome"))).build();
+        } catch (IllegalArgumentException e) {
+            return CallToolResult.builder().addTextContent(e.getMessage())
+                    .structuredContent(Map.of("outcome","validation_failure","changes_may_have_applied",false)).isError(true).build();
         } catch (com.cisco.pt.ipc.IPCError | Exception e) {
-            if (System.getenv("PT_MCP_DEBUG") != null) e.printStackTrace(System.err);
-            return error(e.getMessage());
+            return CallToolResult.builder().addTextContent("Operation/readback failed; inspect Packet Tracer before retrying")
+                    .structuredContent(Map.of("outcome","unknown","changes_may_have_applied",true)).isError(true).build();
         }
     }
 
-    private static SyncToolSpecification tool(
+    static SyncToolSpecification tool(
             McpJsonMapper jm, String name, String description, String schemaJson,
             BiFunction<io.modelcontextprotocol.server.McpSyncServerExchange,
                     McpSchema.CallToolRequest, CallToolResult> handler) {
@@ -436,6 +442,7 @@ public final class PtMcpServer {
                         .name(name)
                         .description(description)
                         .inputSchema(jm, schemaJson)
+                        .annotations(new McpSchema.ToolAnnotations(null, java.util.Set.of("pt_get_canvas", "pt_get_topology", "pt_get_links", "pt_get_ports", "pt_get_endpoint_config", "pt_get_modules", "pt_get_supported_modules", "pt_get_device_models", "pt_get_device_xml").contains(name), null, null, null, null))
                         .build())
                 .callHandler(handler)
                 .build();
@@ -493,10 +500,8 @@ public final class PtMcpServer {
             String model = reqStr(args, "model");
             double x = reqNum(args, "x");
             double y = reqNum(args, "y");
-            String name = conn.withClient(c -> c.addDevice(type, model, x, y));
-            Map<String, Object> structured = Map.of("name", name);
-            return ok("Creado: " + name + " (" + type + " " + model + ") en (" + x + ", " + y + ").",
-                    structured);
+            String requested = args.containsKey("name") ? PresentationPolicy.name(args.get("name")) : null;
+            return featureResult(conn, c -> PresentationPolicy.create(new PresentationFeatures(c), type, model, x, y, requested));
         } catch (Exception e) {
             return error("addDevice fallo: " + e.getMessage());
         }

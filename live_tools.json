@@ -26,7 +26,7 @@
     },
     {
       "name": "pt_add_device",
-      "description": "Crea un dispositivo en el lienzo logico. PT asigna el nombre y lo devuelve. El argumento 'model' debe existir en el catalogo de PT para ese tipo (ej. router 2911, switch 2960, pc PC-PT).",
+      "description": "Create a device with optional unique display name. Automatic naming when omitted; partial outcomes reported.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -45,6 +45,11 @@
           "y": {
             "type": "number",
             "description": "Coordenada Y en el lienzo."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
           }
         },
         "required": [
@@ -696,6 +701,201 @@
           "device",
           "commands",
           "initial_mode"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_rename_device",
+      "description": "Rename a display name, not IOS hostname; return actual name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "new_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "required": [
+          "name",
+          "new_name"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_move_device",
+      "description": "Move icon origin to signed 32-bit integer coordinates; return readback.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "x": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "y": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          }
+        },
+        "required": [
+          "name",
+          "x",
+          "y"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_get_canvas",
+      "description": "Read live devices, origin positions, observed links and native notes; unknown links remain unknown.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true
+      }
+    },
+    {
+      "name": "pt_add_note",
+      "description": "Add a native note at real integer coordinates; bounded Unicode text and readback.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 16384
+          },
+          "x": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          },
+          "y": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647
+          }
+        },
+        "required": [
+          "text",
+          "x",
+          "y"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_update_note",
+      "description": "Update text of an existing verified native note ID; return readback.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 16384
+          }
+        },
+        "required": [
+          "id",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_delete_note",
+      "description": "Remove a verified native note ID only; return absence readback.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_apply_layout",
+      "description": "Preflight then sequentially move 1..500 devices; stop on any failure/unknown. Does not apply annotations or save.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "moves": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 500,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "x": {
+                  "type": "integer",
+                  "minimum": -2147483648,
+                  "maximum": 2147483647
+                },
+                "y": {
+                  "type": "integer",
+                  "minimum": -2147483648,
+                  "maximum": 2147483647
+                }
+              },
+              "required": [
+                "name",
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "moves"
         ],
         "additionalProperties": false
       },
