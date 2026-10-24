@@ -7,6 +7,7 @@ public class TerminalActivityTest {
         long token=activity.begin("a","PC0",true,"ipconfig");
         assert activity.snapshot("a").get("status").equals("fail");
         try { activity.begin("a","PC0",true,"ipconfig");throw new AssertionError(); } catch(IllegalStateException expected) { }
+        activity.prompt("a"); // prompt at command start is not completion readiness
         activity.ended("a","STATUS_OK");
         assert activity.snapshot("a").get("status").equals("fail"); // ended is not a ready prompt
         activity.prompt("a");

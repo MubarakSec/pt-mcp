@@ -541,6 +541,9 @@ public class PtIpcClient implements AutoCloseable {
         if (path == null || path.isEmpty()) {
             throw new IllegalArgumentException("path es obligatorio.");
         }
+        // A project replacement invalidates observations about the old terminals,
+        // including when PT's open reply is subsequently lost.
+        if(terminalMonitor!=null) terminalMonitor.reset();else terminalActivity.disconnect();
         FileOpenReturnValue result = appWindow().fileOpen(path);
         return result == null ? "FILE_RETURN_UNEXPECTED_FORMAT" : result.name();
     }

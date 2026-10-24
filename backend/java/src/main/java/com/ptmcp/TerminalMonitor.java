@@ -37,8 +37,9 @@ final class TerminalMonitor implements AutoCloseable {
         if("pass".equals(activity.snapshot(id).get("status"))) prompts.remove(id);
     }
     void completed(String id,String status) {activity.ended(id,status);prompts.remove(id);}
+    void reset() {prompts.clear();activity.disconnect();}
     @Override public void close() {
         try {registry.removeListener(listener);} catch(IOException | RuntimeException ignored) { }
-        prompts.clear();activity.disconnect();
+        reset();
     }
 }

@@ -25,7 +25,7 @@ public final class TerminalActivity {
     public synchronized void ended(String id,String status) {
         Entry e=entries.get(id);if(e!=null){e.ended=true;e.status=status;}
     }
-    public synchronized void prompt(String id) {Entry e=entries.get(id);if(e!=null)e.prompt=true;}
+    public synchronized void prompt(String id) {Entry e=entries.get(id);if(e!=null && e.ended)e.prompt=true;}
     public synchronized void uncertain(String id,long token) {Entry e=entries.get(id);if(e!=null && e.token==token)e.uncertain=true;}
     public synchronized void disconnect() {entries.clear();}
     public synchronized Map<String,Object> snapshot(String id) {

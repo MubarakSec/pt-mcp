@@ -133,3 +133,7 @@ python3 scripts/run_portable_tests.py --require-java
 Python-only mode deliberately skips the five Java harness cases. Normal unittest
 still auto-runs them when Java is present. Hosted CI results must be checked after
 pushing; a local run of equivalent commands is not a hosted CI result.
+
+The guarded [local PT harness](LOCAL-PT-TESTS.md) defaults to no IPC and includes
+explicit save/reopen checks. New-project open attempts invalidate old terminal
+history; a fresh PC readiness prompt must be observed after CommandEnded.

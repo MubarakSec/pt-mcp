@@ -131,3 +131,13 @@ Python-only checks and Python 3.10/3.12 with required JDK 21 policy tests. Local
 passed all 20 with no skips on Python 3.10 / JDK 21. Workflow YAML parsed and its
 job/permissions/action pin structure checked. Hosted GitHub jobs and the Python
 3.12 matrix entry were **not run here**. CI does not compile SDK adapters.
+
+Readiness stage — integration harness increment: prepared
+`scripts/pt_integration.py` and local instructions, including empty-workspace
+preflight, unique scratch names, explicit startup/.pkt save and reopen, presentation
+comparison and fresh network assertions. Defaults to plan-only; live execution and
+saves require separate flags. Offline safety/orchestration tests passed with
+synthetic tool replies; **no PT integration run was performed**. All 29 tests passed
+locally with required JDK 21 and no skips. Terminal prompt-before-end regression and
+history invalidation on project open are covered by the pure tracking policy;
+SDK adapter lifecycle changes still require local SDK compilation/live testing.
