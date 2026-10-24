@@ -1,5 +1,7 @@
 # Implementation evidence
 
+Follow-up local results are recorded in [local verification — 2026-10-24](LOCAL-VERIFICATION-2026-10-24.md). The local SDK build and selected live presentation/CLI operations passed; native Unicode note corruption remains unresolved. The original cloud-workspace results below are retained as historical evidence, not the current local SDK-availability status.
+
 ## CLI results and batches
 
 Implemented: known IOS error-line classification with original status/output retained;
