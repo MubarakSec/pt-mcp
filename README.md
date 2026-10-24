@@ -57,6 +57,14 @@ pt-mcp/
 
 See [LIVE-SETUP.md](LIVE-SETUP.md) for IPC registration, live tool behavior, verification scope, and troubleshooting.
 
+## Development and cloud-agent handoff
+
+For the next implementation work, read [AGENTS.md](AGENTS.md), the [improvement backlog](IMPROVEMENTS.md), the [cloud development brief](docs/CLOUD-HANDOFF.md), and the [inspected SDK capabilities](docs/SDK-CAPABILITIES.md).
+
+The planned work improves configuration reliability, live naming/layout/notes, grouped network designs and SVG export through the existing Java IPC backend. These are roadmap items, not tools already shipped in 0.5.0.
+
+A cloud coding agent can implement code and run offline tests without a simulator. Java compilation needs the legitimate Cisco SDK; live acceptance tests additionally need Packet Tracer with registered IPC access. Cloud development does not automatically make the local simulator remotely accessible. Record offline tests, SDK compilation and live verification separately.
+
 ## Saved-file behavior
 
 - Read tools inspect a saved `.pkt` or XML and only cache decoded XML under `/tmp/pt-mcp-cache/`.

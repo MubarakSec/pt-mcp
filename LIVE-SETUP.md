@@ -2,6 +2,12 @@
 
 This repository combines the saved-file Python tools with a Java backend under `backend/java/`. The Python MCP server starts the Java process on demand; the live tools talk to the running simulator through Cisco IPC. No sibling Java checkout is needed.
 
+## Cloud development versus live execution
+
+The [cloud handoff](docs/CLOUD-HANDOFF.md) describes implementation work a hosted coding agent can perform. It does not provision a hosted Packet Tracer instance or access to the owner's local simulator. A cloud workspace's localhost is its own machine.
+
+Offline tests need no PT or IPC credentials. Java compilation needs JDK 21 and a legitimate local/provided SDK; the SDK and generated registrations remain gitignored. Live tests need a running PT instance, matching app registration/privileges and authenticated IPC in the test environment. Do not expose IPC or transfer credentials as an automatic setup fallback. When live verification is unavailable, finish independent work and provide a concrete local verification checklist.
+
 ## One-command setup
 
 For saved `.pkt` and XML tools alone, run `python3 server.py`; no Java or Packet Tracer installation is needed. To enable live tools, install JDK 21 and Cisco Packet Tracer, then run once from the repository root:
