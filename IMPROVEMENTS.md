@@ -1,12 +1,15 @@
 # Improvement backlog — IPC-first agent automation
 
-Status: first-delivery implementation is present in 0.6.0 (63 tools). CLI classification/
-batches, live presentation primitives and deterministic layout/SVG tools are implemented.
-Offline policy, schema, renderer and MCP tests ran; SDK adapter compilation and live
-Packet Tracer acceptance are pending. See [workflow](docs/DIAGRAMS.md) and
-[evidence](docs/IMPLEMENTATION-EVIDENCE.md). The sections below retain the wider
-backlog and original design rationale; simulation, PDU/history and richer readiness
-remain later work. The architecture remains authenticated Java IPC only.
+Status: 0.7.0 implements the first delivery plus readiness diagnostics, evidence-based
+validation and retained terminal result collection (67 tools). Portable CI and a
+guarded local integration harness are present. Baseline 0.6.0 SDK and selected
+presentation checks have local evidence; new SDK compilation/live acceptance and
+hosted CI results remain pending. See [readiness](docs/READINESS.md),
+[local acceptance](docs/LOCAL-PT-TESTS.md) and [evidence](docs/IMPLEMENTATION-EVIDENCE.md).
+The retained backlog below records the original design rationale. Simulation,
+PDU/history and broader planning/visual work remain deferred. Java IPC is the only
+live backend. Native Unicode notes are blocked before mutation until a verified
+encoding path exists; SVG/offline Unicode remains supported.
 
 Reference project: [muhammadbalawal/cisco-pt-mcp](https://github.com/muhammadbalawal/cisco-pt-mcp), MIT; reviewed at commit `4b277cba5d6ef5cee2d4fc6fa1768206eb841e8e` on 2026-10-24. Its 18 tools use an in-PT JavaScript extension and a local Socket.IO bridge. Its `userfunctions.js` also calls PT's `ipc` object: this is a different access path to PT APIs, not evidence that those APIs are unavailable to Java.
 

@@ -4,7 +4,7 @@
 
 Improve pt-mcp for AI-driven network construction and presentation while retaining the existing Python saved-file tools and authenticated Java IPC live backend. The owner wants clearer designs and visuals, less repetitive tool use, and reliable verification. A second live transport is outside this work.
 
-This document preserves the implementation acceptance brief. The first-delivery code is now present in 0.6.0 with 63 tools. See [workflow](DIAGRAMS.md) and [implementation evidence](IMPLEMENTATION-EVIDENCE.md) for actual behavior and checks. Offline tests passed; full SDK compilation and live PT verification remain pending. `IMPROVEMENTS.md` provides the wider backlog and rationale.
+This document preserves the first-delivery acceptance brief. The readiness follow-up is now implemented in 0.7.0 (67 tools); see [readiness](READINESS.md), [local acceptance](LOCAL-PT-TESTS.md) and [implementation evidence](IMPLEMENTATION-EVIDENCE.md). The [local 0.6.0 record](LOCAL-VERIFICATION-2026-10-24.md) establishes baseline SDK and selected live results; new SDK/readiness live checks and hosted CI execution remain pending. Broader planning/visual features remain deferred for this stage.
 
 Cloud development means working on this repository in a hosted coding environment. It does not mean deploying Packet Tracer as a cloud service or connecting a remote agent to the owner's simulator. `localhost:39000` in a cloud workspace does not point to the owner's computer. Do not enable remote IPC, arrange tunnels or publish credentials to make tests pass.
 

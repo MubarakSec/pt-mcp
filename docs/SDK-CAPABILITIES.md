@@ -2,7 +2,7 @@
 
 Inspected locally on 2026-10-24 with `javap -public` against `pt-cep-java-framework-9.0.0.0.jar` from the Packet Tracer installation. This records signatures relevant to the backlog so a cloud agent does not have to guess them. The JAR is proprietary and remains gitignored; this document does not distribute it.
 
-**The signatures below establish API availability only.** Naming/move/note/canvas wrappers now exist; their full SDK compilation and live verification remain pending. Simulation/PDU/history wrappers remain later work. See [implementation evidence](IMPLEMENTATION-EVIDENCE.md). Compilation and successful local PT integration are separate requirements. The installed application used for previous network work was Packet Tracer 9.0.1; do not infer support for other versions.
+**The signatures below establish API availability only.** The local 0.6.0 build and selected naming/move/note/canvas runs are recorded separately. New readiness/retained-result adapters still require SDK compilation and live verification. Simulation/PDU/history wrappers remain later work. See [implementation evidence](IMPLEMENTATION-EVIDENCE.md). Compilation and successful local PT integration are separate requirements. The installed application used for previous network work was Packet Tracer 9.0.1; do not infer support for other versions.
 
 ## Existing access path
 
@@ -158,3 +158,16 @@ javap -public \
 ```
 
 This is a discovery command, not a live acceptance test. A cloud agent without the SDK should use this snapshot for planning and explicitly mark compilation/runtime checks pending.
+
+
+## Readiness adapters — existing API use
+
+The readiness stage reuses methods already present in the baseline source:
+`Device.getPower`, `CiscoDevice.isBooting`, `Pc.getPort`,
+`HostPort.isDhcpClientOn`, `Pc.getDhcpFlag`, `CiscoDevice.getIpcTerminalLine`,
+`Pc.getCommandPrompt`, terminal UUID/prompt and the existing terminal event registry.
+No uninspected lease/trunk SDK getter is invented. Actual IPv4 addresses and trunk
+forwarding are evaluated from explicitly requested ipconfig/IOS show observations.
+Pure evaluation/tracking tests run without Cisco classes. New adapter compilation,
+per-interface DHCP mode semantics, CLI formats and event ordering remain local
+checks; baseline compilation does not establish those new runtime results.

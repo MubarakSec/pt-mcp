@@ -43,7 +43,7 @@ After setup, point the MCP client at this repository's `server.py`, for example:
 python3 /absolute/path/to/pt-mcp/server.py
 ```
 
-The command is unchanged from the saved-file server. Start a new session or reload the MCP server to discover all 63 tools. Begin with `pt_live_status`, then `pt_live_get_topology`.
+The command is unchanged from the saved-file server. Start a new session or reload the MCP server to discover all 67 tools. Begin with `pt_live_status`, then `pt_live_get_topology`.
 
 ## Requirements and setup options
 
@@ -78,7 +78,7 @@ Saved-file and live sessions are independent. `pt_open` reads a saved file witho
 
 - `pt_*` and `pt_build_*` retain the original 21 saved-file tools.
 - `pt_model_import`, `pt_model_list`, and `pt_build_add_device` use native Packet Tracer model templates for offline projects.
-- 35 `pt_live_*` tools plus `pt_live_status` inspect, configure, or change the running simulator.
+- 39 `pt_live_*` tools plus `pt_live_status` inspect, configure, or change the running simulator.
 - `pt_live_run_cli` is for Cisco CLI devices. PCs and servers use endpoint and terminal tools.
 - `pt_live_open_file` replaces the active simulator workspace. Save changes first.
 - `pt_live_save_file` writes to the PT machine's filesystem; use an absolute new path when preserving an original.
@@ -101,9 +101,20 @@ For Cisco pings, Packet Tracer destroys the completed ping process. The tool use
 
 See [the 0.6.0 workflow](docs/DIAGRAMS.md) for CLI classification/batches, optional
 naming, rename/move/native notes, canvas snapshots, explicit layout application and
-offline layout/SVG tools. New wrappers are implemented; SDK compilation and live
-PT acceptance remain pending. [Implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md)
+offline layout/SVG tools. The [local 0.6.0 record](docs/LOCAL-VERIFICATION-2026-10-24.md) covers selected
+compiled/live presentation paths; the new readiness-stage SDK build and live
+acceptance remain pending. [Implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md)
 separates those checks from the offline policy/schema/MCP tests that ran.
+
+## Readiness and local acceptance
+
+See [READINESS.md](docs/READINESS.md) for explicit IPC probing, boot state,
+actual DHCP-mode addresses, allowed/active/forwarding trunk VLANs and tracked
+terminal results. Active terminal probes require opt-in; status stays passive.
+The [disposable local harness](docs/LOCAL-PT-TESTS.md) defaults to no IPC and keeps
+startup/project saves explicit. Rebuild the local backend before using the new
+tools or native-note guard. Native notes now accept safe ASCII only; Unicode
+remains available in SVG/offline tools.
 
 ## Verification and evidence
 

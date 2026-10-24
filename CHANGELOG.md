@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.0 — 2026-10-24
+
+- Add explicit authenticated IPC probing, passive boot/terminal readiness, and opt-in actual-address/trunk validation with pass/fail/unknown evidence and shared deadlines.
+- Retain terminal completion/output after caller timeouts and expose read-only result collection by operation ID; never replay an uncertain mutation.
+- Compact canvas notes by default with meaningful/total/omitted counts and an all-note view option.
+- Reject unsafe native Unicode/control note text before mutation following the pulled local saved-XML corruption report. Offline/SVG Unicode remains supported.
+- Add SDK-free Python/catalog/JDK policy CI and a guarded local PT harness with explicit saves, XML validation, save/reopen checks and opt-in failure cases.
+- Baseline SDK/presentation verification is recorded locally in `docs/LOCAL-VERIFICATION-2026-10-24.md`. New SDK compilation, new live PT acceptance and hosted CI execution remain separate pending checks.
+
 ## 0.6.0 — 2026-10-24
 
 - Classify recognized IOS error lines even with SDK success; add bounded CLI batches with per-command outputs and explicit partial/unknown outcomes.
