@@ -363,6 +363,15 @@ public class PtIpcClient implements AutoCloseable {
         if (command == null) {
             throw new IllegalArgumentException("command no puede ser null.");
         }
+        validateCliTarget(deviceName);
+        Device d = network().getDevice(deviceName);
+        CiscoDevice cisco = (CiscoDevice) d;
+        String modeArg = mode == null ? "" : mode.trim().toLowerCase();
+        Pair<CommandStatus, String> result = cisco.enterCommand(command, modeArg);
+        return new CliResult(result.getFirst().name(), result.getSecond());
+    }
+
+    public void validateCliTarget(String deviceName) {
         Device d = network().getDevice(deviceName);
         if (d == null) {
             throw new IllegalArgumentException("No existe dispositivo '" + deviceName + "'.");
@@ -372,10 +381,6 @@ public class PtIpcClient implements AutoCloseable {
                     "El dispositivo '" + deviceName + "' no es un CiscoDevice "
                             + "(tipo=" + d.getType() + "). runCli solo aplica a routers, switches y ASAs.");
         }
-        CiscoDevice cisco = (CiscoDevice) d;
-        String modeArg = mode == null ? "" : mode.trim().toLowerCase();
-        Pair<CommandStatus, String> result = cisco.enterCommand(command, modeArg);
-        return new CliResult(result.getFirst().name(), result.getSecond());
     }
 
     /** Conveniencia: runCli en modo actual. */

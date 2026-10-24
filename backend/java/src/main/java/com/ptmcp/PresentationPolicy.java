@@ -82,6 +82,7 @@ public final class PresentationPolicy {
         return r;
     }
     public static Map<String,Object> create(Canvas c,String type,String model,double x,double y,String requested) {
+        name(type); name(model);
         // Keep legacy addDevice's finite fractional coordinates compatible.
         if (!Double.isFinite(x) || !Double.isFinite(y) || x < Integer.MIN_VALUE || x > Integer.MAX_VALUE
                 || y < Integer.MIN_VALUE || y > Integer.MAX_VALUE)

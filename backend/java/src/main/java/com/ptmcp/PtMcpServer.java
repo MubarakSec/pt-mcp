@@ -176,15 +176,7 @@ public final class PtMcpServer {
                         """
                         {"type":"object","properties":{"device":{"type":"string"},"commands":{"type":"array","minItems":1,"maxItems":100,"items":{"type":"string","minLength":1,"maxLength":4096}},"initial_mode":{"type":"string","enum":["user","enable","global"]},"continue_on_error":{"type":"boolean","default":false}},"required":["device","commands","initial_mode"],"additionalProperties":false}
                         """,
-                        (ex, req) -> featureResult(conn, c -> CliPolicy.batch(
-                            commandList(req.arguments().get("commands")), reqStr(req.arguments(), "initial_mode"),
-                            req.arguments().containsKey("continue_on_error") && reqBool(req.arguments(), "continue_on_error"),
-                            (command, mode) -> {
-                                try {
-                                    var r = c.runCli(reqStr(req.arguments(), "device"), command, mode);
-                                    return new CliPolicy.Reply(r.status, r.output);
-                                } catch (com.cisco.pt.ipc.IPCError e) { throw new IllegalStateException("IPC failure", e); }
-                            }))),
+                        (ex, req) -> handleCliBatch(conn, req.arguments())),
 
                 tool(jm, "pt_run_cli",
                         "Ejecuta un comando IOS en un dispositivo Cisco (router, switch, ASA). "
@@ -404,6 +396,28 @@ public final class PtMcpServer {
         ));
         tools.addAll(PresentationTools.tools(jm, conn));
         return tools;
+    }
+
+    private static CallToolResult handleCliBatch(ConnectionManager conn, Map<String,Object> args) {
+        // Validate the entire command list before connecting or sending any mutation.
+        try {
+            var commands=commandList(args.get("commands"));
+            String mode=reqStr(args,"initial_mode");String device=PresentationPolicy.name(args.get("device"));
+            boolean keepGoing=args.containsKey("continue_on_error") && reqBool(args,"continue_on_error");
+            CliPolicy.validate(commands,mode);
+            return featureResult(conn,c -> {
+                c.validateCliTarget(device);
+                return CliPolicy.batch(commands,mode,keepGoing,(command,currentMode) -> {
+                    try {
+                        var r=c.runCli(device,command,currentMode);
+                        return new CliPolicy.Reply(r.status,r.output);
+                    } catch (com.cisco.pt.ipc.IPCError e) { throw new IllegalStateException("IPC failure",e); }
+                });
+            });
+        } catch (IllegalArgumentException e) {
+            return CallToolResult.builder().addTextContent(e.getMessage())
+                .structuredContent(Map.of("outcome","validation_failure","changes_may_have_applied",false)).isError(true).build();
+        }
     }
 
     private static List<String> commandList(Object value) {

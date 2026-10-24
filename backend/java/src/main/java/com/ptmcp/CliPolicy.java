@@ -19,7 +19,7 @@ public final class CliPolicy {
         return "STATUS_OK".equals(status) ? "success" : "sdk_failure";
     }
 
-    public static Map<String,Object> batch(List<String> commands, String mode, boolean keepGoing, Runner runner) {
+    public static void validate(List<String> commands, String mode) {
         if (commands == null || commands.isEmpty() || commands.size() > 100)
             throw new IllegalArgumentException("commands must contain 1..100 single-line commands");
         if (!Set.of("user", "enable", "global").contains(mode))
@@ -29,6 +29,10 @@ public final class CliPolicy {
                     || command.indexOf('\n') >= 0 || command.indexOf('\r') >= 0 || command.indexOf('\0') >= 0)
                 throw new IllegalArgumentException("commands must be nonempty single lines, at most 4096 characters");
         }
+    }
+
+    public static Map<String,Object> batch(List<String> commands, String mode, boolean keepGoing, Runner runner) {
+        validate(commands, mode);
         var results = new ArrayList<Map<String,Object>>();
         var completed = new ArrayList<Integer>();
         var failed = new ArrayList<Integer>();

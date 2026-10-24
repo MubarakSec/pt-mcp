@@ -13,7 +13,7 @@ public final class PresentationFeatures implements PresentationPolicy.Canvas, Pr
     public PresentationFeatures(PtIpcClient client) { this.client=client; }
     // Cisco IPCError extends Error. Convert just this SDK error so policy can report unknown outcomes.
     private static <T> T ipc(Supplier<T> operation) {
-        try { return operation.get(); } catch (IPCError e) { throw new IllegalStateException("IPC operation failed",e); }
+        try { return operation.get(); } catch (IPCError | RuntimeException e) { throw new IllegalStateException("IPC operation failed",e); }
     }
     public Set<String> names() {
         return ipc(() -> { var names=new LinkedHashSet<String>();
