@@ -2,7 +2,7 @@
 
 Inspected locally on 2026-10-24 with `javap -public` against `pt-cep-java-framework-9.0.0.0.jar` from the Packet Tracer installation. This records signatures relevant to the backlog so a cloud agent does not have to guess them. The JAR is proprietary and remains gitignored; this document does not distribute it.
 
-**All new capabilities below are API-present, wrapper/runtime-verification pending.** Compilation and successful local PT integration are separate requirements. The installed application used for previous network work was Packet Tracer 9.0.1; do not infer support for other versions.
+**The signatures below establish API availability only.** Naming/move/note/canvas wrappers now exist; their full SDK compilation and live verification remain pending. Simulation/PDU/history wrappers remain later work. See [implementation evidence](IMPLEMENTATION-EVIDENCE.md). Compilation and successful local PT integration are separate requirements. The installed application used for previous network work was Packet Tracer 9.0.1; do not infer support for other versions.
 
 ## Existing access path
 

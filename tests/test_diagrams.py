@@ -56,6 +56,16 @@ class DiagramTests(unittest.TestCase):
         self.assertIn('unknown',svg)
         self.assertTrue(any('العربية' in (e.text or '') for e in root.iter()))
 
+    def test_saved_functional_flag_does_not_invent_live_health(self):
+        snapshot={'devices':[{'name':'A'},{'name':'B','x':100}],
+                  'links':[{'from':'A','to':'B','functional':'true'}]}
+        projected=diagrams.project(snapshot)
+        self.assertEqual(projected['links'][0]['state'],'unknown')
+        root=ET.fromstring(diagrams.render_svg(snapshot))
+        links=root.findall('{http://www.w3.org/2000/svg}line')
+        self.assertEqual(len(links),1)
+        self.assertNotEqual(links[0].get('stroke-dasharray'),'none')
+
     def test_invalid_inputs_preflight(self):
         snapshot,_=campus()
         invalid_groups=[ [{'name':'x','devices':['missing']}],

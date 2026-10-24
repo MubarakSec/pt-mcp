@@ -11,10 +11,11 @@ expansion, replay or automatic save occurs. Unknown outcomes always stop the bat
 Inspect running configuration/interfaces before further mutations after failure.
 
 Offline tested: Python bridge timeout/disconnect regression proves one request and
-no replay. Python syntax checks passed. Java policy harness is supplied in
-`tests/java/CliPolicyTest.java`; its runner explicitly skips if no JDK is installed.
+no replay. Python syntax checks passed. The Java policy harness in
+`tests/java/CliPolicyTest.java` also passed after obtaining isolated OpenJDK 21.
+Its portable runner explicitly skips when no JDK is installed.
 
-SDK compiled: **pending** — this workspace has no JDK or Cisco SDK.
+SDK compiled: **pending** — the proprietary Cisco SDK is missing.
 Live verified: **pending** — no Packet Tracer simulator/registered IPC is available.
 
 Local acceptance: in a disposable scratch network, boot a switch, submit an invalid
@@ -53,3 +54,50 @@ Move positive/negative origins, compare SDK coordinates with canvas; try out-of-
 range/fractional inputs. Create/update/delete a Unicode note, reject device IDs
 as note IDs. Apply a partial layout and check omitted devices/links/configuration.
 Save to a fresh path, reopen and inspect names, positions, notes and cables.
+
+
+## Layout planning, SVG and offline integration
+
+Implemented: `pt_layout_plan`, `pt_export_svg`, `pt_build_apply_layout`, deterministic
+building/department/tier positioning, group annotations and standalone vector SVG.
+27 offline tools + 35 Java live registrations + status = 63 discovered tools.
+Schemas and limits are documented in [DIAGRAMS.md](DIAGRAMS.md).
+
+**Offline tested**, 2026-10-24:
+
+- `python3 -m unittest discover -s tests -v` with OpenJDK 21 on PATH: **12 tests
+  passed, none skipped**, including two standalone Java policy harnesses. Those
+  compile only SDK-independent policy classes, not Cisco adapters.
+- `python3 -m py_compile server.py live_bridge.py diagrams.py diagram_tools.py
+  ptread.py ptbuild.py model_library.py setup.py`: passed.
+- Real Python stdio MCP initialization/discovery, synthetic XML reading/build-copy
+  edits, unchanged source/config/links, full-plan preflight and backend failure
+  isolation ran with the live command deliberately unavailable.
+- Synthetic empty/cycle/disconnected/XML-special/long/Arabic-label and 50-PC
+  20/20/10 campus tests check deterministic unique positions, region bounds,
+  immutable input, partial plans, XML validity and non-overwrite/symlink handling.
+- Both example SVGs generated, rendered with temporary CairoSVG tooling and
+  visually inspected. Both were also rendered inline in headless Chromium and
+  screenshots inspected: Arabic shaping, mixed Arabic/IP labels, group boundaries,
+  shared core above buildings and dashed unknown links are visible. Cairo's text
+  handling differs; the browser inspection establishes browser presentation only.
+  No renderer/browser dependency was added to the product.
+
+**SDK compiled: pending.** No legitimate Cisco SDK JAR exists in this workspace;
+`./gradlew test installDist` was not run. New adapter method use follows the checked
+signature snapshot. MCP `ToolAnnotations` constructor was checked against the
+published 1.0.0 source artifact; that is source inspection, not backend compilation.
+
+**Live verified: pending.** No Packet Tracer/registered IPC is available. No scratch
+project mutation, attached-cable canvas check, CLI range/context check, native note
+lifecycle or save/reopen test was performed. Historical `verification/*.json`
+records do not verify the new wrappers.
+
+Finish locally with JDK 21 and the legitimate SDK: run Python tests, then
+`cd backend/java && ./gradlew test installDist`. In a new disposable PT workspace,
+execute the CLI and primitive acceptance cases above. Read a fresh canvas snapshot,
+plan the synthetic grouped campus, explicitly apply the moves and requested native
+notes, and verify coordinates, Unicode text, unchanged cables/config/power and
+omitted-device positions. Save explicitly to a new `.pkt` path, reopen and inspect.
+Interrupt an IPC reply and verify unknown outcomes with no automatic replay.
+Rectangle groups are SVG-only; native group labels use explicit note calls.

@@ -1,6 +1,6 @@
 # pt-mcp — Packet Tracer saved files and live simulator
 
-Version **0.5.0** exposes 52 MCP tools: 21 saved-file tools, three native-model library tools, 27 live simulator tools, and `pt_live_status`.
+Version **0.6.0** exposes 63 MCP tools: 27 offline tools (22 saved-file/build, three native-model library, and two diagram tools), 35 live simulator tools, and `pt_live_status`. New live wrappers await SDK compilation and local Packet Tracer verification; see [implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md).
 
 The Python server handles `.pkt`/XML inspection and copy-based editing. Its optional Java backend controls a running Packet Tracer simulator over IPC. The Java source now lives inside this repository at `backend/java`; no sibling checkout is required.
 
@@ -47,6 +47,8 @@ pt-mcp/
 ├── live_bridge.py    lazy stdio bridge to the live backend
 ├── live_tools.json   checked-in live tool catalog for offline startup
 ├── ptbuild.py        copy-based saved-topology builder
+├── diagrams.py       deterministic planner and standalone SVG renderer
+├── diagram_tools.py  offline diagram/build-copy tool contracts
 ├── model_library.py  native Packet Tracer model import/list/add
 ├── ptread.py         saved-topology reader
 ├── unpacket.py       .pkt → XML
@@ -61,7 +63,7 @@ See [LIVE-SETUP.md](LIVE-SETUP.md) for IPC registration, live tool behavior, ver
 
 For the next implementation work, read [AGENTS.md](AGENTS.md), the [improvement backlog](IMPROVEMENTS.md), the [cloud development brief](docs/CLOUD-HANDOFF.md), and the [inspected SDK capabilities](docs/SDK-CAPABILITIES.md).
 
-The planned work improves configuration reliability, live naming/layout/notes, grouped network designs and SVG export through the existing Java IPC backend. These are roadmap items, not tools already shipped in 0.5.0.
+Implemented additions include IOS failure classification and bounded CLI batches, live naming/positioning/notes, deterministic grouped layout planning, explicit layout application and portable SVG export. See the [workflow and input contracts](docs/DIAGRAMS.md) and [50-PC campus example](examples/campus-50.svg). Readiness, simulation/PDU and command-history expansion remain later roadmap work.
 
 A cloud coding agent can implement code and run offline tests without a simulator. Java compilation needs the legitimate Cisco SDK; live acceptance tests additionally need Packet Tracer with registered IPC access. Cloud development does not automatically make the local simulator remotely accessible. Record offline tests, SDK compilation and live verification separately.
 

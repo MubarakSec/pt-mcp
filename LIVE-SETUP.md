@@ -43,7 +43,7 @@ After setup, point the MCP client at this repository's `server.py`, for example:
 python3 /absolute/path/to/pt-mcp/server.py
 ```
 
-The command is unchanged from the saved-file server. Start a new session or reload the MCP server to discover all 52 tools. Begin with `pt_live_status`, then `pt_live_get_topology`.
+The command is unchanged from the saved-file server. Start a new session or reload the MCP server to discover all 63 tools. Begin with `pt_live_status`, then `pt_live_get_topology`.
 
 ## Requirements and setup options
 
@@ -78,7 +78,7 @@ Saved-file and live sessions are independent. `pt_open` reads a saved file witho
 
 - `pt_*` and `pt_build_*` retain the original 21 saved-file tools.
 - `pt_model_import`, `pt_model_list`, and `pt_build_add_device` use native Packet Tracer model templates for offline projects.
-- 27 `pt_live_*` tools plus `pt_live_status` inspect, configure, or change the running simulator.
+- 35 `pt_live_*` tools plus `pt_live_status` inspect, configure, or change the running simulator.
 - `pt_live_run_cli` is for Cisco CLI devices. PCs and servers use endpoint and terminal tools.
 - `pt_live_open_file` replaces the active simulator workspace. Save changes first.
 - `pt_live_save_file` writes to the PT machine's filesystem; use an absolute new path when preserving an original.
@@ -96,6 +96,14 @@ Saved-file and live sessions are independent. `pt_open` reads a saved file witho
 | `pt_live_get_endpoint_config` | Reads endpoint gateway and DNS from live device XML. Check router DHCP bindings or `ipconfig` as well because stored address fields may lag an active lease. |
 
 For Cisco pings, Packet Tracer destroys the completed ping process. The tool uses correlated events; `received`, `outcome`, and loss relative to requested probes are the useful result fields. `sent` and standard `lossPercent` may remain null. A custom terminal timeout shorter than a native command can produce an unknown result while that command continues; let it finish before issuing another terminal command.
+
+## New configuration and visual tools
+
+See [the 0.6.0 workflow](docs/DIAGRAMS.md) for CLI classification/batches, optional
+naming, rename/move/native notes, canvas snapshots, explicit layout application and
+offline layout/SVG tools. New wrappers are implemented; SDK compilation and live
+PT acceptance remain pending. [Implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md)
+separates those checks from the offline policy/schema/MCP tests that ran.
 
 ## Verification and evidence
 

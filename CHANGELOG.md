@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 — 2026-10-24
+
+- Classify recognized IOS error lines even with SDK success; add bounded CLI batches with per-command outputs and explicit partial/unknown outcomes.
+- Add optional live device naming, rename/move, native note lifecycle, canvas reads and preflighted layout moves through Java IPC.
+- Add deterministic grouped/tiered planning, explicit offline build-copy layout application, self-contained SVG export and synthetic review examples.
+- Preserve existing APIs, offline independence, explicit saves and no mutation replay.
+- Offline Python/MCP and pure Java policy tests passed. Full Cisco SDK compilation and live Packet Tracer verification remain pending; see [evidence](docs/IMPLEMENTATION-EVIDENCE.md).
+
 ## 0.5.0 — 2026-10-13
 
 ### Added

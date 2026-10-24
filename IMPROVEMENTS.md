@@ -1,8 +1,12 @@
 # Improvement backlog — IPC-first agent automation
 
-Status: planning only. Nothing here is implemented yet. Compare with `README.md` for the current 0.5.0 tool set (52 tools: 21 saved-file, 3 model-library, 27 live, + `pt_live_status`).
-
-Implementation handoff: [cloud development brief](docs/CLOUD-HANDOFF.md), [repository instructions](AGENTS.md), and [inspected SDK methods](docs/SDK-CAPABILITIES.md). The owner chose cloud development for the next implementation stage. This handoff changes documentation only; code and live tool behavior remain at the existing baseline.
+Status: first-delivery implementation is present in 0.6.0 (63 tools). CLI classification/
+batches, live presentation primitives and deterministic layout/SVG tools are implemented.
+Offline policy, schema, renderer and MCP tests ran; SDK adapter compilation and live
+Packet Tracer acceptance are pending. See [workflow](docs/DIAGRAMS.md) and
+[evidence](docs/IMPLEMENTATION-EVIDENCE.md). The sections below retain the wider
+backlog and original design rationale; simulation, PDU/history and richer readiness
+remain later work. The architecture remains authenticated Java IPC only.
 
 Reference project: [muhammadbalawal/cisco-pt-mcp](https://github.com/muhammadbalawal/cisco-pt-mcp), MIT; reviewed at commit `4b277cba5d6ef5cee2d4fc6fa1768206eb841e8e` on 2026-10-24. Its 18 tools use an in-PT JavaScript extension and a local Socket.IO bridge. Its `userfunctions.js` also calls PT's `ipc` object: this is a different access path to PT APIs, not evidence that those APIs are unavailable to Java.
 
@@ -20,7 +24,7 @@ The reference has fewer installation prerequisites. That is an onboarding advant
 
 The visual delivery must include more than move/rename primitives: a deterministic building/department layout planner and a portable SVG exporter. Plan/apply/export are separate operations; diagrams must preserve real connectivity and must not invent successful link state. Stage 3 of the cloud brief defines these acceptance checks, including the 50-PC campus and Arabic labels.
 
-These are proposed changes, not claims about tools already implemented in 0.5.0.
+The original 0.5.0 baseline lacked these additions. Consult the implementation status above before interpreting the retained backlog descriptions.
 
 ## 1. Useful capabilities to add through Java IPC
 
