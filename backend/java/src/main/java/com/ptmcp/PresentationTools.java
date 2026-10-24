@@ -20,21 +20,24 @@ public final class PresentationTools {
                 (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
                     var p=new PresentationFeatures(c);var a=req.arguments();return PresentationPolicy.move(p, PresentationPolicy.name(a.get("name")), PresentationPolicy.coordinate(a.get("x")), PresentationPolicy.coordinate(a.get("y")));
                 })),
-            PtMcpServer.tool(jm, "pt_get_canvas", "Read live devices, origin positions, observed links and native notes; unknown links remain unknown.",
+            PtMcpServer.tool(jm, "pt_get_canvas", "Read live devices/links and meaningful notes by default, with note counts. Set include_empty_notes for all native note objects; link state stays unknown.",
                 """
-                {"type":"object","properties":{},"required":[],"additionalProperties":false}
+                {"type":"object","properties":{"include_empty_notes":{"type":"boolean","default":false}},"required":[],"additionalProperties":false}
                 """,
                 (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
-                    var p=new PresentationFeatures(c);var a=req.arguments();return p.canvas();
+                    var p=new PresentationFeatures(c);var a=req.arguments();
+                    Object raw=a.getOrDefault("include_empty_notes",false);
+                    if(!(raw instanceof Boolean)) throw new IllegalArgumentException("include_empty_notes must be boolean");
+                    return p.canvas((Boolean)raw);
                 })),
-            PtMcpServer.tool(jm, "pt_add_note", "Add a native note at real integer coordinates; bounded Unicode text and readback.",
+            PtMcpServer.tool(jm, "pt_add_note", "Add a native note at real integer coordinates; ASCII text only until native Unicode serialization is verified; bounded text and readback.",
                 """
                 {"type":"object","properties":{"text":{"type":"string","maxLength":16384},"x":{"type":"integer","minimum":-2147483648,"maximum":2147483647},"y":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"required":["text","x","y"],"additionalProperties":false}
                 """,
                 (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
                     var p=new PresentationFeatures(c);var a=req.arguments();return p.addNote(PresentationPolicy.coordinate(a.get("x")), PresentationPolicy.coordinate(a.get("y")), PresentationPolicy.noteText(a.get("text")));
                 })),
-            PtMcpServer.tool(jm, "pt_update_note", "Update text of an existing verified native note ID; return readback.",
+            PtMcpServer.tool(jm, "pt_update_note", "Update ASCII text of an existing verified native note ID; reject unsafe Unicode before mutation and return readback.",
                 """
                 {"type":"object","properties":{"id":{"type":"string"},"text":{"type":"string","maxLength":16384}},"required":["id","text"],"additionalProperties":false}
                 """,

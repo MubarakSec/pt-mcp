@@ -6,6 +6,8 @@ import argparse
 import json
 from pathlib import Path
 import sys
+import subprocess
+import xml.etree.ElementTree as ET
 import time
 import uuid
 
@@ -47,14 +49,16 @@ def presentation(snapshot):
 
 
 class Harness:
-    def __init__(self,client,directory,*,save_reopen=False,wait_seconds=90,skip_boot=False,exercise_terminal_timeout=False):
+    def __init__(self,client,directory,*,save_reopen=False,wait_seconds=90,skip_boot=False,exercise_terminal_timeout=False,exercise_failures=False):
         self.client=client;self.directory=Path(directory);self.allow_save=save_reopen
         self.wait_seconds=wait_seconds;self.skip_boot=skip_boot;self.exercise_terminal_timeout=exercise_terminal_timeout
+        self.exercise_failures=exercise_failures
         self.prefix='PTMCP-'+uuid.uuid4().hex[:8]
         self.names={role:self.prefix+'-'+role for role in ('R1','SW1','SW2','PC1')}
         self.cleared_workspace=False
         self.report={'status':'unknown','live_verification':'pending','fixture_prefix':self.prefix,'steps':[],
-                     'save_reopen_requested':save_reopen,'terminal_timeout_requested':exercise_terminal_timeout}
+                     'save_reopen_requested':save_reopen,'terminal_timeout_requested':exercise_terminal_timeout,
+                     'negative_cases_requested':exercise_failures}
 
     def call(self,name,args=None,*,expected_error=False):
         if name in MUTATIONS and not self.cleared_workspace:
@@ -80,7 +84,7 @@ class Harness:
         probe=self.call('pt_live_probe_connection',{'timeout_ms':10000})
         self.require(probe.get('status')=='pass','Authenticated IPC probe did not pass',
                      'fail' if probe.get('status')=='fail' else 'unknown')
-        canvas=self.call('pt_live_get_canvas')
+        canvas=self.call('pt_live_get_canvas',{'include_empty_notes':True})
         self.require(all(isinstance(canvas.get(k),list) for k in ('devices','links','notes')),
                      'Canvas completeness is unknown','unknown')
         self.require(not canvas['devices'] and not canvas['links'] and not canvas['notes'],
@@ -133,10 +137,10 @@ class Harness:
         self.require(renamed.get('name')==new,'Rename readback mismatch');self.names['SW1']=new
         moved=self.call('pt_live_move_device',{'name':new,'x':260,'y':270})
         self.require(moved.get('x')==260 and moved.get('y')==270,'Move readback mismatch')
-        note=self.call('pt_live_add_note',{'text':'اختبار جاهزية الشبكة — scratch only','x':100,'y':30})
+        note=self.call('pt_live_add_note',{'text':'Readiness acceptance - scratch only','x':100,'y':30})
         self.require(bool(note.get('id')),'No native note identifier','unknown')
-        updated=self.call('pt_live_update_note',{'id':note['id'],'text':'جاهزية الشبكة 192.0.2.0/24'})
-        self.require(updated.get('text')=='جاهزية الشبكة 192.0.2.0/24','Note text readback mismatch')
+        updated=self.call('pt_live_update_note',{'id':note['id'],'text':'Readiness network 192.0.2.0/24'})
+        self.require(updated.get('text')=='Readiness network 192.0.2.0/24','Note text readback mismatch')
         temporary=self.call('pt_live_add_note',{'text':'temporary acceptance note','x':10,'y':10})
         deleted=self.call('pt_live_delete_note',{'id':temporary['id']})
         self.require(deleted.get('removed') is True,'Note deletion was not confirmed')
@@ -171,6 +175,41 @@ class Harness:
         idle=self.call('pt_live_validate_network',{'checks':[{'kind':'terminal_idle','device':self.names['PC1']}]})
         self.require(idle.get('status')=='pass','Completed ipconfig terminal did not become ready','unknown')
 
+    def negative_cases(self):
+        before=self.call('pt_live_get_canvas',{'include_empty_notes':True})
+        collision=self.call('pt_live_add_device',{'type':'pc','model':'PC-PT','x':1,'y':1,'name':self.names['PC1']},expected_error=True)
+        self.require(collision.get('outcome')=='validation_failure' and collision.get('changes_may_have_applied') is False,
+                     'Creation collision was not rejected before mutation','unknown')
+        collision=self.call('pt_live_rename_device',{'name':self.names['R1'],'new_name':self.names['SW1']},expected_error=True)
+        self.require(collision.get('outcome')=='validation_failure' and collision.get('changes_may_have_applied') is False,
+                     'Rename collision was not rejected before mutation','unknown')
+        after=self.call('pt_live_get_canvas',{'include_empty_notes':True})
+        self.require(presentation(before)==presentation(after),'Collision changed the observed canvas')
+        baseline=self.call('pt_live_run_cli',{'device':self.names['SW1'],'mode':'enable','command':'show running-config'})
+        # A 2960 normally has Fa0/1..24. If this selector is accepted, stop and leave
+        # the disposable fixture for inspection; never guess a different failing range.
+        marker='PTMCP-TAIL-MUST-NOT-RUN'
+        failure=self.call('pt_live_run_cli_batch',{'device':self.names['SW1'],'initial_mode':'global',
+            'commands':['interface range FastEthernet0/1-25','description '+marker]},expected_error=True)
+        self.require(failure.get('failed')==[0] and failure.get('unattempted')==[1] and failure.get('unknown')==[],
+                     'Interface-range failure did not produce a conclusive stop; inspect state before continuing','unknown')
+        readback=self.call('pt_live_run_cli',{'device':self.names['SW1'],'mode':'enable','command':'show running-config'})
+        self.require(bool(baseline.get('output')) and baseline.get('output')==readback.get('output') and marker not in readback.get('output',''),
+                     'Configuration changed or range-failure readback is incomplete','unknown')
+        self.report['negative_cases']='pass'
+
+    def verify_saved_xml(self,path):
+        decoded=self.directory/'scratch-decoded.xml'
+        try:
+            result=subprocess.run([sys.executable,str(ROOT/'unpacket.py'),str(path),'-o',str(decoded)],
+                                  capture_output=True,text=True,timeout=60)
+        except (OSError,subprocess.TimeoutExpired):
+            raise IntegrationError('Saved project decoding did not complete; XML validity is unknown')
+        self.require(result.returncode==0 and decoded.is_file(),'Saved project could not be decoded; XML validity is unknown','unknown')
+        try:ET.parse(decoded)
+        except ET.ParseError:raise IntegrationError('Saved XML is invalid; refusing to reopen the project','fail')
+        self.report['saved_xml']='well_formed'
+
     def save_reopen(self):
         if not self.allow_save:raise IntegrationError('Save/reopen requires explicit --save-reopen','fail')
         path=self.directory/'scratch.pkt'
@@ -182,6 +221,7 @@ class Harness:
         saved=self.call('pt_live_save_file',{'path':str(path)})
         self.require(saved.get('saved') is True,'PT did not confirm project save','unknown')
         self.require(path.is_file(),'Saved path is not visible locally; run harness on the PT host','unknown')
+        self.verify_saved_xml(path)
         self.call('pt_live_open_file',{'path':str(path)})
         after=self.call('pt_live_get_canvas')
         self.require(presentation(before)==presentation(after),'Canvas devices/positions/notes/links changed after reopening')
@@ -191,18 +231,22 @@ class Harness:
     def terminal_timeout(self):
         result=self.call('pt_live_run_terminal',{'device':self.names['PC1'],'command':'ping 203.0.113.254','timeout_ms':1})
         self.require(result.get('timedOut') is True,'Native command finished too quickly to exercise timeout','unknown')
+        activity=result.get('terminal_activity',{}).get('evidence',{})
+        token=activity.get('operation_id')
+        self.require(isinstance(token,int),'No tracked operation ID was returned','unknown')
         end=time.monotonic()+self.wait_seconds
         while time.monotonic()<end:
-            report=self.call('pt_live_validate_network',{'checks':[{'kind':'terminal_idle','device':self.names['PC1']}], 'timeout_ms':3000})
-            if report.get('status')=='pass':
+            report=self.call('pt_live_get_terminal_result',{'device':self.names['PC1'],'operation_id':token,'timeout_ms':3000})
+            if report.get('completed') is True:
+                self.require(bool(report.get('output')),'Late terminal completion has no captured output','unknown')
                 self.report['terminal_late_completion']='pass';return
-            checks=report.get('checks',[])
-            self.require(bool(checks),'No terminal observation','unknown')
+            self.require(report.get('reason')=='terminal_result_pending','Terminal result is no longer observable','unknown')
             time.sleep(0.5)
         raise IntegrationError('No late terminal completion observed; inspect PT before any further command')
 
     def run(self):
         self.preflight();self.build();self.check_presentation();self.validate()
+        if self.exercise_failures:self.negative_cases()
         if self.allow_save:self.save_reopen()
         if self.exercise_terminal_timeout:self.terminal_timeout()
         self.report['status']='pass';self.report['live_verification']='requested_checks_completed'
@@ -216,6 +260,7 @@ def main(argv=None):
     parser.add_argument('--scratch-dir',type=Path)
     parser.add_argument('--save-reopen',action='store_true')
     parser.add_argument('--skip-boot',action='store_true',help='Explicitly skip boot on scratch Cisco devices')
+    parser.add_argument('--exercise-failures',action='store_true',help='Explicitly test naming collisions and a rejected interface-range with a guarded tail command')
     parser.add_argument('--exercise-terminal-timeout',action='store_true',help='Explicitly send one short-timeout ping and watch its late completion')
     parser.add_argument('--wait-seconds',type=int,default=90)
     args=parser.parse_args(argv)
@@ -233,7 +278,7 @@ def main(argv=None):
     args.scratch_dir.mkdir(mode=0o700)
     client=None
     harness=Harness(client,args.scratch_dir,save_reopen=args.save_reopen,wait_seconds=args.wait_seconds,
-                    skip_boot=args.skip_boot,exercise_terminal_timeout=args.exercise_terminal_timeout)
+                    skip_boot=args.skip_boot,exercise_terminal_timeout=args.exercise_terminal_timeout,exercise_failures=args.exercise_failures)
     try:
         client=LiveBridge();harness.client=client
         harness.run()

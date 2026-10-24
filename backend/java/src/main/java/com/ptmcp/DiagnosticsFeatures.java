@@ -40,6 +40,15 @@ final class DiagnosticsFeatures implements ValidationEngine.Source {
             return DiagnosticsPolicy.result("unknown","terminal_not_supported",Map.of("device",name));
         }
     }
+    Map<String,Object> terminalResult(String name,Long operationId) {
+        Device d=device(name);if(d==null) return missing(name);
+        try {
+            String uuid=read(() -> PingTerminalFeatures.terminalLine(d).getObjectUUID().toString());
+            return client.terminalActivity().result(uuid,operationId);
+        } catch(IllegalArgumentException unsupported) {
+            return DiagnosticsPolicy.result("unknown","terminal_not_supported",Map.of("device",name));
+        }
+    }
     public Boolean dhcpMode(String name,String iface) {
         Device d=device(name);
         if(!(d instanceof Pc pc)) return null;

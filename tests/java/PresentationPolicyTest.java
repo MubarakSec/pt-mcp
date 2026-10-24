@@ -23,7 +23,17 @@ public class PresentationPolicyTest {
     }
     public static void main(String[] args) {
         assert PresentationPolicy.name("😀".repeat(256)).codePointCount(0,512)==256;
-        assert PresentationPolicy.noteText("😀".repeat(16384)).length()==32768;
+        assert PresentationPolicy.noteText("safe ASCII\tline\nnext\r").contains("next");
+        for(String unsafe:List.of("العربية","café","\u2014","😀","bad\u0001", "bad\u007f")) {
+            var guarded=new NoteFake() {
+                public String createNote(int x,int y,String text) {throw new AssertionError("Unsafe note reached SDK adapter");}
+                public boolean changeNote(String id,String text) {throw new AssertionError("Unsafe note update reached SDK adapter");}
+            };
+            try {PresentationPolicy.addNote(guarded,0,0,unsafe);throw new AssertionError("Unsafe add accepted");}
+            catch(IllegalArgumentException expected) { }
+            try {PresentationPolicy.updateNote(guarded,"note-1",unsafe);throw new AssertionError("Unsafe update accepted");}
+            catch(IllegalArgumentException expected) { }
+        }
         var raced=new Fake() {
             public void rename(String from,String to) { devices.put(to,new LinkedHashMap<>(Map.of("name",to,"x",0,"y",0))); }
         };
@@ -39,8 +49,16 @@ public class PresentationPolicyTest {
             public Map<String,Object> readNote(String id) { throw new IllegalStateException("lost readback"); }
         };
         assert PresentationPolicy.addNote(unreadable,0,0,"hello").get("outcome").equals("unknown");
+        var nativeNotes=new ArrayList<Map<String,Object>>();
+        for(int i=0;i<122;i++) nativeNotes.add(Map.of("id","note-"+i,"text",i<16?"label "+i:" \n\t"));
+        var compact=PresentationPolicy.canvasNotes(nativeNotes,false);
+        assert ((List<?>)compact.get("notes")).size()==16;
+        assert ((Map<?,?>)compact.get("note_counts")).get("total").equals(122);
+        assert ((Map<?,?>)compact.get("note_counts")).get("omitted_empty").equals(106);
+        assert ((List<?>)PresentationPolicy.canvasNotes(nativeNotes,true).get("notes")).size()==122;
+        assert nativeNotes.size()==122;
         var notes=new NoteFake();
-        assert PresentationPolicy.addNote(notes,20,30,"العربية").get("outcome").equals("partial");
+        assert PresentationPolicy.addNote(notes,20,30,"new text").get("outcome").equals("partial");
         assert PresentationPolicy.updateNote(notes,"note-1","new").get("outcome").equals("failed");
         try { PresentationPolicy.deleteNote(notes,"device-id"); throw new AssertionError(); } catch (IllegalArgumentException expected) { }
         assert !notes.deleted;

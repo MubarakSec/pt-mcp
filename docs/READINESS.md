@@ -1,7 +1,7 @@
 # Readiness and evidence-based validation
 
 This stage retains Java IPC, independent offline tools and explicit saves. It adds
-three Java tools, mapped to client-facing `pt_live_*` names by the Python bridge.
+four Java tools, mapped to client-facing `pt_live_*` names by the Python bridge.
 No configuration, power, boot skipping, DHCP renewals or project saves occur in
 these tools. Simulation/PDU work and broader planning/visual changes are deferred.
 
@@ -137,3 +137,29 @@ pushing; a local run of equivalent commands is not a hosted CI result.
 The guarded [local PT harness](LOCAL-PT-TESTS.md) defaults to no IPC and includes
 explicit save/reopen checks. New-project open attempts invalidate old terminal
 history; a fresh PC readiness prompt must be observed after CommandEnded.
+
+## Collect a terminal result without replay
+
+`pt_live_get_terminal_result` accepts `device`, optional positive `operation_id` and
+`timeout_ms` (same 1..30000 bound). It **only reads retained output**; it never enters
+another command or starts a probe. `pt_live_run_terminal` and `pt_live_run_cli`
+return operation IDs, also available in readiness evidence. Supply that ID to avoid
+mistaking a newer command's result for an older one. Pending results expose the
+output captured so far with status unknown. A completed captured command is pass
+or fail according to SDK/recognized CLI errors; truncation remains unknown. These
+statuses concern the command result, not ping delivery or end-to-end reachability.
+
+The session listener retains late output after the original caller times out. Only
+the most recent command per terminal is retained, at most 32768 characters for each
+of 256 terminals; output is memory-only and may contain sensitive CLI text. A newer
+command, project replacement, disconnect or restart can make an older requested ID
+unavailable, which returns unknown. GUI/other-application commands and native Cisco
+ICMPProcess pings are outside this terminal history. The timeout bounds the lookup,
+not a new execution or an indefinite wait for the outstanding command.
+
+Canvas reads now omit empty/whitespace-only notes by default and report
+`note_counts` (total, non_empty, returned, omitted_empty). Use
+`pt_live_get_canvas` with `include_empty_notes:true` to inspect every native note
+object; no note is deleted. The scratch harness uses this full view for its
+empty-workspace safety check. Native note writes accept safe ASCII only, following
+the pulled local corruption report; offline/SVG Unicode remains supported.

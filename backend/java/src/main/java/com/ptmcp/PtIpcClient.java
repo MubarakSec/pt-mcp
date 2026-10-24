@@ -385,8 +385,8 @@ public class PtIpcClient implements AutoCloseable {
         long token=monitor.begin(id,deviceName,false,line.getPrompt());
         try {
             Pair<CommandStatus, String> result = cisco.enterCommand(command, modeArg);
-            monitor.completed(id,result.getFirst().name());
-            return new CliResult(result.getFirst().name(), result.getSecond());
+            monitor.completed(id,result.getFirst().name(),result.getSecond());
+            return new CliResult(result.getFirst().name(), result.getSecond(), token);
         } catch(com.cisco.pt.ipc.IPCError | RuntimeException failure) {
             terminalActivity.uncertain(id,token);throw failure;
         }
@@ -1013,10 +1013,11 @@ public class PtIpcClient implements AutoCloseable {
     public static final class CliResult {
         public final String status;  // STATUS_OK, ERROR_AMBIGUOUS, ERROR_INVALID, ...
         public final String output;
+        public final Long operationId;
 
-        public CliResult(String status, String output) {
-            this.status = status;
-            this.output = output;
+        public CliResult(String status, String output) {this(status,output,null);}
+        public CliResult(String status,String output,Long operationId) {
+            this.status=status;this.output=output;this.operationId=operationId;
         }
 
         public boolean isOk() {

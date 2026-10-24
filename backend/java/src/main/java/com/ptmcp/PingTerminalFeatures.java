@@ -182,6 +182,7 @@ public final class PingTerminalFeatures {
             result.put("status", cli.status);
             result.put("output", cli.output);
             result.put("source", "CiscoDevice.enterCommand");
+            result.put("operation_id",cli.operationId);
             return result;
         }
         return runOnTerminal(client, session, device, command, boundedTimeout(timeoutMs), false, 0, false);
@@ -245,6 +246,7 @@ public final class PingTerminalFeatures {
             result.put("status", status[0]);
             result.put("output", text);
             result.put("outputTruncated", text.length() >= MAX_OUTPUT_CHARS);
+            result.put("operation_id",token);
             result.put("terminal_activity",client.terminalActivity().snapshot(terminalUuid));
             if (!completed) result.put("note", "Native terminal command may still be running; its session listener remains attached. Do not replay it.");
             if (ping) {

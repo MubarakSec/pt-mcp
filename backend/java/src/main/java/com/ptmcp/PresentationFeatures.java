@@ -47,7 +47,8 @@ public final class PresentationFeatures implements PresentationPolicy.Canvas, Pr
         return new LinkedHashMap<>(Map.of("id",id.getDecoratedHexString(),"text",workspace().getCanvasNoteText(id),
             "x",workspace().getCanvasItemRealX(id),"y",workspace().getCanvasItemRealY(id)));
     }
-    public Map<String,Object> canvas() {
+    public Map<String,Object> canvas() {return canvas(false);}
+    public Map<String,Object> canvas(boolean includeEmptyNotes) {
         return ipc(() -> {
             var devices=new ArrayList<Map<String,Object>>(); for (String n:names()) devices.add(device(n));
             var links=new ArrayList<Map<String,Object>>();
@@ -57,7 +58,10 @@ public final class PresentationFeatures implements PresentationPolicy.Canvas, Pr
                 m.put("cable_type",l.cableType);m.put("state","unknown");links.add(m);
             }
             var notes=new ArrayList<Map<String,Object>>(); for (UUID id:workspace().getCanvasNoteIds()) notes.add(note(id));
-            return Map.of("devices",devices,"links",links,"notes",notes,"coordinate_contract","icon origin; native note real position");
+            var result=new LinkedHashMap<String,Object>();
+            result.put("devices",devices);result.put("links",links);
+            result.put("coordinate_contract","icon origin; native note real position");
+            result.putAll(PresentationPolicy.canvasNotes(notes,includeEmptyNotes));return result;
         });
     }
     public Set<String> noteIds() {

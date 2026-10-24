@@ -4,8 +4,6 @@ import copy
 import io
 import json
 from pathlib import Path
-import subprocess
-import sys
 import tempfile
 import unittest
 from unittest.mock import Mock,patch
@@ -36,6 +34,7 @@ class HarnessTests(unittest.TestCase):
         client=FakeTools();h=Harness(client,'/unused')
         with self.assertRaises(IntegrationError):h.preflight()
         self.assertFalse(h.cleared_workspace)
+        self.assertEqual(client.calls[-1],('pt_live_get_canvas',{'include_empty_notes':True}))
         self.assertFalse(any(name in MUTATIONS for name,args in client.calls))
 
     def test_incomplete_canvas_is_never_treated_as_empty(self):
@@ -68,7 +67,7 @@ class HarnessTests(unittest.TestCase):
     def test_save_reopen_calls_once_and_compares_observed_canvas(self):
         with tempfile.TemporaryDirectory() as tmp:
             client=FakeTools();h=Harness(client,tmp,save_reopen=True);h.cleared_workspace=True
-            h.wait_boot=Mock();h.validate=Mock()
+            h.wait_boot=Mock();h.validate=Mock();h.verify_saved_xml=Mock()
             h.save_reopen()
             names=[name for name,args in client.calls]
             self.assertEqual(names.count('pt_live_save_file'),1)
@@ -76,6 +75,7 @@ class HarnessTests(unittest.TestCase):
             self.assertEqual(names.count('pt_live_run_cli'),3) # explicitly requested startup saves
             self.assertTrue((Path(tmp)/'scratch.pkt').exists())
             self.assertEqual(h.report['save_reopen'],'pass')
+            h.verify_saved_xml.assert_called_once_with(Path(tmp)/'scratch.pkt')
             h.wait_boot.assert_called_once();h.validate.assert_called_once()
 
     def test_persistence_comparison_preserves_cables_and_ignores_native_note_ids(self):
@@ -97,3 +97,46 @@ class HarnessTests(unittest.TestCase):
         with patch('scripts.pt_integration.LiveBridge') as bridge,contextlib.redirect_stderr(io.StringIO()):
             with self.assertRaises(SystemExit):main(['--run-live'])
             bridge.assert_not_called()
+
+    def test_saved_xml_control_corruption_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            h=Harness(FakeTools(),tmp)
+            def decoded(text):
+                def run(*args,**kwargs):
+                    (Path(tmp)/'scratch-decoded.xml').write_text(text)
+                    return Mock(returncode=0)
+                return run
+            with patch('scripts.pt_integration.subprocess.run',side_effect=decoded('<NETWORK>safe ASCII</NETWORK>')):
+                h.verify_saved_xml(Path(tmp)/'scratch.pkt')
+            self.assertEqual(h.report['saved_xml'],'well_formed')
+            with patch('scripts.pt_integration.subprocess.run',side_effect=decoded('<NETWORK>bad\x14</NETWORK>')):
+                with self.assertRaises(IntegrationError) as raised:h.verify_saved_xml(Path(tmp)/'scratch.pkt')
+                self.assertEqual(raised.exception.status,'fail')
+
+    def test_invalid_saved_xml_stops_before_project_replacement(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            client=FakeTools();h=Harness(client,tmp,save_reopen=True);h.cleared_workspace=True
+            h.verify_saved_xml=Mock(side_effect=IntegrationError('invalid XML','fail'))
+            with self.assertRaises(IntegrationError):h.save_reopen()
+            names=[name for name,args in client.calls]
+            self.assertEqual(names.count('pt_live_save_file'),1)
+            self.assertNotIn('pt_live_open_file',names)
+
+    def test_empty_native_notes_also_make_the_workspace_nondisposable(self):
+        client=FakeTools({'devices':[],'links':[],'notes':[{'id':'native-empty','text':''}]})
+        h=Harness(client,'/unused')
+        with self.assertRaises(IntegrationError):h.preflight()
+        self.assertFalse(h.cleared_workspace)
+
+    def test_negative_case_unknown_outcome_stops_without_retry(self):
+        class UnknownCollision(FakeTools):
+            def call_tool(self,name,args):
+                if name=='pt_live_add_device':
+                    self.calls.append((name,args))
+                    return {'structuredContent':{'outcome':'unknown'},'isError':True}
+                return super().call_tool(name,args)
+        client=UnknownCollision();h=Harness(client,'/unused',exercise_failures=True);h.cleared_workspace=True
+        with self.assertRaises(IntegrationError) as raised:h.negative_cases()
+        self.assertEqual(raised.exception.status,'unknown')
+        self.assertEqual(sum(name=='pt_live_add_device' for name,args in client.calls),1)
+        self.assertFalse(any(name=='pt_live_run_cli_batch' for name,args in client.calls))

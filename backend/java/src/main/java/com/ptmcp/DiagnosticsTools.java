@@ -27,7 +27,12 @@ final class DiagnosticsTools {
                 """
                 {"type":"object","properties":{"checks":{"type":"array","minItems":1,"maxItems":20,"items":{"oneOf":[{"type":"object","properties":{"kind":{"type":"string","const":"boot"},"device":{"type":"string","minLength":1,"maxLength":256}},"required":["kind","device"],"additionalProperties":false},{"type":"object","properties":{"kind":{"type":"string","const":"terminal_idle"},"device":{"type":"string","minLength":1,"maxLength":256}},"required":["kind","device"],"additionalProperties":false},{"type":"object","properties":{"kind":{"type":"string","const":"dhcp_address"},"device":{"type":"string","minLength":1,"maxLength":256},"iface":{"type":"string","minLength":1,"maxLength":256}},"required":["kind","device","iface"],"additionalProperties":false},{"type":"object","properties":{"kind":{"type":"string","const":"trunk_vlan"},"device":{"type":"string","minLength":1,"maxLength":256},"iface":{"type":"string","minLength":1,"maxLength":256},"vlans":{"type":"array","minItems":1,"maxItems":128,"uniqueItems":true,"items":{"type":"integer","minimum":1,"maximum":4094}}},"required":["kind","device","iface","vlans"],"additionalProperties":false}]}},"allow_probes":{"type":"boolean","default":false},"timeout_ms":{"type":"integer","minimum":1,"maximum":30000,"default":10000}},"required":["checks"],"additionalProperties":false}
                 """,
-                (ex,req) -> response(() -> validate(conn, gate, req.arguments())))
+                (ex,req) -> response(() -> validate(conn, gate, req.arguments()))),
+            PtMcpServer.tool(jm,"pt_get_terminal_result","Read retained output and completion of the latest tracked terminal command without rerunning it. An optional operation_id prevents collecting a newer command by mistake.",
+                """
+                {"type":"object","properties":{"device":{"type":"string","minLength":1,"maxLength":256},"operation_id":{"type":"integer","minimum":1,"maximum":9223372036854775807},"timeout_ms":{"type":"integer","minimum":1,"maximum":30000,"default":10000}},"required":["device"],"additionalProperties":false}
+                """,
+                (ex,req) -> response(() -> terminalResult(conn, gate, req.arguments())))
         );
     }
     private static int timeout(Map<String,Object> args) {
@@ -79,6 +84,19 @@ final class DiagnosticsTools {
         Object probes=args.getOrDefault("allow_probes",false);
         if(!(probes instanceof Boolean)) throw new IllegalArgumentException("allow_probes must be boolean");
         return runChecks(conn,gate,checks,(Boolean)probes,timeout(args));
+    }
+    private static Map<String,Object> terminalResult(ConnectionManager conn,DiagnosticExecutor gate,Map<String,Object> args) {
+        fields(args,Set.of("device","operation_id","timeout_ms"));
+        String device=PresentationPolicy.name(args.get("device"));Long operation=null;
+        if(args.containsKey("operation_id")) {
+            Object value=args.get("operation_id");
+            if(!(value instanceof Number)) throw new IllegalArgumentException("operation_id must be a positive integer");
+            try {operation=new java.math.BigDecimal(value.toString()).longValueExact();}
+            catch(ArithmeticException | NumberFormatException invalid) {throw new IllegalArgumentException("operation_id must be a positive integer");}
+            if(operation<1) throw new IllegalArgumentException("operation_id must be a positive integer");
+        }
+        Long requested=operation;
+        return gate.run(timeout(args),budget -> conn.withClient(c -> new DiagnosticsFeatures(c,budget).terminalResult(device,requested)));
     }
     private static Map<String,Object> runChecks(ConnectionManager conn,DiagnosticExecutor gate,List<Map<String,Object>> checks,boolean probes,int timeout) {
         var progress=new CopyOnWriteArrayList<Map<String,Object>>();

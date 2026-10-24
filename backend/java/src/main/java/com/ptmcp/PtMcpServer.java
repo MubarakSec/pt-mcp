@@ -467,7 +467,7 @@ public final class PtMcpServer {
                         .name(name)
                         .description(description)
                         .inputSchema(jm, schemaJson)
-                        .annotations(new McpSchema.ToolAnnotations(null, java.util.Set.of("pt_get_readiness", "pt_get_canvas", "pt_get_topology", "pt_get_links", "pt_get_ports", "pt_get_endpoint_config", "pt_get_modules", "pt_get_supported_modules", "pt_get_device_models", "pt_get_device_xml").contains(name), null, null, null, null))
+                        .annotations(new McpSchema.ToolAnnotations(null, java.util.Set.of("pt_get_terminal_result", "pt_get_readiness", "pt_get_canvas", "pt_get_topology", "pt_get_links", "pt_get_ports", "pt_get_endpoint_config", "pt_get_modules", "pt_get_supported_modules", "pt_get_device_models", "pt_get_device_xml").contains(name), null, null, null, null))
                         .build())
                 .callHandler(handler)
                 .build();
@@ -643,6 +643,7 @@ public final class PtMcpServer {
             structured.put("changes_may_have_applied", true);
             structured.put("status", r.status);
             structured.put("output", r.output == null ? "" : r.output);
+            structured.put("operation_id",r.operationId);
             return CallToolResult.builder()
                     .addTextContent(text)
                     .structuredContent(structured)

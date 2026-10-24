@@ -47,6 +47,12 @@ public final class PresentationPolicy {
         boolean absent=!n.noteIds().contains(id);
         return Map.of("id",id,"sdk_accepted",accepted,"removed",absent,"outcome",absent?"success":"failed");
     }
+    public static Map<String,Object> canvasNotes(List<Map<String,Object>> notes,boolean includeEmpty) {
+        var meaningful=notes.stream().filter(n -> n.get("text") instanceof String s && !s.isBlank()).toList();
+        var returned=includeEmpty?List.copyOf(notes):meaningful;
+        return Map.of("notes",returned,"note_counts",Map.of("total",notes.size(),"non_empty",meaningful.size(),
+                "returned",returned.size(),"omitted_empty",notes.size()-returned.size()));
+    }
     public static String name(Object value) {
         if (!(value instanceof String s) || s.isBlank() || s.codePointCount(0,s.length()) > 256
                 || s.codePoints().anyMatch(Character::isISOControl))
@@ -61,8 +67,11 @@ public final class PresentationPolicy {
         return n.intValue();
     }
     public static String noteText(Object value) {
-        if (!(value instanceof String s) || s.codePointCount(0,s.length()) > 16384 || s.indexOf('\0') >= 0)
-            throw new IllegalArgumentException("note text must be at most 16384 characters, without NUL");
+        // PT 9.0.1 local evidence shows lossy native Unicode note serialization,
+        // including U+2014 becoming an XML-invalid control. Reject before any SDK mutation.
+        if (!(value instanceof String s) || s.length() > 16384
+                || s.chars().anyMatch(c -> (c < 32 && c != '\t' && c != '\n' && c != '\r') || c > 126))
+            throw new IllegalArgumentException("Native notes accept ASCII text, tab and line breaks only (max 16384); Unicode SDK serialization is unsafe. Use SVG/offline notes for Unicode.");
         return s;
     }
     static void require(Canvas c,String n) {

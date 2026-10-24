@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent
 JAVA_ROOT = ROOT / "backend" / "java"
 DEFAULT_COMMAND = [str(JAVA_ROOT / "build/install/pt-mcp/bin/pt-mcp")]
 CATALOG_PATH = ROOT / "live_tools.json"
-DIAGNOSTIC_TOOLS = frozenset({"pt_live_probe_connection", "pt_live_get_readiness", "pt_live_validate_network"})
+DIAGNOSTIC_TOOLS = frozenset({"pt_live_probe_connection", "pt_live_get_readiness", "pt_live_validate_network", "pt_live_get_terminal_result"})
 
 
 def diagnostic_failure(reason: str, status: str = "unknown") -> dict[str, Any]:

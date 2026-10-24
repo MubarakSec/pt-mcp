@@ -45,9 +45,10 @@ Checks cover:
 - Actual ipconfig address in DHCP mode and the scratch subnet; VLAN allowed,
   active and STP-forwarding state, plus a negative assertion for VLAN 3999.
 - Tracked terminal readiness after completed ipconfig.
-- Named creation, attached-cable rename/move, Unicode note add/update/delete.
+- Named creation, attached-cable rename/move, ASCII note add/update/delete; unsafe native Unicode is rejected by the server.
 - With `--save-reopen`: explicit `write memory` on scratch Cisco devices, explicit
-  save to a new `.pkt`, reopen that file, compare names/positions/notes/cables
+  save to a new `.pkt`, decode it with the bundled offline decoder and check XML
+  well-formedness before reopening (60-second decode bound), then compare names/positions/notes/cables
   independently of native IDs, then recheck boot, DHCP and trunks.
 
 Fresh read probes may repeat after conclusive negative observations while waiting
@@ -63,7 +64,43 @@ Interactive PT/other-app terminal commands remain outside this backend's trackin
 Exit 0 means the requested harness checks completed. Nonzero means failure or
 unknown; inspect the report's per-step observations. An enabled DHCP flag or an SDK
 save/command status alone is not accepted as the final network/persistence result.
+Native Unicode note mutation is excluded after the reported PT serialization corruption;
+portable unit tests verify Arabic, accents, U+2014, supplementary characters and invalid
+controls are rejected before any add/update adapter call. Rebuild the backend before
+using this guard. SVG/offline Unicode remains supported.
+
 Current per-interface DHCP flag semantics, CLI formatting and event ordering still
 need this live run. Unit tests exercise harness guards with synthetic replies; they
 are not Packet Tracer integration evidence. Do not use existing historical captures
 as a substitute for running this harness against the new tools.
+
+The pulled 0.6.0 local record reports one-pixel switch X shifts on reopen. The
+harness currently compares coordinates exactly and reports such a difference as
+a persistence failure; it does not silently relax the criterion. See
+[the local record](LOCAL-VERIFICATION-2026-10-24.md) when interpreting that result.
+
+## Opt-in live failure cases
+
+On another empty disposable workspace, add `--exercise-failures`. It checks named
+creation/rename collisions against a full before/after canvas view, then sends one
+batch containing `interface range FastEthernet0/1-25` and a description marker tail.
+The 2960 fixture normally has 24 FastEthernet ports. Acceptance requires index 0
+failed, index 1 unattempted, no unknown indexes, and unchanged running configuration
+on explicit readback. It never expands/retries the range or repairs CLI context.
+An unexpected model behavior, applied tail or uncertain reply stops the harness
+and leaves the scratch state for inspection. Run this separately from persistence
+acceptance when investigating an SDK/model failure.
+
+For native interrupted-reply acceptance, use only this disposable fixture. Record
+a uniquely marked CLI batch call; disable IPC locally in PT while it is in flight,
+then inspect the single call's result/report. A genuinely lost reply must be unknown,
+with no automatic second submission. Re-enable IPC and inspect actual configuration
+and device inventory before any further mutation. If the original reply completed
+before IPC was interrupted, record the case as not exercised. This fault injection
+requires a local operator; it is **not automated or verified** by the portable suite.
+No tunnels, remote IPC or credentials are required or exposed by this procedure.
+
+`--exercise-terminal-timeout` now collects the retained operation ID/output with
+`pt_live_get_terminal_result`; it does not rerun the timed-out command. Native event
+ordering and late-output capture need the local run. A successful terminal result
+collection is not proof the ping destination was reachable.

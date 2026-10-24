@@ -770,10 +770,15 @@
     },
     {
       "name": "pt_get_canvas",
-      "description": "Read live devices, origin positions, observed links and native notes; unknown links remain unknown.",
+      "description": "Read devices, positions, links and meaningful native notes with total/returned/omitted counts. include_empty_notes=true returns all native note objects.",
       "inputSchema": {
         "type": "object",
-        "properties": {},
+        "properties": {
+          "include_empty_notes": {
+            "type": "boolean",
+            "default": false
+          }
+        },
         "required": [],
         "additionalProperties": false
       },
@@ -783,7 +788,7 @@
     },
     {
       "name": "pt_add_note",
-      "description": "Add a native note at real integer coordinates; bounded Unicode text and readback.",
+      "description": "Add a native ASCII note at real integer coordinates. Unsafe Unicode is rejected before mutation.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -815,7 +820,7 @@
     },
     {
       "name": "pt_update_note",
-      "description": "Update text of an existing verified native note ID; return readback.",
+      "description": "Update ASCII text of a verified native note ID; reject unsafe Unicode before mutation and return readback.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -1089,6 +1094,38 @@
       },
       "annotations": {
         "readOnlyHint": false
+      }
+    },
+    {
+      "name": "pt_get_terminal_result",
+      "description": "Read retained output and completion of the latest tracked terminal command without rerunning it. An optional operation_id prevents collecting a newer command by mistake.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "operation_id": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9223372036854775807
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30000,
+            "default": 10000
+          }
+        },
+        "required": [
+          "device"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true
       }
     }
   ]

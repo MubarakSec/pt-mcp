@@ -1,6 +1,6 @@
 # pt-mcp — Packet Tracer saved files and live simulator
 
-Version **0.7.0** exposes 66 MCP tools: 27 offline tools (22 saved-file/build, three native-model library, and two diagram tools), 38 live simulator tools, and `pt_live_status`. New live wrappers await SDK compilation and local Packet Tracer verification; see [implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md).
+Version **0.7.0** exposes 67 MCP tools: 27 offline tools (22 saved-file/build, three native-model library, and two diagram tools), 39 live simulator tools, and `pt_live_status`. New live wrappers await SDK compilation and local Packet Tracer verification; see [implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md).
 
 The Python server handles `.pkt`/XML inspection and copy-based editing. Its optional Java backend controls a running Packet Tracer simulator over IPC. The Java source now lives inside this repository at `backend/java`; no sibling checkout is required.
 

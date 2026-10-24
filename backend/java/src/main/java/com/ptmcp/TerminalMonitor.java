@@ -31,12 +31,13 @@ final class TerminalMonitor implements AutoCloseable {
         } else if(event instanceof TerminalLineEvent.PromptChanged e) {
             if(e.newPrompt!=null && !e.newPrompt.isBlank()) activity.prompt(id);
         } else if(event instanceof TerminalLineEvent.OutputWritten e) {
+            activity.output(id,e.newOutput);
             String prompt=prompts.get(id);
             if(prompt!=null && !prompt.isBlank() && e.newOutput!=null && e.newOutput.trim().endsWith(prompt.trim())) activity.prompt(id);
         }
         if("pass".equals(activity.snapshot(id).get("status"))) prompts.remove(id);
     }
-    void completed(String id,String status) {activity.ended(id,status);prompts.remove(id);}
+    void completed(String id,String status,String output) {activity.replaceOutput(id,output);activity.ended(id,status);prompts.remove(id);}
     void reset() {prompts.clear();activity.disconnect();}
     @Override public void close() {
         try {registry.removeListener(listener);} catch(IOException | RuntimeException ignored) { }

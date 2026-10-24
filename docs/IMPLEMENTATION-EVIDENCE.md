@@ -1,6 +1,6 @@
 # Implementation evidence
 
-Follow-up local results are recorded in [local verification — 2026-10-24](LOCAL-VERIFICATION-2026-10-24.md). The local SDK build and selected live presentation/CLI operations passed; native Unicode note corruption remains unresolved. The original cloud-workspace results below are retained as historical evidence, not the current local SDK-availability status.
+Follow-up local results are recorded in [local verification — 2026-10-24](LOCAL-VERIFICATION-2026-10-24.md). The local 0.6.0 SDK build and selected live presentation/CLI operations passed. Native Unicode note corruption is now blocked by a pre-mutation ASCII guard; a Unicode-preserving native path remains unverified, and the new readiness-stage SDK/live checks remain pending. The original cloud-workspace results below are retained as historical evidence, not the current local SDK-availability status.
 
 ## CLI results and batches
 
@@ -143,3 +143,44 @@ synthetic tool replies; **no PT integration run was performed**. All 29 tests pa
 locally with required JDK 21 and no skips. Terminal prompt-before-end regression and
 history invalidation on project open are covered by the pure tracking policy;
 SDK adapter lifecycle changes still require local SDK compilation/live testing.
+
+Readiness stage — pulled local feedback: `git pull --no-rebase` fetched `ad692a1`
+and merged without conflicts. Its local record verifies selected 0.6.0 operations
+and reports native Unicode note corruption plus one-pixel switch-X save rounding.
+The new readiness SDK build/live checks remain separate and pending.
+
+Added a pre-mutation native-note ASCII/control guard, including Arabic, accented,
+U+2014 and supplementary-character regressions. The regression first failed because
+unsafe text reached the adapter; it passed after the guard. The scratch harness
+uses ASCII native notes and decodes/checks saved XML before any reopen. Portable
+SVG/offline Unicode behavior is unchanged. Native guard behavior still needs a
+local rebuilt SDK adapter run; no Unicode-preserving native path is claimed.
+
+Added compact canvas-note counts/full-view opt-in and a read-only retained terminal
+result tool with bounded in-memory output and exact operation-ID matching. Pure
+policy tests cover 122 notes/16 meaningful entries, late output, result truncation,
+replaced IDs and disconnected history. These are offline tests, not live captures.
+
+## Readiness stage — final workspace check
+
+- **Offline tested:** 33 tests passed with required JDK 21, no skips, with Python
+  ResourceWarning promoted to errors. This includes the five standalone Java policy
+  harnesses, real Python stdio failure isolation, catalog/annotation consistency,
+  native-note input guards, compact-note/result-retention policies, and synthetic
+  local-harness safety cases. Python-only mode passed 28 with five explicit Java
+  skips. Python syntax checks and workflow YAML checks ran; the harness plan/help
+  modes ran without IPC. No mocked result is labeled live evidence.
+- **SDK compiled:** the pulled local record establishes the 0.6.0 baseline only.
+  The current 0.7.0 adapters, ASCII guard, compact canvas and retained-output path
+  were **not compiled against Cisco's SDK in this workspace** because it is absent.
+- **Live verified:** selected baseline results are in LOCAL-VERIFICATION-2026-10-24.md.
+  New readiness/terminal collection/failure-case/save-reopen harness checks were
+  **not run against PT here**. Rebuild locally before exercising them. Operator
+  disconnect injection remains manual and unperformed. One-pixel switch-X rounding
+  remains visible as a strict persistence difference, not silently accepted.
+- **Hosted CI:** workflow prepared and local equivalents passed on Python 3.10 /
+  JDK 21. Hosted jobs and the Python 3.12 matrix entry were not run here. No push
+  was performed; only the requested pull/merge was performed.
+
+Current discovery: 27 offline tools + 39 live Java registrations + passive status
+= 67 tools. Java IPC, explicit saves and no automatic mutation replay remain intact.

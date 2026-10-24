@@ -6,7 +6,8 @@ import java.util.*;
 public final class TerminalActivity {
     private static final int LIMIT=256;
     private static final class Entry {
-        long token;boolean needsPrompt,ended,prompt,uncertain;String status;
+        long token;boolean needsPrompt,ended,prompt,uncertain,truncated;String status;
+        final StringBuilder output=new StringBuilder();
         Entry(long token,boolean needsPrompt){this.token=token;this.needsPrompt=needsPrompt;}
         boolean idle(){return ended && (!needsPrompt || prompt);}
     }
@@ -21,6 +22,29 @@ public final class TerminalActivity {
             entries.remove(removable);
         }
         Entry entry=new Entry(++nextToken,needsPrompt);entries.put(id,entry);return entry.token;
+    }
+    public synchronized void output(String id,String text) {
+        Entry e=entries.get(id);if(e==null || text==null) return;
+        int room=32768-e.output.length();
+        e.output.append(text,0,Math.min(room,text.length()));
+        if(text.length()>room) e.truncated=true;
+    }
+    public synchronized void replaceOutput(String id,String text) {
+        Entry e=entries.get(id);if(e==null) return;
+        e.output.setLength(0);e.truncated=false;output(id,text);
+    }
+    public synchronized Map<String,Object> result(String id,Long requested) {
+        Entry e=entries.get(id);
+        if(e==null) return DiagnosticsPolicy.result("unknown","no_terminal_history",Map.of());
+        if(requested!=null && requested.longValue()!=e.token)
+            return DiagnosticsPolicy.result("unknown","operation_not_retained",Map.of("requested_operation_id",requested));
+        String classification=CliPolicy.classify(e.status,e.output.toString());
+        String status=!e.idle() || e.status==null || e.truncated?"unknown":classification.equals("success")?"pass":"fail";
+        var result=DiagnosticsPolicy.result(status,!e.idle()?"terminal_result_pending":e.truncated?"terminal_output_truncated":"terminal_result_observed",
+            Map.of("scope","latest_command_per_terminal_in_this_connection","external_commands_observable",false));
+        result.put("operation_id",e.token);result.put("completed",e.idle());result.put("command_ended",e.ended);
+        result.put("sdk_status",e.status);result.put("output",e.output.toString());result.put("output_truncated",e.truncated);
+        return result;
     }
     public synchronized void ended(String id,String status) {
         Entry e=entries.get(id);if(e!=null){e.ended=true;e.status=status;}

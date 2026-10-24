@@ -52,8 +52,10 @@ are unavailable. Inspect PT before submitting another mutation.
   applies sequentially; stops on first failed/unknown result. Reports confirmed,
   failed, unknown and unattempted indexes. At most 500 moves; no implicit notes.
 
-Names have 1..256 characters without controls. Note text has at most 16384 characters
-without NUL. These are tool input limits, not claims about SDK limits. Live moves
+Names have 1..256 characters without controls. Native note text is limited to
+16384 ASCII characters plus tabs and line breaks; unsafe Unicode and controls are
+rejected before mutation after the locally reported saved-XML corruption. SVG and
+offline notes retain Unicode support. These are tool input limits, not claims about SDK limits. Live moves
 and notes need local placement/persistence verification, especially coordinate semantics.
 All operations retain explicit saves and leave cables, CLI/IP/VLAN state and power
 alone. Whole-call transport failure remains unknown even if some items applied.

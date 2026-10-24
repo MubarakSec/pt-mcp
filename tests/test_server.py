@@ -41,7 +41,7 @@ class ServerTests(unittest.TestCase):
             self.assertEqual(len(names),len(set(names)))
             self.assertIn('pt_live_apply_layout',names)
             self.assertIn('pt_layout_plan',names)
-            self.assertEqual(len(names),66)
+            self.assertEqual(len(names),67)
             self.assertTrue(next(t for t in tools if t['name']=='pt_layout_plan')['annotations']['readOnlyHint'])
             for i in (2,3,4,6,7,8,10): self.assertFalse(replies[i]['result'].get('isError'),replies[i])
             self.assertTrue(replies[5]['result']['isError'])

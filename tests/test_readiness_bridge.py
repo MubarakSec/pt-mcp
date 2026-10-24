@@ -37,13 +37,14 @@ class ReadinessBridgeTests(unittest.TestCase):
         requests=[('initialize',{}),('tools/call',{'name':'pt_live_probe_connection','arguments':{'timeout_ms':50}}),
                   ('tools/call',{'name':'pt_live_get_readiness','arguments':{'devices':['R']}}),
                   ('tools/call',{'name':'pt_live_validate_network','arguments':{'checks':[{'kind':'boot','device':'R'}]}}),
+                  ('tools/call',{'name':'pt_live_get_terminal_result','arguments':{'device':'R','operation_id':1}}),
                   ('tools/list',{})]
         env=dict(os.environ,PT_MCP_LIVE_COMMAND=json.dumps(['/no/pt-mcp-backend']))
         wire=''.join(json.dumps({'id':i,'jsonrpc':'2.0','method':m,'params':p})+'\n' for i,(m,p) in enumerate(requests))
         p=subprocess.run([sys.executable,str(ROOT/'server.py')],input=wire,text=True,capture_output=True,env=env,timeout=10)
         self.assertEqual(p.returncode,0,p.stderr)
         replies=[json.loads(line) for line in p.stdout.splitlines()]
-        for reply in replies[1:4]:
+        for reply in replies[1:5]:
             self.assertEqual(reply['result']['structuredContent']['status'],'unknown')
         names={t['name'] for t in replies[-1]['result']['tools']}
         self.assertIn('pt_open',names);self.assertIn('pt_live_validate_network',names)
