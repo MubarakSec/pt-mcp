@@ -1,0 +1,836 @@
+{
+  "snapshot": {
+    "devices": [
+      {
+        "name": "Campus Core",
+        "type": "router",
+        "model": "2911"
+      },
+      {
+        "name": "Engineering Switch",
+        "type": "switch"
+      },
+      {
+        "name": "Engineering PC 01",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 02",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 03",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 04",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 05",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 06",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 07",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 08",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 09",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 10",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 11",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 12",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 13",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 14",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 15",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 16",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 17",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 18",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 19",
+        "type": "pc"
+      },
+      {
+        "name": "Engineering PC 20",
+        "type": "pc"
+      },
+      {
+        "name": "Operations Switch",
+        "type": "switch"
+      },
+      {
+        "name": "Operations PC 01",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 02",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 03",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 04",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 05",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 06",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 07",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 08",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 09",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 10",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 11",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 12",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 13",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 14",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 15",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 16",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 17",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 18",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 19",
+        "type": "pc"
+      },
+      {
+        "name": "Operations PC 20",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث Switch",
+        "type": "switch"
+      },
+      {
+        "name": "المبنى الثالث PC 01",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث PC 02",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث PC 03",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث PC 04",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث PC 05",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث PC 06",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث PC 07",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث PC 08",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث PC 09",
+        "type": "pc"
+      },
+      {
+        "name": "المبنى الثالث PC 10",
+        "type": "pc"
+      }
+    ],
+    "links": [
+      {
+        "dev_a": "Campus Core",
+        "dev_b": "Engineering Switch"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 01"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 02"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 03"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 04"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 05"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 06"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 07"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 08"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 09"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 10"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 11"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 12"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 13"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 14"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 15"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 16"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 17"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 18"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 19"
+      },
+      {
+        "dev_a": "Engineering Switch",
+        "dev_b": "Engineering PC 20"
+      },
+      {
+        "dev_a": "Campus Core",
+        "dev_b": "Operations Switch"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 01"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 02"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 03"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 04"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 05"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 06"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 07"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 08"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 09"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 10"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 11"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 12"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 13"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 14"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 15"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 16"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 17"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 18"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 19"
+      },
+      {
+        "dev_a": "Operations Switch",
+        "dev_b": "Operations PC 20"
+      },
+      {
+        "dev_a": "Campus Core",
+        "dev_b": "المبنى الثالث Switch"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 01"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 02"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 03"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 04"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 05"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 06"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 07"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 08"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 09"
+      },
+      {
+        "dev_a": "المبنى الثالث Switch",
+        "dev_b": "المبنى الثالث PC 10"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "name": "Engineering",
+      "devices": [
+        "Engineering Switch",
+        "Engineering PC 01",
+        "Engineering PC 02",
+        "Engineering PC 03",
+        "Engineering PC 04",
+        "Engineering PC 05",
+        "Engineering PC 06",
+        "Engineering PC 07",
+        "Engineering PC 08",
+        "Engineering PC 09",
+        "Engineering PC 10",
+        "Engineering PC 11",
+        "Engineering PC 12",
+        "Engineering PC 13",
+        "Engineering PC 14",
+        "Engineering PC 15",
+        "Engineering PC 16",
+        "Engineering PC 17",
+        "Engineering PC 18",
+        "Engineering PC 19",
+        "Engineering PC 20"
+      ]
+    },
+    {
+      "name": "Operations",
+      "devices": [
+        "Operations Switch",
+        "Operations PC 01",
+        "Operations PC 02",
+        "Operations PC 03",
+        "Operations PC 04",
+        "Operations PC 05",
+        "Operations PC 06",
+        "Operations PC 07",
+        "Operations PC 08",
+        "Operations PC 09",
+        "Operations PC 10",
+        "Operations PC 11",
+        "Operations PC 12",
+        "Operations PC 13",
+        "Operations PC 14",
+        "Operations PC 15",
+        "Operations PC 16",
+        "Operations PC 17",
+        "Operations PC 18",
+        "Operations PC 19",
+        "Operations PC 20"
+      ]
+    },
+    {
+      "name": "المبنى الثالث",
+      "devices": [
+        "المبنى الثالث Switch",
+        "المبنى الثالث PC 01",
+        "المبنى الثالث PC 02",
+        "المبنى الثالث PC 03",
+        "المبنى الثالث PC 04",
+        "المبنى الثالث PC 05",
+        "المبنى الثالث PC 06",
+        "المبنى الثالث PC 07",
+        "المبنى الثالث PC 08",
+        "المبنى الثالث PC 09",
+        "المبنى الثالث PC 10"
+      ]
+    }
+  ],
+  "plan": {
+    "version": 1,
+    "layout": "grouped",
+    "coordinate_contract": "icon origin; signed 32-bit integers",
+    "moves": [
+      {
+        "name": "Engineering Switch",
+        "x": 110,
+        "y": 440
+      },
+      {
+        "name": "Engineering PC 01",
+        "x": 110,
+        "y": 580
+      },
+      {
+        "name": "Engineering PC 02",
+        "x": 340,
+        "y": 580
+      },
+      {
+        "name": "Engineering PC 03",
+        "x": 570,
+        "y": 580
+      },
+      {
+        "name": "Engineering PC 04",
+        "x": 800,
+        "y": 580
+      },
+      {
+        "name": "Engineering PC 05",
+        "x": 1030,
+        "y": 580
+      },
+      {
+        "name": "Engineering PC 06",
+        "x": 110,
+        "y": 720
+      },
+      {
+        "name": "Engineering PC 07",
+        "x": 340,
+        "y": 720
+      },
+      {
+        "name": "Engineering PC 08",
+        "x": 570,
+        "y": 720
+      },
+      {
+        "name": "Engineering PC 09",
+        "x": 800,
+        "y": 720
+      },
+      {
+        "name": "Engineering PC 10",
+        "x": 1030,
+        "y": 720
+      },
+      {
+        "name": "Engineering PC 11",
+        "x": 110,
+        "y": 860
+      },
+      {
+        "name": "Engineering PC 12",
+        "x": 340,
+        "y": 860
+      },
+      {
+        "name": "Engineering PC 13",
+        "x": 570,
+        "y": 860
+      },
+      {
+        "name": "Engineering PC 14",
+        "x": 800,
+        "y": 860
+      },
+      {
+        "name": "Engineering PC 15",
+        "x": 1030,
+        "y": 860
+      },
+      {
+        "name": "Engineering PC 16",
+        "x": 110,
+        "y": 1000
+      },
+      {
+        "name": "Engineering PC 17",
+        "x": 340,
+        "y": 1000
+      },
+      {
+        "name": "Engineering PC 18",
+        "x": 570,
+        "y": 1000
+      },
+      {
+        "name": "Engineering PC 19",
+        "x": 800,
+        "y": 1000
+      },
+      {
+        "name": "Engineering PC 20",
+        "x": 1030,
+        "y": 1000
+      },
+      {
+        "name": "Operations Switch",
+        "x": 1400,
+        "y": 440
+      },
+      {
+        "name": "Operations PC 01",
+        "x": 1400,
+        "y": 580
+      },
+      {
+        "name": "Operations PC 02",
+        "x": 1630,
+        "y": 580
+      },
+      {
+        "name": "Operations PC 03",
+        "x": 1860,
+        "y": 580
+      },
+      {
+        "name": "Operations PC 04",
+        "x": 2090,
+        "y": 580
+      },
+      {
+        "name": "Operations PC 05",
+        "x": 2320,
+        "y": 580
+      },
+      {
+        "name": "Operations PC 06",
+        "x": 1400,
+        "y": 720
+      },
+      {
+        "name": "Operations PC 07",
+        "x": 1630,
+        "y": 720
+      },
+      {
+        "name": "Operations PC 08",
+        "x": 1860,
+        "y": 720
+      },
+      {
+        "name": "Operations PC 09",
+        "x": 2090,
+        "y": 720
+      },
+      {
+        "name": "Operations PC 10",
+        "x": 2320,
+        "y": 720
+      },
+      {
+        "name": "Operations PC 11",
+        "x": 1400,
+        "y": 860
+      },
+      {
+        "name": "Operations PC 12",
+        "x": 1630,
+        "y": 860
+      },
+      {
+        "name": "Operations PC 13",
+        "x": 1860,
+        "y": 860
+      },
+      {
+        "name": "Operations PC 14",
+        "x": 2090,
+        "y": 860
+      },
+      {
+        "name": "Operations PC 15",
+        "x": 2320,
+        "y": 860
+      },
+      {
+        "name": "Operations PC 16",
+        "x": 1400,
+        "y": 1000
+      },
+      {
+        "name": "Operations PC 17",
+        "x": 1630,
+        "y": 1000
+      },
+      {
+        "name": "Operations PC 18",
+        "x": 1860,
+        "y": 1000
+      },
+      {
+        "name": "Operations PC 19",
+        "x": 2090,
+        "y": 1000
+      },
+      {
+        "name": "Operations PC 20",
+        "x": 2320,
+        "y": 1000
+      },
+      {
+        "name": "المبنى الثالث Switch",
+        "x": 2690,
+        "y": 440
+      },
+      {
+        "name": "المبنى الثالث PC 01",
+        "x": 2690,
+        "y": 580
+      },
+      {
+        "name": "المبنى الثالث PC 02",
+        "x": 2920,
+        "y": 580
+      },
+      {
+        "name": "المبنى الثالث PC 03",
+        "x": 3150,
+        "y": 580
+      },
+      {
+        "name": "المبنى الثالث PC 04",
+        "x": 3380,
+        "y": 580
+      },
+      {
+        "name": "المبنى الثالث PC 05",
+        "x": 2690,
+        "y": 720
+      },
+      {
+        "name": "المبنى الثالث PC 06",
+        "x": 2920,
+        "y": 720
+      },
+      {
+        "name": "المبنى الثالث PC 07",
+        "x": 3150,
+        "y": 720
+      },
+      {
+        "name": "المبنى الثالث PC 08",
+        "x": 3380,
+        "y": 720
+      },
+      {
+        "name": "المبنى الثالث PC 09",
+        "x": 2690,
+        "y": 860
+      },
+      {
+        "name": "المبنى الثالث PC 10",
+        "x": 2920,
+        "y": 860
+      },
+      {
+        "name": "Campus Core",
+        "x": 1725,
+        "y": 120
+      }
+    ],
+    "groups": [
+      {
+        "name": "Engineering",
+        "x": 40,
+        "y": 360,
+        "width": 1230,
+        "height": 820
+      },
+      {
+        "name": "Operations",
+        "x": 1330,
+        "y": 360,
+        "width": 1230,
+        "height": 820
+      },
+      {
+        "name": "المبنى الثالث",
+        "x": 2620,
+        "y": 360,
+        "width": 1000,
+        "height": 680
+      },
+      {
+        "name": "Ungrouped",
+        "x": 1655,
+        "y": 40,
+        "width": 310,
+        "height": 260
+      }
+    ],
+    "annotations": [
+      {
+        "text": "Engineering",
+        "x": 64,
+        "y": 380
+      },
+      {
+        "text": "Operations",
+        "x": 1354,
+        "y": 380
+      },
+      {
+        "text": "المبنى الثالث",
+        "x": 2644,
+        "y": 380
+      },
+      {
+        "text": "Ungrouped",
+        "x": 1679,
+        "y": 60
+      }
+    ]
+  }
+}

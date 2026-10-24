@@ -23,6 +23,7 @@ sys.path.insert(0, HERE)
 from ptread import parse, text, config_text  # noqa: E402
 import ptbuild  # noqa: E402
 import model_library  # noqa: E402
+import diagram_tools  # noqa: E402
 from live_bridge import LiveBridge, LiveBridgeError  # noqa: E402
 
 try:
@@ -629,6 +630,9 @@ HANDLERS = {
     "pt_model_list": t_model_list,
 }
 
+TOOLS += diagram_tools.TOOLS
+HANDLERS.update(diagram_tools.handlers(_require, _build_require))
+
 def _live_tools():
     if _live is None:
         return LiveBridge.cached_tools()
@@ -681,7 +685,7 @@ def handle(req):
         _result(rid, {
             "protocolVersion": ver,
             "capabilities": {"tools": {"listChanged": False}},
-            "serverInfo": {"name": "pt-mcp", "version": "0.5.0",
+            "serverInfo": {"name": "pt-mcp", "version": "0.6.0",
                            "description": "Packet Tracer saved-file toolkit and live IPC bridge"},
         })
     elif method in ("notifications/initialized", "initialized"):
@@ -690,7 +694,8 @@ def handle(req):
         _result(rid, {})
     elif method == "tools/list":
         _result(rid, {"tools": [
-            {"name": n, "description": d, "inputSchema": s}
+            {"name": n, "description": d, "inputSchema": s,
+             **({"annotations": diagram_tools.ANNOTATIONS[n]} if n in diagram_tools.ANNOTATIONS else {})}
             for n, d, s in TOOLS
         ] + [LIVE_STATUS_TOOL] + _live_tools()})
     elif method == "tools/call":

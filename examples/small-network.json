@@ -1,0 +1,75 @@
+{
+  "snapshot": {
+    "devices": [
+      {
+        "name": "Edge Router",
+        "type": "router"
+      },
+      {
+        "name": "Access Switch",
+        "type": "switch"
+      },
+      {
+        "name": "مكتب الإدارة 192.0.2.10",
+        "type": "pc"
+      },
+      {
+        "name": "Unknown <&> model"
+      }
+    ],
+    "links": [
+      {
+        "dev_a": "Edge Router",
+        "dev_b": "Access Switch"
+      },
+      {
+        "dev_a": "Access Switch",
+        "dev_b": "مكتب الإدارة 192.0.2.10"
+      }
+    ]
+  },
+  "groups": null,
+  "plan": {
+    "version": 1,
+    "layout": "tiered",
+    "coordinate_contract": "icon origin; signed 32-bit integers",
+    "moves": [
+      {
+        "name": "Edge Router",
+        "x": 110,
+        "y": 120
+      },
+      {
+        "name": "Access Switch",
+        "x": 110,
+        "y": 260
+      },
+      {
+        "name": "Unknown <&> model",
+        "x": 110,
+        "y": 400
+      },
+      {
+        "name": "مكتب الإدارة 192.0.2.10",
+        "x": 340,
+        "y": 400
+      }
+    ],
+    "groups": [
+      {
+        "name": "Ungrouped",
+        "x": 40,
+        "y": 40,
+        "width": 540,
+        "height": 540
+      }
+    ],
+    "annotations": [
+      {
+        "text": "Ungrouped",
+        "x": 64,
+        "y": 60
+      }
+    ]
+  }
+}

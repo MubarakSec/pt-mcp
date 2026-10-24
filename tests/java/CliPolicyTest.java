@@ -15,6 +15,14 @@ public class CliPolicyTest {
         assert result.get("failed").equals(List.of(0));
         assert result.get("unattempted").equals(List.of(1));
         calls.clear();
+        result = CliPolicy.batch(List.of("bad", "good"), "enable", true, (cmd, mode) -> {
+            calls.add(mode);
+            return new CliPolicy.Reply("STATUS_OK", cmd.equals("bad")?"% Invalid input detected at '^' marker.":"ok");
+        });
+        assert calls.equals(List.of("enable", ""));
+        assert result.get("failed").equals(List.of(0));
+        assert result.get("completed").equals(List.of(1));
+        calls.clear();
         result = CliPolicy.batch(List.of("hostname x", "end", "show run"), "global", true, (cmd, mode) -> {
             calls.add(cmd);
             if (calls.size() == 2) throw new IllegalStateException("socket closed");
