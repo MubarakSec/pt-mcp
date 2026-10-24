@@ -75,7 +75,9 @@ public final class PresentationPolicy {
         if (!from.equals(to)) c.rename(from,to);
         // Fetch by old and new name; a setter return is not evidence of success.
         var names=c.names();
-        String actual=names.contains(to) ? to : names.contains(from) ? from : null;
+        String actual=from.equals(to) ? (names.contains(to)?to:null)
+                : names.contains(to) && !names.contains(from) ? to
+                : names.contains(from) && !names.contains(to) ? from : null;
         var r=new LinkedHashMap<String,Object>();
         r.put("requested_name",to); r.put("name",actual);
         r.put("outcome",to.equals(actual) ? "success" : actual == null ? "unknown" : "failed");
@@ -94,7 +96,7 @@ public final class PresentationPolicy {
         if (requested != null) {
             try {
                 result.putAll(rename(c,created,requested));
-                if (!"success".equals(result.get("outcome"))) result.put("outcome","partial");
+                if ("failed".equals(result.get("outcome"))) result.put("outcome","partial");
             } catch (RuntimeException e) {
                 result.put("outcome","unknown");
                 result.put("name",null);

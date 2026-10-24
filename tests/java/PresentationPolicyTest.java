@@ -24,6 +24,10 @@ public class PresentationPolicyTest {
     public static void main(String[] args) {
         assert PresentationPolicy.name("😀".repeat(256)).codePointCount(0,512)==256;
         assert PresentationPolicy.noteText("😀".repeat(16384)).length()==32768;
+        var raced=new Fake() {
+            public void rename(String from,String to) { devices.put(to,new LinkedHashMap<>(Map.of("name",to,"x",0,"y",0))); }
+        };
+        assert PresentationPolicy.rename(raced,"PC0","Office").get("outcome").equals("unknown");
         var uncertain=new Fake() {
             public void rename(String from,String to) { super.rename(from,to);throw new IllegalStateException("reply lost"); }
         };
