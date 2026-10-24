@@ -171,6 +171,20 @@ public final class PtMcpServer {
                                 + "\"additionalProperties\":false}",
                         (ex, req) -> handlePower(conn, req.arguments())),
 
+                tool(jm, "pt_run_cli_batch", "Run 1..100 IOS commands once, in sequence. Explicit initial mode; stop on error by default. Never saves or rolls back.",
+                        """
+                        {"type":"object","properties":{"device":{"type":"string"},"commands":{"type":"array","minItems":1,"maxItems":100,"items":{"type":"string","minLength":1,"maxLength":4096}},"initial_mode":{"type":"string","enum":["user","enable","global"]},"continue_on_error":{"type":"boolean","default":false}},"required":["device","commands","initial_mode"],"additionalProperties":false}
+                        """,
+                        (ex, req) -> featureResult(conn, c -> CliPolicy.batch(
+                            commandList(req.arguments().get("commands")), reqStr(req.arguments(), "initial_mode"),
+                            req.arguments().containsKey("continue_on_error") && reqBool(req.arguments(), "continue_on_error"),
+                            (command, mode) -> {
+                                try {
+                                    var r = c.runCli(reqStr(req.arguments(), "device"), command, mode);
+                                    return new CliPolicy.Reply(r.status, r.output);
+                                } catch (com.cisco.pt.ipc.IPCError e) { throw new IllegalStateException("IPC failure", e); }
+                            }))),
+
                 tool(jm, "pt_run_cli",
                         "Ejecuta un comando IOS en un dispositivo Cisco (router, switch, ASA). "
                                 + "Modos: 'user', 'enable', 'global', o '' (modo actual). Llamadas "
@@ -389,6 +403,12 @@ public final class PtMcpServer {
         );
     }
 
+    private static List<String> commandList(Object value) {
+        if (!(value instanceof List<?> list) || list.stream().anyMatch(v -> !(v instanceof String)))
+            throw new IllegalArgumentException("commands must be strings");
+        return list.stream().map(v -> (String) v).toList();
+    }
+
     private static int number(Map<String, Object> args, String key, int defaultValue) {
         Object value = args.get(key);
         if (value == null) return defaultValue;
@@ -399,8 +419,9 @@ public final class PtMcpServer {
     private static CallToolResult featureResult(ConnectionManager conn, java.util.function.Function<PtIpcClient, Map<String,Object>> operation) {
         try {
             Map<String,Object> result = conn.withClient(operation);
-            return ok(result.toString(), result);
-        } catch (Exception e) {
+            return CallToolResult.builder().addTextContent(result.toString()).structuredContent(result)
+                    .isError(result.containsKey("outcome") && !"success".equals(result.get("outcome"))).build();
+        } catch (com.cisco.pt.ipc.IPCError | Exception e) {
             if (System.getenv("PT_MCP_DEBUG") != null) e.printStackTrace(System.err);
             return error(e.getMessage());
         }
@@ -582,6 +603,8 @@ public final class PtMcpServer {
             String text = "[" + r.status + "] " + (mode.isEmpty() ? "(current)" : mode) + " $ " + command + "\n"
                     + (r.output == null ? "" : r.output);
             Map<String, Object> structured = new LinkedHashMap<>();
+            structured.put("outcome", CliPolicy.classify(r.status, r.output));
+            structured.put("changes_may_have_applied", true);
             structured.put("status", r.status);
             structured.put("output", r.output == null ? "" : r.output);
             return CallToolResult.builder()
@@ -589,8 +612,9 @@ public final class PtMcpServer {
                     .structuredContent(structured)
                     .isError(!r.isOk())
                     .build();
-        } catch (Exception e) {
-            return error("runCli fallo: " + e.getMessage());
+        } catch (com.cisco.pt.ipc.IPCError | Exception e) {
+            return CallToolResult.builder().addTextContent("CLI outcome unknown; inspect device before retrying")
+                    .structuredContent(Map.of("outcome", "unknown", "changes_may_have_applied", true)).isError(true).build();
         }
     }
 
@@ -666,7 +690,8 @@ public final class PtMcpServer {
                 if (!(port instanceof com.cisco.pt.ipc.sim.HostPort)) throw new IllegalArgumentException("Interface is not a host port");
                 return EndpointServiceFeatures.readEndpoint((com.cisco.pt.ipc.sim.Pc)d, (com.cisco.pt.ipc.sim.HostPort)port, d);
             });
-            return ok(result.toString(), result);
+            return CallToolResult.builder().addTextContent(result.toString()).structuredContent(result)
+                    .isError(result.containsKey("outcome") && !"success".equals(result.get("outcome"))).build();
         } catch (Exception e) {
             return error("getEndpointConfig fallo: " + e.getMessage());
         }

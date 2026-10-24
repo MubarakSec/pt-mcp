@@ -991,7 +991,7 @@ public class PtIpcClient implements AutoCloseable {
         }
 
         public boolean isOk() {
-            return "STATUS_OK".equals(status);
+            return "success".equals(CliPolicy.classify(status, output));
         }
 
         @Override

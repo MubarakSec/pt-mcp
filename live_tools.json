@@ -659,6 +659,49 @@
       "annotations": {
         "readOnlyHint": false
       }
+    },
+    {
+      "name": "pt_run_cli_batch",
+      "description": "Run bounded CLI batch; no replay or automatic saves.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "string"
+          },
+          "commands": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
+          },
+          "initial_mode": {
+            "type": "string",
+            "enum": [
+              "user",
+              "enable",
+              "global"
+            ]
+          },
+          "continue_on_error": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "device",
+          "commands",
+          "initial_mode"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": false
+      }
     }
   ]
 }
