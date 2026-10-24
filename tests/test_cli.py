@@ -1,5 +1,6 @@
 """Portable bridge regression tests; pure Java policy tests run when JDK is present."""
 import pathlib
+import os
 import shutil
 import subprocess
 import tempfile
@@ -23,7 +24,7 @@ class BridgeFailureTests(unittest.TestCase):
             bridge._stop_child.assert_called_once()
 
 
-@unittest.skipUnless(shutil.which('javac') and shutil.which('java'), 'JDK unavailable')
+@unittest.skipUnless(shutil.which('javac') and shutil.which('java') and not os.environ.get('PT_MCP_PYTHON_ONLY'), 'JDK unavailable or explicitly Python-only')
 class JavaPolicyTests(unittest.TestCase):
     def test_cli_policy(self):
         with tempfile.TemporaryDirectory() as out:
@@ -40,7 +41,7 @@ class JavaPolicyTests(unittest.TestCase):
             subprocess.run(['java', '-ea', '-cp', out, 'com.ptmcp.PresentationPolicyTest'], check=True)
 
 
-@unittest.skipUnless(shutil.which('javac') and shutil.which('java'), 'JDK unavailable')
+@unittest.skipUnless(shutil.which('javac') and shutil.which('java') and not os.environ.get('PT_MCP_PYTHON_ONLY'), 'JDK unavailable or explicitly Python-only')
 class JavaDiagnosticsTests(unittest.TestCase):
     def run_harness(self, name):
         with tempfile.TemporaryDirectory() as out:

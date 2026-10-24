@@ -124,3 +124,10 @@ New SDK adapters compiled: **pending** — no legitimate Cisco SDK is present he
 New live PT verification: **pending**. In particular, per-interface DHCP flag
 semantics, supported trunk formatting, boot model coverage, terminal prompt/event
 ordering and save/reopen behavior need disposable local acceptance.
+
+Readiness stage — CI increment: added pinned, read-only GitHub Actions jobs for
+Python-only checks and Python 3.10/3.12 with required JDK 21 policy tests. Locally,
+`--python-only` passed 15 tests with five intentional Java skips; `--require-java`
+passed all 20 with no skips on Python 3.10 / JDK 21. Workflow YAML parsed and its
+job/permissions/action pin structure checked. Hosted GitHub jobs and the Python
+3.12 matrix entry were **not run here**. CI does not compile SDK adapters.

@@ -114,3 +114,22 @@ remains pending. The current workspace still lacks the proprietary SDK. New pure
 policy tests, synthetic parsing tests and bridge tests are offline evidence, not
 SDK compilation or PT integration. New adapter compilation and live verification
 must be performed locally; see the stage entry in IMPLEMENTATION-EVIDENCE.md.
+
+## Portable CI
+
+`.github/workflows/portable-tests.yml` runs Python-only checks and a Python
+3.10/3.12 + JDK 21 matrix on pushes/PRs/manual dispatch. Actions are pinned to
+upstream commit IDs; permissions are read-only. No credentials, PT, SDK downloads
+or Gradle compilation are used. Catalog/schema/annotation checks are included.
+
+Local equivalents:
+
+```sh
+python3 scripts/run_portable_tests.py --python-only
+# With JDK 21+ on PATH; this mode fails if Java is missing or any test skips:
+python3 scripts/run_portable_tests.py --require-java
+```
+
+Python-only mode deliberately skips the five Java harness cases. Normal unittest
+still auto-runs them when Java is present. Hosted CI results must be checked after
+pushing; a local run of equivalent commands is not a hosted CI result.
