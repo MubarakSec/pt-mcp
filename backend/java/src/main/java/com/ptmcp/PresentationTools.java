@@ -10,49 +10,49 @@ public final class PresentationTools {
                 """
                 {"type":"object","properties":{"name":{"type":"string","minLength":1,"maxLength":256},"new_name":{"type":"string","minLength":1,"maxLength":256}},"required":["name","new_name"],"additionalProperties":false}
                 """,
-                (ex,req) -> PtMcpServer.featureResult(conn,c -> {
+                (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
                     var p=new PresentationFeatures(c);var a=req.arguments();return PresentationPolicy.rename(p, PresentationPolicy.name(a.get("name")), PresentationPolicy.name(a.get("new_name")));
                 })),
             PtMcpServer.tool(jm, "pt_move_device", "Move icon origin to signed 32-bit integer coordinates; return readback.",
                 """
                 {"type":"object","properties":{"name":{"type":"string","minLength":1,"maxLength":256},"x":{"type":"integer","minimum":-2147483648,"maximum":2147483647},"y":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"required":["name","x","y"],"additionalProperties":false}
                 """,
-                (ex,req) -> PtMcpServer.featureResult(conn,c -> {
+                (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
                     var p=new PresentationFeatures(c);var a=req.arguments();return PresentationPolicy.move(p, PresentationPolicy.name(a.get("name")), PresentationPolicy.coordinate(a.get("x")), PresentationPolicy.coordinate(a.get("y")));
                 })),
             PtMcpServer.tool(jm, "pt_get_canvas", "Read live devices, origin positions, observed links and native notes; unknown links remain unknown.",
                 """
                 {"type":"object","properties":{},"required":[],"additionalProperties":false}
                 """,
-                (ex,req) -> PtMcpServer.featureResult(conn,c -> {
+                (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
                     var p=new PresentationFeatures(c);var a=req.arguments();return p.canvas();
                 })),
             PtMcpServer.tool(jm, "pt_add_note", "Add a native note at real integer coordinates; bounded Unicode text and readback.",
                 """
                 {"type":"object","properties":{"text":{"type":"string","maxLength":16384},"x":{"type":"integer","minimum":-2147483648,"maximum":2147483647},"y":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"required":["text","x","y"],"additionalProperties":false}
                 """,
-                (ex,req) -> PtMcpServer.featureResult(conn,c -> {
+                (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
                     var p=new PresentationFeatures(c);var a=req.arguments();return p.addNote(PresentationPolicy.coordinate(a.get("x")), PresentationPolicy.coordinate(a.get("y")), PresentationPolicy.noteText(a.get("text")));
                 })),
             PtMcpServer.tool(jm, "pt_update_note", "Update text of an existing verified native note ID; return readback.",
                 """
                 {"type":"object","properties":{"id":{"type":"string"},"text":{"type":"string","maxLength":16384}},"required":["id","text"],"additionalProperties":false}
                 """,
-                (ex,req) -> PtMcpServer.featureResult(conn,c -> {
+                (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
                     var p=new PresentationFeatures(c);var a=req.arguments();return p.updateNote(PresentationPolicy.name(a.get("id")), PresentationPolicy.noteText(a.get("text")));
                 })),
             PtMcpServer.tool(jm, "pt_delete_note", "Remove a verified native note ID only; return absence readback.",
                 """
                 {"type":"object","properties":{"id":{"type":"string"}},"required":["id"],"additionalProperties":false}
                 """,
-                (ex,req) -> PtMcpServer.featureResult(conn,c -> {
+                (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
                     var p=new PresentationFeatures(c);var a=req.arguments();return p.deleteNote(PresentationPolicy.name(a.get("id")));
                 })),
             PtMcpServer.tool(jm, "pt_apply_layout", "Preflight then sequentially move 1..500 devices; stop on any failure/unknown. Does not apply annotations or save.",
                 """
                 {"type":"object","properties":{"moves":{"type":"array","minItems":1,"maxItems":500,"items":{"type":"object","properties":{"name":{"type":"string","minLength":1,"maxLength":256},"x":{"type":"integer","minimum":-2147483648,"maximum":2147483647},"y":{"type":"integer","minimum":-2147483648,"maximum":2147483647}},"required":["name","x","y"],"additionalProperties":false}}},"required":["moves"],"additionalProperties":false}
                 """,
-                (ex,req) -> PtMcpServer.featureResult(conn,c -> {
+                (ex,req) -> PtMcpServer.mutationResult(conn,c -> {
                     var p=new PresentationFeatures(c);var a=req.arguments();return PresentationPolicy.apply(p, moves(a.get("moves")));
                 }))
         );

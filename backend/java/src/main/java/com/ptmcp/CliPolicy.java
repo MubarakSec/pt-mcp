@@ -25,7 +25,7 @@ public final class CliPolicy {
         if (!Set.of("user", "enable", "global").contains(mode))
             throw new IllegalArgumentException("initial_mode must be user, enable or global");
         for (String command : commands) {
-            if (command == null || command.isBlank() || command.length() > 4096
+            if (command == null || command.isBlank() || command.codePointCount(0,command.length()) > 4096
                     || command.indexOf('\n') >= 0 || command.indexOf('\r') >= 0 || command.indexOf('\0') >= 0)
                 throw new IllegalArgumentException("commands must be nonempty single lines, at most 4096 characters");
         }

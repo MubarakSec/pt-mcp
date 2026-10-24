@@ -48,7 +48,7 @@ public final class PresentationPolicy {
         return Map.of("id",id,"sdk_accepted",accepted,"removed",absent,"outcome",absent?"success":"failed");
     }
     public static String name(Object value) {
-        if (!(value instanceof String s) || s.isBlank() || s.length() > 256
+        if (!(value instanceof String s) || s.isBlank() || s.codePointCount(0,s.length()) > 256
                 || s.codePoints().anyMatch(Character::isISOControl))
             throw new IllegalArgumentException("names must be 1..256 characters without control characters");
         return s;
@@ -61,7 +61,7 @@ public final class PresentationPolicy {
         return n.intValue();
     }
     public static String noteText(Object value) {
-        if (!(value instanceof String s) || s.length() > 16384 || s.indexOf('\0') >= 0)
+        if (!(value instanceof String s) || s.codePointCount(0,s.length()) > 16384 || s.indexOf('\0') >= 0)
             throw new IllegalArgumentException("note text must be at most 16384 characters, without NUL");
         return s;
     }

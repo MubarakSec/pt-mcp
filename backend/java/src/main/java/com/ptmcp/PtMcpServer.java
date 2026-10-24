@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public final class PtMcpServer {
 
     private static final String SERVER_NAME = "pt-mcp";
-    private static final String SERVER_VERSION = "0.1.0";
+    private static final String SERVER_VERSION = "0.6.0";
 
     public static void main(String[] args) throws Exception {
         ConnectionManager conn = new ConnectionManager();
@@ -405,7 +405,7 @@ public final class PtMcpServer {
             String mode=reqStr(args,"initial_mode");String device=PresentationPolicy.name(args.get("device"));
             boolean keepGoing=args.containsKey("continue_on_error") && reqBool(args,"continue_on_error");
             CliPolicy.validate(commands,mode);
-            return featureResult(conn,c -> {
+            return mutationResult(conn,c -> {
                 c.validateCliTarget(device);
                 return CliPolicy.batch(commands,mode,keepGoing,(command,currentMode) -> {
                     try {
@@ -433,7 +433,17 @@ public final class PtMcpServer {
         return ((Number) value).intValue();
     }
 
-    static CallToolResult featureResult(ConnectionManager conn, java.util.function.Function<PtIpcClient, Map<String,Object>> operation) {
+    private static CallToolResult featureResult(ConnectionManager conn, java.util.function.Function<PtIpcClient, Map<String,Object>> operation) {
+        try {
+            Map<String,Object> result = conn.withClient(operation);
+            return ok(result.toString(), result);
+        } catch (Exception e) {
+            if (System.getenv("PT_MCP_DEBUG") != null) e.printStackTrace(System.err);
+            return error(e.getMessage());
+        }
+    }
+
+    static CallToolResult mutationResult(ConnectionManager conn, java.util.function.Function<PtIpcClient, Map<String,Object>> operation) {
         try {
             Map<String,Object> result = conn.withClient(operation);
             return CallToolResult.builder().addTextContent(result.toString()).structuredContent(result)
@@ -515,7 +525,7 @@ public final class PtMcpServer {
             double x = reqNum(args, "x");
             double y = reqNum(args, "y");
             String requested = args.containsKey("name") ? PresentationPolicy.name(args.get("name")) : null;
-            return featureResult(conn, c -> PresentationPolicy.create(new PresentationFeatures(c), type, model, x, y, requested));
+            return mutationResult(conn, c -> PresentationPolicy.create(new PresentationFeatures(c), type, model, x, y, requested));
         } catch (Exception e) {
             return error("addDevice fallo: " + e.getMessage());
         }
@@ -618,7 +628,13 @@ public final class PtMcpServer {
             String device = reqStr(args, "device");
             String command = reqStr(args, "command");
             String mode = optStr(args, "mode", "");
-            CliResult r = conn.withClient(c -> c.runCli(device, command, mode));
+            CliResult r = conn.withClient(c -> {
+                c.validateCliTarget(device);
+                try { return c.runCli(device,command,mode); }
+                catch (com.cisco.pt.ipc.IPCError | RuntimeException failure) {
+                    throw new IllegalStateException("CLI outcome unknown",failure);
+                }
+            });
             String text = "[" + r.status + "] " + (mode.isEmpty() ? "(current)" : mode) + " $ " + command + "\n"
                     + (r.output == null ? "" : r.output);
             Map<String, Object> structured = new LinkedHashMap<>();
@@ -631,6 +647,9 @@ public final class PtMcpServer {
                     .structuredContent(structured)
                     .isError(!r.isOk())
                     .build();
+        } catch (IllegalArgumentException e) {
+            return CallToolResult.builder().addTextContent(e.getMessage())
+                    .structuredContent(Map.of("outcome","validation_failure","changes_may_have_applied",false)).isError(true).build();
         } catch (com.cisco.pt.ipc.IPCError | Exception e) {
             return CallToolResult.builder().addTextContent("CLI outcome unknown; inspect device before retrying")
                     .structuredContent(Map.of("outcome", "unknown", "changes_may_have_applied", true)).isError(true).build();

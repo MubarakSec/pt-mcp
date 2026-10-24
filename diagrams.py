@@ -73,7 +73,11 @@ def snapshot_data(snapshot):
         device.update(name=device_name, x=coordinate(d.get('x') if d.get('x') not in (None, '') else 0),
                       y=coordinate(d.get('y') if d.get('y') not in (None, '') else 0))
         for key in ('type', 'model'):
-            if device.get(key): label(device[key])
+            value = device.get(key)
+            if value is None: value = ''
+            if not isinstance(value, str): raise ValueError(key+' must be a string')
+            if value: label(value)
+            device[key] = value
         result['devices'].append(device)
     for link in _bounded_list(snapshot.get('links', []), MAX_LINKS, 'links'):
         item = copy.deepcopy(link)

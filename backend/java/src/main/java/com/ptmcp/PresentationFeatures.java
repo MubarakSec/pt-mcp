@@ -31,7 +31,10 @@ public final class PresentationFeatures implements PresentationPolicy.Canvas, Pr
             "name",d.getName(),"type",d.getType().name(),"model",d.getModel(),
             "x",d.getXCoordinate(),"y",d.getYCoordinate())); });
     }
-    public String create(String type,String model,double x,double y) { return ipc(() -> client.addDevice(type,model,x,y)); }
+    public String create(String type,String model,double x,double y) {
+        PtIpcClient.parseDeviceType(type); // local validation before entering the mutating SDK call
+        return ipc(() -> client.addDevice(type,model,x,y));
+    }
     public void rename(String from,String to) { ipc(() -> { get(from).setName(to); return null; }); }
     public boolean move(String name,int x,int y) { return ipc(() -> get(name).moveToLocation(x,y)); }
     private LogicalWorkspace workspace() { return client.logicalWorkspace(); }

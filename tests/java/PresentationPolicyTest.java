@@ -22,6 +22,19 @@ public class PresentationPolicyTest {
         public boolean removeNote(String id) { deleted=true;return true; }
     }
     public static void main(String[] args) {
+        assert PresentationPolicy.name("😀".repeat(256)).codePointCount(0,512)==256;
+        assert PresentationPolicy.noteText("😀".repeat(16384)).length()==32768;
+        var uncertain=new Fake() {
+            public void rename(String from,String to) { super.rename(from,to);throw new IllegalStateException("reply lost"); }
+        };
+        var uncertainResult=PresentationPolicy.create(uncertain,"pc","PC-PT",0,0,"Office");
+        assert uncertainResult.get("outcome").equals("unknown");
+        assert uncertainResult.get("name")==null;
+        assert uncertain.creates==1;
+        var unreadable=new NoteFake() {
+            public Map<String,Object> readNote(String id) { throw new IllegalStateException("lost readback"); }
+        };
+        assert PresentationPolicy.addNote(unreadable,0,0,"hello").get("outcome").equals("unknown");
         var notes=new NoteFake();
         assert PresentationPolicy.addNote(notes,20,30,"العربية").get("outcome").equals("partial");
         assert PresentationPolicy.updateNote(notes,"note-1","new").get("outcome").equals("failed");

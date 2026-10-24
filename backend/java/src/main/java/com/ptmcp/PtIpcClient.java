@@ -864,7 +864,7 @@ public class PtIpcClient implements AutoCloseable {
         }
     }
 
-    private static DeviceType parseDeviceType(String raw) {
+    static DeviceType parseDeviceType(String raw) {
         String normalized = raw.trim().toUpperCase().replace('-', '_').replace(' ', '_');
         try {
             return DeviceType.valueOf(normalized);
