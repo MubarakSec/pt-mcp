@@ -107,16 +107,16 @@ class Harness:
         raise IntegrationError('Devices did not finish booting within the harness deadline')
 
     def build(self):
-        for role,kind,model,x,y in [('R1','router','2911',400,100),('SW1','switch','2960',250,250),
-                                   ('SW2','switch','2960',600,250),('PC1','pc','PC-PT',600,450)]:
+        for role,kind,model,x,y in [('R1','router','2911',400,100),('SW1','switch','2960-24TT',250,250),
+                                   ('SW2','switch','2960-24TT',600,250),('PC1','pc','PC-PT',600,450)]:
             created=self.call('pt_live_add_device',{'type':kind,'model':model,'x':x,'y':y,'name':self.names[role]})
             self.require(created.get('name')==self.names[role],'Named creation readback mismatch')
         self.wait_boot()
-        for a,pa,b,pb in [('R1','GigabitEthernet0/0','SW1','FastEthernet0/1'),
-                          ('SW1','GigabitEthernet0/1','SW2','GigabitEthernet0/1'),
-                          ('SW2','FastEthernet0/1','PC1','FastEthernet0')]:
+        for a,pa,b,pb,cable in [('R1','GigabitEthernet0/0','SW1','FastEthernet0/1','ethernet_straight'),
+                          ('SW1','GigabitEthernet0/1','SW2','GigabitEthernet0/1','ethernet_cross'),
+                          ('SW2','FastEthernet0/1','PC1','FastEthernet0','ethernet_straight')]:
             linked=self.call('pt_live_connect_devices',{'device_a':self.names[a],'iface_a':pa,
-                'device_b':self.names[b],'iface_b':pb,'cable_type':'auto'})
+                'device_b':self.names[b],'iface_b':pb,'cable_type':cable})
             self.require(linked.get('linked') is True,'Cable creation was not confirmed','unknown')
         commands=['interface GigabitEthernet0/0','ip address 192.0.2.1 255.255.255.0','no shutdown','exit',
                   'ip dhcp excluded-address 192.0.2.1 192.0.2.49','ip dhcp pool PTMCP-SCRATCH',

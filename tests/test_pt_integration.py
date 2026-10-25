@@ -30,6 +30,27 @@ class FakeTools:
 
 
 class HarnessTests(unittest.TestCase):
+    def test_fixture_builds_with_packet_tracer_catalog_models(self):
+        class CatalogTools(FakeTools):
+            def __init__(self):
+                super().__init__({'devices':[],'links':[],'notes':[]})
+                self.created=[]
+            def call_tool(self,name,args):
+                if name=='pt_live_add_device':
+                    if args['model'] not in {'2911','2960-24TT','PC-PT'}:
+                        return {'structuredContent':{'outcome':'validation_failure'},'isError':True}
+                    self.created.append(args)
+                    return {'structuredContent':{'name':args['name'],'outcome':'success'},'isError':False}
+                if name=='pt_live_connect_devices':
+                    linked=args['cable_type'] in {'ethernet_straight','ethernet_cross'}
+                    return {'structuredContent':{'linked':linked},'isError':False}
+                return super().call_tool(name,args)
+        client=CatalogTools();h=Harness(client,'/unused');h.cleared_workspace=True
+        h.wait_boot=Mock()
+        h.build()
+        self.assertEqual(len(client.created),4)
+        self.assertEqual(sum(d['type']=='switch' for d in client.created),2)
+
     def test_nonempty_project_prevents_every_mutation(self):
         client=FakeTools();h=Harness(client,'/unused')
         with self.assertRaises(IntegrationError):h.preflight()
