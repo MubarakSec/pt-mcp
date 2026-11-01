@@ -495,6 +495,7 @@ def b_save(args):
             f"Pass allow_overwrite=true if you really mean it, or choose another path.")
 
     xml_out = os.path.splitext(out)[0] + ".xml"
+    os.makedirs(os.path.dirname(out), exist_ok=True)
     b["topo"].save(xml_out)
     script = os.path.join(HERE, "repacket.py")
     r = subprocess.run([sys.executable, script, xml_out, "-o", out],

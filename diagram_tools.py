@@ -1,5 +1,6 @@
 """MCP contracts for offline planning/export and explicit build-copy presentation edits."""
 import copy
+import os
 import xml.etree.ElementTree as ET
 import diagrams
 import ptbuild
@@ -32,13 +33,24 @@ ANNOTATIONS = {'pt_layout_plan': {'readOnlyHint': True},
 def handlers(require_read, require_build):
     def snapshot(args):
         if 'snapshot' in args: return args['snapshot']
+        # An open build copy is always fresher than the last pt_open read: it
+        # carries devices added/renamed/moved since. Prefer it when present.
+        try:
+            build = require_build()
+        except RuntimeError:
+            build = None
+        if build is not None and build.get('topo') is not None:
+            return parse(build['topo'].root)
         return require_read()['topo']
 
     def plan(args):
         return diagrams.plan_layout(snapshot(args),args.get('groups'))
 
     def export(args):
-        return diagrams.export_svg(snapshot(args),args['path'],args.get('plan'),args.get('title','Network diagram'),
+        path=args['path']
+        parent=os.path.dirname(os.path.abspath(path))
+        os.makedirs(parent,exist_ok=True)
+        return diagrams.export_svg(snapshot(args),path,args.get('plan'),args.get('title','Network diagram'),
                                    args.get('labels',False),args.get('overwrite',False))
 
     def apply(args):
