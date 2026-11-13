@@ -184,3 +184,27 @@ replaced IDs and disconnected history. These are offline tests, not live capture
 
 Current discovery: 27 offline tools + 39 live Java registrations + passive status
 = 67 tools. Java IPC, explicit saves and no automatic mutation replay remain intact.
+
+## 0.7.1 — save-overwrite increment
+
+`pt_live_save_file` no longer depends on confirming Packet Tracer's
+**Overwrite File?** modal. An existing destination is rejected before PT is
+invoked unless the caller passes `overwrite: true`. Overwrite saves to a
+unique, non-existing temporary sibling; the destination is replaced only
+after PT reports success. Directories, symlinks, non-.pkt names, relative
+paths and unavailable parents are rejected before PT is invoked. Failed or
+interrupted saves keep the original destination and retain any temporary
+file for inspection.
+
+- **Offline tested:** 36 Python tests passed with JDK 21, including the new
+  SaveFilePolicy JDK harness, catalog/schema parity and stdio failure
+  isolation. Existing tools remain at 67.
+- **SDK compiled:** yes, locally with the installed Cisco SDK; the current
+  backend was recompiled and rebuilt on 2026-11-13.
+- **Live verified:** authenticated IPC was probed against the running PT. A
+  scratch dummy target stayed unchanged with `overwrite: false`; with
+  `overwrite: true`, PT saved a unique temporary file and the backend
+  replaced the dummy target; a fresh save also succeeded; no temporary files
+  remained. The scratch files were deleted afterwards. The live probe/open
+  calls were made in the running PT instance, and the active tab may have
+  changed as a result; no topology or configuration mutations were issued.

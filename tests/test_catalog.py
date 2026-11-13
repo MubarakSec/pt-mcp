@@ -40,3 +40,11 @@ class CatalogTests(unittest.TestCase):
         tool = next(t for t in LiveBridge._catalog_tools() if t['name'] == 'pt_add_device')
         self.assertEqual(tool['inputSchema']['required'], ['type', 'model', 'x', 'y'])
         self.assertIn('name', tool['inputSchema']['properties'])
+
+    def test_save_file_overwrite_is_optional(self):
+        tool = next(t for t in LiveBridge._catalog_tools() if t['name'] == 'pt_save_file')
+        schema = tool['inputSchema']
+        self.assertEqual(schema['required'], ['path'])
+        self.assertIn('overwrite', schema['properties'])
+        self.assertEqual(schema['properties']['overwrite']['type'], 'boolean')
+        self.assertNotIn('overwrite', schema['required'])

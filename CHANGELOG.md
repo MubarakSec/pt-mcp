@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.1 — 2026-11-13
+
+### Changed
+
+- `pt_live_save_file` now rejects an existing destination before PT is invoked unless `overwrite: true` is passed. PT saves to a unique temporary sibling and the backend atomically replaces the destination only after PT reports success. Directories, symlinks, non-`.pkt` names, relative paths and unavailable parents are rejected up front.
+- Failed or interrupted overwrite saves keep the original destination and report the temporary file instead of overwriting it.
+
+### Fixed
+
+- Saving over an existing `.pkt` no longer hangs on Packet Tracer's **Overwrite File?** modal waiting for an IPC confirmation that Packet Tracer does not expose.
+
 ## 0.7.0 — 2026-10-24
 
 - Add explicit authenticated IPC probing, passive boot/terminal readiness, and opt-in actual-address/trunk validation with pass/fail/unknown evidence and shared deadlines.

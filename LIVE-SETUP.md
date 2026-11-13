@@ -81,7 +81,7 @@ Saved-file and live sessions are independent. `pt_open` reads a saved file witho
 - 39 `pt_live_*` tools plus `pt_live_status` inspect, configure, or change the running simulator.
 - `pt_live_run_cli` is for Cisco CLI devices. PCs and servers use endpoint and terminal tools.
 - `pt_live_open_file` replaces the active simulator workspace. Save changes first.
-- `pt_live_save_file` writes to the PT machine's filesystem; use an absolute new path when preserving an original.
+- `pt_live_save_file` requires an absolute `.pkt` path. If the target exists it fails before touching it unless `overwrite: true` is passed; the backend then saves to a unique temporary sibling and atomically replaces the target only after PT reports success.
 - Live operations are sent once. If a reply times out, inspect Packet Tracer before repeating a mutation because the action may already have completed.
 
 ### Diagnostics

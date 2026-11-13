@@ -1,6 +1,6 @@
 # pt-mcp — Packet Tracer saved files and live simulator
 
-Version **0.7.0** exposes 67 MCP tools: 27 offline tools (22 saved-file/build, three native-model library, and two diagram tools), 39 live simulator tools, and `pt_live_status`. New live wrappers await SDK compilation and local Packet Tracer verification; see [implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md).
+Version **0.7.1** exposes 67 MCP tools: 27 offline tools (22 saved-file/build, three native-model library, and two diagram tools), 39 live simulator tools, and `pt_live_status`. Evidence is split into offline tests, SDK compilation and live verification; see [implementation evidence](docs/IMPLEMENTATION-EVIDENCE.md).
 
 The Python server handles `.pkt`/XML inspection and copy-based editing. Its optional Java backend controls a running Packet Tracer simulator over IPC. The Java source now lives inside this repository at `backend/java`; no sibling checkout is required.
 
@@ -73,6 +73,7 @@ A cloud coding agent can implement code and run offline tests without a simulato
 - Build tools operate on a separate copy. Saving refuses to overwrite the source unless `allow_overwrite: true` is supplied.
 - `pt_build_clone` duplicates models already present in the file. `pt_model_import`, `pt_model_list`, and `pt_build_add_device` support importing a native hardware template and adding a model absent from the file.
 - `pt_build_set_config` writes the same CLI text to saved `STARTUPCONFIG` and `RUNNINGCONFIG`. A running device may show the change only after reboot.
+- `pt_live_save_file` never asks Packet Tracer to overwrite an existing destination. It fails before touching the target unless `overwrite: true` is passed; then PT saves to a unique temporary sibling and the backend atomically replaces the target only after PT reports success. If the temporary save or replacement fails, the original destination stays intact and the temporary file is kept for inspection.
 
 The original saved-file tools remain available if the Java backend or live IPC is missing. Live operations affect the currently open simulator and are independent of saved-file build sessions.
 

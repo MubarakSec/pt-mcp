@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public final class PtMcpServer {
 
     private static final String SERVER_NAME = "pt-mcp";
-    private static final String SERVER_VERSION = "0.7.0";
+    private static final String SERVER_VERSION = "0.7.1";
 
     public static void main(String[] args) throws Exception {
         ConnectionManager conn = new ConnectionManager();
@@ -319,10 +319,13 @@ public final class PtMcpServer {
 
                 tool(jm, "pt_save_file",
                         "Guarda la topologia actual en un archivo .pkt. La ruta es del lado de la "
-                                + "maquina donde corre Packet Tracer; usar ruta absoluta (ej. C:\\\\redes\\\\lab1.pkt).",
+                                + "maquina donde corre Packet Tracer; usar ruta absoluta (ej. C:\\\\redes\\\\lab1.pkt). "
+                                + "Si el destino ya existe, pasar overwrite=true; la escritura usa un temporal "
+                                + "hermano y solo reemplaza el destino si PT guarda bien.",
                         "{\"type\":\"object\","
                                 + "\"properties\":{"
-                                + "\"path\":{\"type\":\"string\",\"description\":\"Ruta absoluta destino .pkt.\"}"
+                                + "\"path\":{\"type\":\"string\",\"description\":\"Ruta absoluta destino .pkt.\"},"
+                                + "\"overwrite\":{\"type\":\"boolean\",\"description\":\"Reemplaza path si ya existe. false por defecto.\"}"
                                 + "},"
                                 + "\"required\":[\"path\"],"
                                 + "\"additionalProperties\":false}",
@@ -841,23 +844,81 @@ public final class PtMcpServer {
     }
 
     private static CallToolResult handleSaveFile(ConnectionManager conn, Map<String, Object> args) {
+        SaveFilePolicy.SavePlan plan = null;
+        boolean overwrite = false;
         try {
             String path = reqStr(args, "path");
-            boolean saved = conn.withClient(c -> c.saveFile(path));
+            overwrite = optBool(args, "overwrite", false);
+            plan = SaveFilePolicy.prepare(path, overwrite);
+            SaveFilePolicy.SavePlan planToSave = plan;
+            boolean saved = conn.withClient(c -> c.saveFile(planToSave.savePath().toString()));
             Map<String, Object> structured = new LinkedHashMap<>();
-            structured.put("path", path);
+            structured.put("path", plan.target().toString());
             structured.put("saved", saved);
-            String text = saved
-                    ? "Topologia guardada en " + path + "."
-                    : "PT no confirmo el guardado en " + path + ".";
+            structured.put("overwrite", overwrite);
+            structured.put("replaced", false);
+            String text;
+            if (plan.tempPath() == null) {
+                text = saved ? "Topologia guardada en " + plan.target() + "."
+                        : "PT no confirmo el guardado en " + plan.target() + ".";
+                return saveResult(text, structured, saved);
+            }
+            if (!saved) {
+                structured.put("temporaryPath", plan.tempPath().toString());
+                structured.put("temporaryExists", java.nio.file.Files.exists(plan.tempPath()));
+                structured.put("targetPreserved", true);
+                text = "PT no confirmo el guardado; el archivo temporal se conserva en " + plan.tempPath()
+                        + " y el destino no fue reemplazado.";
+                return saveResult(text, structured, false);
+            }
+            try {
+                SaveFilePolicy.complete(plan);
+                structured.put("replaced", true);
+                structured.remove("temporaryPath");
+                structured.put("targetPreserved", false);
+                text = "Topologia guardada y reemplazada en " + plan.target() + ".";
+                return saveResult(text, structured, true);
+            } catch (Exception e) {
+                structured.put("temporaryPath", plan.tempPath().toString());
+                structured.put("temporaryExists", java.nio.file.Files.exists(plan.tempPath()));
+                structured.put("targetPreserved", true);
+                text = "PT guardo en el temporal, pero no se pudo reemplazar " + plan.target() + ": "
+                        + e.getMessage() + ". El destino se conserva; el temporal sigue en " + plan.tempPath() + ".";
+                return saveResult(text, structured, false);
+            }
+        } catch (IllegalArgumentException e) {
+            return error(e.getMessage());
+        } catch (Exception e) {
+            Map<String, Object> structured = new LinkedHashMap<>();
+            Object requested = args == null ? null : args.get("path");
+            structured.put("path", requested == null ? null : requested.toString());
+            structured.put("overwrite", overwrite);
+            structured.put("replaced", false);
+            if (plan != null && plan.tempPath() != null) {
+                structured.put("temporaryPath", plan.tempPath().toString());
+                structured.put("temporaryExists", java.nio.file.Files.exists(plan.tempPath()));
+                structured.put("targetPreserved", true);
+            } else {
+                structured.put("temporaryPath", null);
+                structured.put("targetPreserved", null);
+            }
+            structured.put("outcome", "unknown");
+            String text = "saveFile fallo: " + e.getMessage() + ". No se reintento automaticamente; "
+                    + "revisa el campo temporaryPath y la topologia antes de repetir el guardado.";
             return CallToolResult.builder()
                     .addTextContent(text)
                     .structuredContent(structured)
-                    .isError(!saved)
+                    .isError(true)
                     .build();
-        } catch (Exception e) {
-            return error("saveFile fallo: " + e.getMessage());
         }
+    }
+
+    private static CallToolResult saveResult(String text, Map<String, Object> structured, boolean success) {
+        return CallToolResult.builder()
+                .addTextContent(text)
+                .structuredContent(structured)
+                .isError(!success)
+                .build();
     }
 
     private static CallToolResult handleOpenFile(ConnectionManager conn, Map<String, Object> args) {
@@ -931,6 +992,16 @@ public final class PtMcpServer {
     private static String optStr(Map<String, Object> args, String key, String def) {
         Object v = args == null ? null : args.get(key);
         return v == null ? def : v.toString();
+    }
+
+    private static boolean optBool(Map<String, Object> args, String key, boolean def) {
+        Object v = args == null ? null : args.get(key);
+        if (v == null) return def;
+        if (v instanceof Boolean b) return b;
+        String s = v.toString().trim().toLowerCase();
+        if (s.equals("true")) return true;
+        if (s.equals("false")) return false;
+        throw new IllegalArgumentException("Argumento '" + key + "' debe ser boolean, no '" + v + "'.");
     }
 
     private static boolean reqBool(Map<String, Object> args, String key) {

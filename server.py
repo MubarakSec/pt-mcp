@@ -686,7 +686,7 @@ def handle(req):
         _result(rid, {
             "protocolVersion": ver,
             "capabilities": {"tools": {"listChanged": False}},
-            "serverInfo": {"name": "pt-mcp", "version": "0.7.0",
+            "serverInfo": {"name": "pt-mcp", "version": "0.7.1",
                            "description": "Packet Tracer saved-file toolkit and live IPC bridge"},
         })
     elif method in ("notifications/initialized", "initialized"):

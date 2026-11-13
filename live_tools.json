@@ -482,13 +482,17 @@
     },
     {
       "name": "pt_save_file",
-      "description": "Guarda la topologia actual en un archivo .pkt. La ruta es del lado de la maquina donde corre Packet Tracer; usar ruta absoluta (ej. C:\\\\redes\\\\lab1.pkt).",
+      "description": "Guarda la topologia actual en un archivo .pkt. La ruta es del lado de la maquina donde corre Packet Tracer; usar ruta absoluta (ej. C:\\\\redes\\\\lab1.pkt). Si el destino ya existe, pasar overwrite=true; la escritura usa un temporal hermano y solo reemplaza el destino si PT guarda bien.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "path": {
             "type": "string",
             "description": "Ruta absoluta destino .pkt."
+          },
+          "overwrite": {
+            "type": "boolean",
+            "description": "Reemplaza path si ya existe. false por defecto."
           }
         },
         "required": [
